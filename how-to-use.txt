@@ -1,0 +1,43 @@
+How to use
+----------
+
+Run "npm install" inside this project folder to install all dependencies.
+
+Make sure you use the latest version of the CLI (upgrade guide below)
+
+Run "ng serve" to see the app in action (try "npm start" in case "ng serve" fails).
+
+Feel free to compare it with your project code to spot any errors you might have.
+
+
+
+
+How to upgrade the CLI
+-----------------------
+
+Run the below commands - only use "sudo" on Mac/ Linux.
+
+sudo npm uninstall -g angular-cli @angular/cli
+npm cache clean --force
+sudo npm install -g @angular/cli
+
+
+
+Guidelines to develop UI
+-----------------------
+Questions To Be Asked before starting any UI development - To deliver Business Requirement.
+1) Which component/widgets(s) would be required to be “created” or “modified”.
+2) Module design if required.
+3) How will the component be accessed? From a topNav? Routing? From some user interaction on other components?
+4) Which folder/package would those components belong?
+5) What kind of @input<data/ui required for this component>, @output<data/ui required from this component> would be provided to / emitted from these    components.
+6) What would be your backend/thirparty call requirement and it’s sequence.
+7) Any form validations?
+8) Any spl technical things / libs required? E.g. moment, datepicker, modal, etc.
+9) Any spikes/R&D required before starting development.
+10) “Productivity/Performance improvement”? How will you reach your page fast -> hardcoding? Proxying? Using different component? Reducing calls?
+11) Adding css class/property should it be global/local? [Create/Update Style Guide]
+12) Analyse memory comsumed.
+13) Entitlements Required
+
+You would be confident and code quality improved once design documentation process established.

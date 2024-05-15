@@ -1,0 +1,26 @@
+<h2 mat-dialog-title class="mat-dialog-title">New Default Trading Tier</h2>
+<mat-dialog-content class="mat-typography mat-dialog-content">
+  <div>
+    <div class="row">
+      <div class="form-group col-12 w-100 p-3 h-25">
+        <mat-form-field appearance="outline">
+          <mat-label>Tier Name</mat-label>
+          <input matInput>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-8">
+        <label>Pricing Duration</label>
+      </div>
+      <div class="col-4">
+        <mat-slide-toggle>All day</mat-slide-toggle>
+      </div>
+    </div>
+
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end" class="mat-dialog-footer">
+  <button class="btn btn-landing" mat-button mat-dialog-close>Next</button>&nbsp;&nbsp;
+  <button class="btn btn-landing" mat-button [mat-dialog-close]="true" cdkFocusInitial>Close</button>
+</mat-dialog-actions>

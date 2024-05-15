@@ -1,0 +1,8 @@
+{
+  "/activity/*": {
+    "target": "http://localhost:7013",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  }
+}

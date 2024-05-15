@@ -1,0 +1,31 @@
+<ng-container class="container">
+  <div class="row">
+    <div class="col-md-7 justify-content-start order-1">
+      <div  class="btn btn-secondary active transaction-tab tab-style">
+        <mat-button-toggle-group [(ngModel)]="fontStyleControl" name="fontStyle" aria-label="Font Style">
+          <mat-button-toggle value="{{globals.SALES_TIERS_CONSTANT}}"  (click)="clicktab(globals.SALES_TIERS_CONSTANT)" routerLink="/sales-tiers">{{globals.SALES_TIERS_CONSTANT}}</mat-button-toggle>
+          <mat-button-toggle value="{{globals.TRADING_TIERS_CONSTANT}}" (click)="clicktab(globals.TRADING_TIERS_CONSTANT)" routerLink="/trading-tiers">{{globals.TRADING_TIERS_CONSTANT}}</mat-button-toggle>
+          <mat-button-toggle value="{{globals.RATE_SOURCE_CONSTANT}}" (click)="clicktab(globals.RATE_SOURCE_CONSTANT)" routerLink="/rate-source">{{globals.RATE_SOURCE_CONSTANT}}</mat-button-toggle>
+          <mat-button-toggle value="{{globals.AMOUNT_TIERS_CONSTANT}}" (click)="clicktab(globals.AMOUNT_TIERS_CONSTANT)" routerLink="/amount-tiers">{{globals.AMOUNT_TIERS_CONSTANT}}</mat-button-toggle>
+      </mat-button-toggle-group>
+      </div>
+    </div>
+  
+    <div class="col-md-3 order-2">
+      <div  class="form-group has-search">
+        <span class="fa fa-search form-control-feedback"></span>
+        <input  class="form-control form-control-landing" placeholder="Search" type="text">
+      </div>
+    </div>
+    <div class="col-md-2 margin2 justify-content-end order-3">
+      <button class="btn btn-landing" (click)="addIndividualTiers()">+ Add {{globals?.tabName}}</button>
+    </div>
+  </div>
+</ng-container>
+
+
+
+<router-outlet></router-outlet>   
+
+
+

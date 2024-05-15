@@ -1,0 +1,153 @@
+$icon-font-path: "../node_modules/bootstrap-sass/assets/fonts/bootstrap";
+@import "../node_modules/bootstrap/scss/bootstrap";
+$fa-font-path : "../node_modules/font-awesome/fonts";
+@import "../node_modules/font-awesome/scss/font-awesome";
+@import "~ng-pick-datetime/assets/style/picker.min.css";
+@import  '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import "~material-design-icons/iconfont/material-icons.css";
+@import "../node_modules/ngx-toastr/toastr.css";
+@import '~@swimlane/ngx-datatable/release/index.css';
+@import '~@swimlane/ngx-datatable/release/themes/material.css';
+@import '~@swimlane/ngx-datatable/release/assets/icons.css';
+@import "~@ng-select/ng-select/themes/material.theme.css";
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+::-webkit-scrollbar-thumb {
+    background: #e1e1e1;
+    border: 0px none #ffffff;
+    border-radius: 0px;
+    &:hover{
+        background: #cccccc;
+    }
+    &:active{
+        background: #888888; 
+    }
+}
+::-webkit-scrollbar-track {
+    background: #dadada;
+    border: 0px none #ffffff;
+    border-radius: 0px;
+    &:hover{
+        background: #dadada;
+    }
+    &:active{
+        background: #dadada; 
+    }
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.mat-button-toggle-checked{
+  background-color: #19A0DB !important;
+}
+
+.mat-button-toggle-group {
+  border-radius: 10px !important;
+  background-color: #fff !important;
+}
+
+// .mat-icon {
+//   background-repeat: no-repeat;
+//   display: inline-block;
+//   fill: currentColor;
+//   height: 17px;
+//   width: 26px;
+//   margin-left: 167px;
+//   margin-right: 19px;
+//   margin-top: -19px;
+//   margin-bottom: 0px;
+// }
+
+.mat-button-toggle:hover {
+  color: rgb(8, 8, 8); /* Change to your desired color */
+}
+
+.mat-button-toggle.mat-button-toggle-checked {
+  color: #ffffff; /* Change to your desired color */
+}
+
+
+// landing Css
+
+.transaction-tab {
+  padding-left: 50px;
+}
+  .transaction-header-font{
+    font-size: 12px !important;
+  }
+  
+  .transaction-tab-active{
+      background: #19A0DB !important;
+      color:#fff;
+  }
+  
+  
+  .btn-secondary:not(:disabled):not(.disabled):active, .btn-secondary:not(:disabled):not(.disabled).active, .show>.btn-secondary.dropdown-toggle{
+    color: rgb(255, 255, 255);
+    background-color: #f5f5f5;
+    border-color: #f5f5f5;
+    margin-top: 9px;
+    border-radius: 35px;
+  }
+  .btn .btn-secondary .active {
+    color: rgb(244, 244, 244);
+    background-color: #19A0DB !important;
+    border-color: #19A0DB !important;
+  }
+  
+  .tab-style{
+    margin-top: 0rem;
+  }
+
+  .example-form-field {
+    width: 200px;
+  }
+  
+  .example-icon {
+    color: rgba(0, 0, 0, 0.54);
+  }
+
+  .margin2 {
+    margin-top: 1rem;
+    color: #19A0DB !important;
+  }
+  
+  .btn-landing {
+      color: #fff;
+      background-color: #19A0DB;
+      border-color: #19A0DB;
+      border-radius: 10px;
+  }
+  .has-search .form-control-feedback{
+    margin-bottom: 1rem;
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+  }
+
+  .form-control-landing {
+    margin-top: 1rem;
+    padding: 0.375rem 2.20rem;
+    border-radius: 10px !important;
+  }
+
+  .custom-dialog-container {
+    border-radius: 40px !important; /* Adjust the value as needed */
+  }
+
+  
+  

@@ -1,0 +1,74 @@
+<ng-container class="container">
+  <div class="row ">
+      <div class="col-3">
+          <div *ngFor="let data of tierList">
+            <mat-card class="matcard">
+              {{data.type}}
+              <div class="pull-right">
+                  <i class="fa fa-ellipsis-v threeDots" aria-hidden="true" [matMenuTriggerFor]="menu"></i>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item>
+                    <span>Copy</span>
+                  </button>
+                  <button mat-menu-item disabled>
+                    <span>Enable</span>
+                  </button>
+                  <button mat-menu-item>
+                    <span>Audit</span>
+                  </button>
+                </mat-menu>
+              </div>
+            </mat-card>
+          </div>
+      </div>
+      <div class="col-9">
+      <div class="border-top" style="margin-bottom: 1rem !important;">
+         
+      </div>
+       
+      <div class="col-md-12 mb-3" style="margin-top: 10px;">
+          <ngx-datatable class="material container striped" [rows]="tierTableList" [columnMode]="'flex'" [headerHeight]="50" [footerHeight]="50" rowHeight="auto">
+              <ngx-datatable-column name="#" [flexGrow]="0.5">
+                  <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
+                      {{(rowIndex + 1)}}
+                  </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Spot" [flexGrow]="2">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                      {{ row?.spot | titlecase }}
+                  </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="1M-3M" [flexGrow]="2">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                      {{row?.oneMonth}}
+                  </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="3M-5M" [flexGrow]="2">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                      {{row?.threeMonth}}
+                  </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="5M-1Y" [flexGrow]="2">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                      {{row?.fiveMonth}}
+                  </ng-template>
+              </ngx-datatable-column>
+              <ngx-datatable-column name="1Y+" [flexGrow]="2">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{row?.year}}
+                </ng-template>
+            </ngx-datatable-column>
+          </ngx-datatable>
+      </div>
+      <div>
+        <mat-card class="mat-card-bottom">
+          <i class="fa fa-plus plusIcon" aria-hidden="true" (click)="addIndividualTiers()"></i>
+        </mat-card>
+      </div>
+
+
+      </div>
+  </div>
+</ng-container>
+
+
