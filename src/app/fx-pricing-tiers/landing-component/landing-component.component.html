@@ -1,6 +1,6 @@
 <ng-container class="container">
   <div class="row">
-    <div class="col-md-7 justify-content-start order-1">
+    <div class="col-md-7 pl-7 order-1">
       <div  class="btn btn-secondary active transaction-tab tab-style">
         <mat-button-toggle-group [(ngModel)]="fontStyleControl" name="fontStyle" aria-label="Font Style">
           <mat-button-toggle value="{{globals.SALES_TIERS_CONSTANT}}"  (click)="clicktab(globals.SALES_TIERS_CONSTANT)" routerLink="/sales-tiers">{{globals.SALES_TIERS_CONSTANT}}</mat-button-toggle>
@@ -17,7 +17,7 @@
         <input  class="form-control form-control-landing" placeholder="Search" type="text">
       </div>
     </div>
-    <div class="col-md-2 margin2 justify-content-end order-3">
+    <div class="col-md-2 pl-6 mt-3 order-3">
       <button class="btn btn-landing" (click)="addIndividualTiers()">+ Add {{globals?.tabName}}</button>
     </div>
   </div>

@@ -2,6 +2,7 @@ import { Component, OnInit, ViewEncapsulation, Input, Output, EventEmitter } fro
 import { MatDialog } from '@angular/material';
 import { Globals } from 'globals.service';
 import { AddEditTradingTiersComponent } from '../pricing-tiers/trading-tiers/add-edit-trading-tiers/add-edit-trading-tiers.component';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -14,7 +15,7 @@ export class LandingComponentComponent implements OnInit {
 
   fontStyleControl:any=this.globals.SALES_TIERS_CONSTANT; 
   @Output() tabName = new EventEmitter<string>();
-  constructor(public globals: Globals,  public dialog: MatDialog) {
+  constructor(public globals: Globals,  public dialog: MatDialog, private router: Router) {
     this.globals.tabName = this.globals.SALES_TIERS_CONSTANT;
   }
 
@@ -39,7 +40,7 @@ export class LandingComponentComponent implements OnInit {
     }else if(this.globals.tabName == this.globals.RATE_SOURCE_CONSTANT){
 
     }else if(this.globals.tabName == this.globals.AMOUNT_TIERS_CONSTANT){
-
+      this.router.navigate(['amount-tiers/configureAmountTier']);
     }
   }
 

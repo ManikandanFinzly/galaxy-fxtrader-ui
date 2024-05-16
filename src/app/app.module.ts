@@ -3,7 +3,7 @@ import { routing } from './app.routing';
 import { AppSettings } from './shared/app.settings';
 import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
-import { FormsModule }   from '@angular/forms';
+import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Globals } from '../globals.service';
@@ -23,7 +23,7 @@ import {FormlyMaterialModule} from '@ngx-formly/material';
 import { FormlyMatToggleModule } from '@ngx-formly/material/toggle';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { AuthConfigModule } from 'keycloak/auth.config.module';
-import { MatBottomSheetModule, MatButtonToggleModule, MatCardModule, MatDialog, MatDialogContent, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatSlideToggleModule } from '@angular/material';
+import { MatBottomSheetModule, MatButtonToggleModule, MatCardModule, MatDialog, MatDialogContent, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatRadioButton, MatRadioGroup, MatRadioModule, MatSelectModule, MatSlideToggleModule } from '@angular/material';
 import { LandingModule } from './fx-pricing-tiers/landing.module';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { AddEditTradingTiersComponent } from './fx-pricing-tiers/pricing-tiers/trading-tiers/add-edit-trading-tiers/add-edit-trading-tiers.component';
@@ -33,6 +33,8 @@ import { RateSourceComponent } from './fx-pricing-tiers/pricing-tiers/rate-sourc
 import { AmountTiersComponent } from './fx-pricing-tiers/pricing-tiers/amount-tiers/amount-tiers-home/amount-tiers.component';
 import { HeaderComponent } from './theme/components/header/header.component';
 import { GlobalControlModuleModule } from './globalModules-components/global-control-module.module';
+import { DeleteComfirmationDialogComponent } from './fx-pricing-tiers/pricing-tiers/amount-tiers/delete-comfirmation-dialog/delete-comfirmation-dialog.component';
+import { ConfigureAmountTierComponent } from './fx-pricing-tiers/pricing-tiers/amount-tiers/configure-amount-tier/configure-amount-tier.component';
 
 
 @NgModule({
@@ -43,6 +45,8 @@ import { GlobalControlModuleModule } from './globalModules-components/global-con
     TradingTiersComponent,
     RateSourceComponent,
     AmountTiersComponent,
+    DeleteComfirmationDialogComponent,
+    ConfigureAmountTierComponent,
     HeaderComponent
   ],
   imports: [
@@ -53,14 +57,17 @@ import { GlobalControlModuleModule } from './globalModules-components/global-con
     NgReduxModule,
     RouterModule,
     FormsModule,
+    ReactiveFormsModule,
     LandingModule,
     MatButtonToggleModule,
     MatIconModule,
     MatInputModule,
     MatCardModule,
     MatMenuModule,
+    MatRadioModule,
     MatBottomSheetModule,
     MatFormFieldModule,
+    MatSelectModule,
     MatDialogModule,
     MatSlideToggleModule,
     BrowserAnimationsModule,
@@ -94,7 +101,7 @@ import { GlobalControlModuleModule } from './globalModules-components/global-con
                 multi: true
             }],
   bootstrap: [ AppComponent ],
-  entryComponents: [AddEditTradingTiersComponent],
+  entryComponents: [AddEditTradingTiersComponent, DeleteComfirmationDialogComponent, ConfigureAmountTierComponent],
 })
 
 export class AppModule { 
