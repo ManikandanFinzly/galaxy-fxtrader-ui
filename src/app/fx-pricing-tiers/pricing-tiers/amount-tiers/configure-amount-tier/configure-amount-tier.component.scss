@@ -1,0 +1,24 @@
+.configAmountTierForm {
+    max-width: 95%;
+    background-color: #fff;
+    margin-left: 2rem;
+    border-radius: 10px !important;
+}
+
+.mat-radio-button {
+    width: 160px;
+}
+
+.plusicon,
+.fa-minus,
+.fa-plus {
+    padding: 5px;
+    text-align: center;
+}
+
+.error-message {
+    text-align: center;
+    color: red;
+    font-size: 15px;
+    font-weight: bold;
+}

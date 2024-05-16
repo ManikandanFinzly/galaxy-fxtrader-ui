@@ -1,0 +1,90 @@
+<h2 mat-form-title class="ml-5">Configure Amount Tier </h2>
+<div class="configAmountTierForm pb-4">
+  <div class="flex-column">
+    <mat-form-field appearance="outline" class="col-lg-3 mt-4 ml-4">
+      <mat-label>Tier Name</mat-label>
+      <input matInput name="tierName" [(ngModel)]="tierName">
+      <mat-error *ngIf="!tierName.trim()">Tier Name is required.</mat-error>
+    </mat-form-field>
+  </div>
+  <h6 class="ml-5"><b>Tier Amount in terms of </b></h6>
+  <div class="ml-3 mt-3">
+    <mat-radio-group [value]="selectedTier">
+      <mat-radio-button class="col-xl-auto" *ngFor="let tierAmount of tierAmounts" [value]="tierAmount"
+        [class.selected-radio]="selectedTier === tierAmount" (change)="selectedTier = tierAmount">
+        {{tierAmount}}
+      </mat-radio-button>
+
+      <!-- <mat-radio-button value="foreignCcy" class="col-xl-auto">Foreign Ccy</mat-radio-button>
+      <mat-radio-button value="quoteCcy" class="col-xl-auto">Quote Ccy</mat-radio-button>
+      <mat-radio-button value="bookCcy" class="col-xl-auto">Book Ccy</mat-radio-button>
+      <mat-radio-button value="baseCcy" class="col-xl-auto">Base Ccy</mat-radio-button> -->
+    </mat-radio-group>
+  </div>
+
+  <form class="row mt-3 ml-3 col-form-label-sm col-md-12"
+    *ngFor="let formGroup of configAmountTierFormList; let i = index" [formGroup]="formGroup">
+    <mat-form-field appearance="outline" class="col-lg-2">
+      <mat-label>From</mat-label>
+      <input matInput formControlName="fromAmount" type="number">
+      <mat-error *ngIf="formGroup.get('fromAmount').hasError('required')">From Amount is required.</mat-error>
+      <mat-error *ngIf="formGroup.get('fromAmount').hasError('invalidFromAmountRange')">From Amount must be greater than last selected To Amount.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="col-lg-2">
+      <mat-label>To</mat-label>
+      <input matInput formControlName="toAmount" type="number">
+      <mat-error *ngIf="formGroup.get('toAmount').hasError('required')">To Amount is required.</mat-error>
+      <mat-error *ngIf="formGroup.get('toAmount').hasError('invalidToAmountRange')">To Amount must be greater than From Amount.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="col-lg-2">
+      <mat-label>Bank Buys</mat-label>
+      <div class="input-with-buttons">
+        <i class="fa fa-minus minus-icon" aria-hidden="true" (click)="decrement(formGroup, 'bankBuys')"></i>
+        <input matInput formControlName="bankBuys" style="text-align: center;">
+        <i class="fa fa-plus plus-icon" aria-hidden="true" (click)="increment(formGroup, 'bankBuys')"></i>
+      </div>
+      <mat-error *ngIf="formGroup.get('bankBuys').hasError('required')">Bank Buys is required.</mat-error>
+      <mat-error *ngIf="formGroup.get('bankBuys').hasError('pattern')">Please enter a valid number.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="col-lg-2">
+      <mat-label>Bank Sells</mat-label>
+      <div class="mat-input-with-buttons">
+        <i class="fa fa-minus minus-icon" aria-hidden="true" (click)="decrement(formGroup, 'bankSells')"></i>
+        <input matInput formControlName="bankSells" style="text-align: center;">
+        <i class="fa fa-plus plus-icon" aria-hidden="true" (click)="increment(formGroup, 'bankSells')"></i>
+      </div>
+      <mat-error *ngIf="formGroup.get('bankSells').hasError('required')">Bank Sells is required.</mat-error>
+      <mat-error *ngIf="formGroup.get('bankSells').hasError('pattern')">Please enter a valid number.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="col-lg-2">
+      <mat-label>Spread Units</mat-label>
+      <mat-select formControlName="spreadUnits">
+        <mat-option *ngFor="let spreadUnit of spreadUnits" [value]="spreadUnit.value">
+          {{ spreadUnit.viewValue }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="formGroup.get('spreadUnits').hasError('required')">Spread Units is required.</mat-error>
+    </mat-form-field>
+
+    <button *ngIf="i !== 0" class="round-button" mat-icon-button (click)="deleteItem(i)">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 50%; height: 50%;">
+        <polyline points="3 7 5 7 21 7" fill="none" stroke="#000" />
+        <path d="M18.5,7l-1,14H6.5L5.5,7M8,7l.5-3.5h7L16,7" fill="none" stroke="#000" />
+      </svg>
+    </button>
+
+  </form>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  <div class="plusicon border rounded ml-5 col-10" (click)="addAmountRangeRow()">
+    <i class="fa fa-plus" aria-hidden="true"></i>
+  </div>
+</div>
+<div class="row col-10 ml-3 pt-4">
+  <button mat-raised-button class="col-3 mat-btn-save" (click)="save()">Save</button>&nbsp; &nbsp;
+  <button mat-raised-button class="col-3 mat-btn-cancel" (click)="cancel()">Cancel</button>&nbsp; &nbsp;
+  <button mat-raised-button class="col-3 mat-btn-reset" (click)="resetForm()">Reset</button>
+</div>

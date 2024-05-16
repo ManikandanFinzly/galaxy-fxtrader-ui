@@ -9,7 +9,9 @@ import { MatInputModule, MatButtonModule, MatDatepickerModule, MatNativeDateModu
   MatPaginatorModule,
   MatBottomSheetModule,
   MatButtonToggleModule,
-  MatSlideToggleModule, } from '@angular/material';
+  MatSlideToggleModule,
+  MatRadioModule,
+  MatSelectModule, } from '@angular/material';
 import { FormlyMaterialModule } from '@ngx-formly/material';
 import { FormlyModule } from '@ngx-formly/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
@@ -41,7 +43,9 @@ import { BreadcrumbComponent } from 'app/theme/components/breadcrumb/breadcrumb.
     MatBottomSheetModule,
     MatButtonToggleModule,
     MatDialogModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatRadioModule,
+    MatSelectModule
   ],
   declarations: [
   ]
