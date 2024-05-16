@@ -19,11 +19,12 @@ import { AuthService } from './auth/auth.service';
 import { TokenInterceptor } from './auth/token-interceptor';
 import { FormlyAutoCompleteModule,FormlyAutoCompleteComponent } from '@npmswapstech/formly-auto-complete';
 import { FormlyModule } from '@ngx-formly/core';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 import {FormlyMaterialModule} from '@ngx-formly/material';
 import { FormlyMatToggleModule } from '@ngx-formly/material/toggle';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { AuthConfigModule } from 'keycloak/auth.config.module';
-import { MatBottomSheetModule, MatButtonToggleModule, MatCardModule, MatDialog, MatDialogContent, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatRadioButton, MatRadioGroup, MatRadioModule, MatSelectModule, MatSlideToggleModule } from '@angular/material';
+import { MatBottomSheetModule, MatButtonToggleModule, MatCardModule, MatCheckboxModule, MatDialog, MatDialogContent, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatRadioButton, MatRadioGroup, MatRadioModule, MatSelectModule, MatSlideToggleModule } from '@angular/material';
 import { LandingModule } from './fx-pricing-tiers/landing.module';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { AddEditTradingTiersComponent } from './fx-pricing-tiers/pricing-tiers/trading-tiers/add-edit-trading-tiers/add-edit-trading-tiers.component';
@@ -35,11 +36,13 @@ import { HeaderComponent } from './theme/components/header/header.component';
 import { GlobalControlModuleModule } from './globalModules-components/global-control-module.module';
 import { DeleteComfirmationDialogComponent } from './fx-pricing-tiers/pricing-tiers/amount-tiers/delete-comfirmation-dialog/delete-comfirmation-dialog.component';
 import { ConfigureAmountTierComponent } from './fx-pricing-tiers/pricing-tiers/amount-tiers/configure-amount-tier/configure-amount-tier.component';
+import { AddEditSalesTierComponent } from './fx-pricing-tiers/pricing-tiers/sales-tiers/add-edit-sales-tier/add-edit-sales-tier.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
+    AddEditSalesTierComponent,
     AddEditTradingTiersComponent,
     SalesTiersComponent,
     TradingTiersComponent,
@@ -71,6 +74,8 @@ import { ConfigureAmountTierComponent } from './fx-pricing-tiers/pricing-tiers/a
     MatDialogModule,
     MatSlideToggleModule,
     BrowserAnimationsModule,
+    MatCheckboxModule,
+    DragDropModule,
     ToastrModule.forRoot({
       positionClass: 'toast-top-center',
       preventDuplicates: true,
@@ -101,7 +106,7 @@ import { ConfigureAmountTierComponent } from './fx-pricing-tiers/pricing-tiers/a
                 multi: true
             }],
   bootstrap: [ AppComponent ],
-  entryComponents: [AddEditTradingTiersComponent, DeleteComfirmationDialogComponent, ConfigureAmountTierComponent],
+  entryComponents: [AddEditSalesTierComponent, AddEditTradingTiersComponent, DeleteComfirmationDialogComponent, ConfigureAmountTierComponent],
 })
 
 export class AppModule { 
