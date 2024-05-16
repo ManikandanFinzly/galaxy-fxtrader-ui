@@ -37,6 +37,8 @@ import { GlobalControlModuleModule } from './globalModules-components/global-con
 import { DeleteComfirmationDialogComponent } from './fx-pricing-tiers/pricing-tiers/amount-tiers/delete-comfirmation-dialog/delete-comfirmation-dialog.component';
 import { ConfigureAmountTierComponent } from './fx-pricing-tiers/pricing-tiers/amount-tiers/configure-amount-tier/configure-amount-tier.component';
 import { AddEditSalesTierComponent } from './fx-pricing-tiers/pricing-tiers/sales-tiers/add-edit-sales-tier/add-edit-sales-tier.component';
+import { SalesTierDeleteConfirmationDialogComponent } from './fx-pricing-tiers/pricing-tiers/sales-tiers/sales-tier-delete-confirmation-dialog/sales-tier-delete-confirmation-dialog.component';
+
 
 
 @NgModule({
@@ -50,7 +52,8 @@ import { AddEditSalesTierComponent } from './fx-pricing-tiers/pricing-tiers/sale
     AmountTiersComponent,
     DeleteComfirmationDialogComponent,
     ConfigureAmountTierComponent,
-    HeaderComponent
+    HeaderComponent,
+    SalesTierDeleteConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -106,7 +109,7 @@ import { AddEditSalesTierComponent } from './fx-pricing-tiers/pricing-tiers/sale
                 multi: true
             }],
   bootstrap: [ AppComponent ],
-  entryComponents: [AddEditSalesTierComponent, AddEditTradingTiersComponent, DeleteComfirmationDialogComponent, ConfigureAmountTierComponent],
+  entryComponents: [AddEditSalesTierComponent, AddEditTradingTiersComponent, DeleteComfirmationDialogComponent, ConfigureAmountTierComponent, SalesTierDeleteConfirmationDialogComponent],
 })
 
 export class AppModule { 
