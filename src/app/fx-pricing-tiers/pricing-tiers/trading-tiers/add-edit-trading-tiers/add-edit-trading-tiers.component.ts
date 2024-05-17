@@ -1,6 +1,10 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SpreadUnit } from 'app/fx-pricing-tiers/SpreadUnit';
 import { ApiService } from 'app/services/api.service';
+import { TradingTiersService } from '../trading-tiers.service';
+import { MatDialogRef } from '@angular/material';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-add-edit-trading-tiers',
@@ -10,9 +14,32 @@ import { ApiService } from 'app/services/api.service';
 })
 export class AddEditTradingTiersComponent implements OnInit {
 
-  constructor(public apiService: ApiService) {  
+  showSecondSection: boolean = false;
+  tradingTierForm: FormGroup;
+  from: string[] = ['00:00', '23:00'];
+  to: string[] = ['00:00', '23:00'];
+  rateSources: string[] = ['Online', 'Offline'];
+  defaultPrices = ['Flat 2%', 'Flat 3%'];
+  tenorOptions: string[] = ['Spot', '1M', '3M', '6M', '1Y'];
+  availableCCYPairs: any = [];
+  selectedCCYPairs: any = [];
+  isFirstPage: boolean;
+
+  constructor(private dialogRef: MatDialogRef<AddEditTradingTiersComponent>, public apiService: ApiService, private fb: FormBuilder, private tradingTier: TradingTiersService) {
+    this.tradingTierForm = this.fb.group({
+      tierName: ['', [Validators.required, Validators.pattern('^[a-zA-Z]+$')]],
+      allDay: [true],
+      fromTime: ['', Validators.required],
+      toTime: ['', Validators.required],
+      rateSource: ['', Validators.required],
+      defaultPrice: ['', Validators.required],
+      noQuoteMessage: ['', Validators.required],
+      availableCCYPairsSearch: [''],
+      selectedCCYPairsSearch: [''],
+      tenorRange: this.fb.array([]),
+    });
     console.log("Add Trading Tiers...")
-    try{
+    try {
       let SpreadUnitsList = [];
       SpreadUnitsList = Object.values(SpreadUnit);
       console.log(SpreadUnitsList);
@@ -31,7 +58,7 @@ export class AddEditTradingTiersComponent implements OnInit {
 
 
       // IndexTenors
-      this.apiService.get(ApiService.STATIC_DATA_PROP_CONFIG+"IndexTenors").subscribe(  
+      this.apiService.get(ApiService.STATIC_DATA_PROP_CONFIG + "IndexTenors").subscribe(
         (response) => {
           console.log("response=====>", JSON.stringify(response));
         },
@@ -41,7 +68,7 @@ export class AddEditTradingTiersComponent implements OnInit {
       );
 
       // MARKETDATA_PROVIDER
-      this.apiService.get(ApiService.STATIC_DATA_PROP_CONFIG+"MARKETDATA_PROVIDER").subscribe(  
+      this.apiService.get(ApiService.STATIC_DATA_PROP_CONFIG + "MARKETDATA_PROVIDER").subscribe(
         (response) => {
           console.log("response=====>", JSON.stringify(response));
         },
@@ -51,7 +78,7 @@ export class AddEditTradingTiersComponent implements OnInit {
       );
 
       // Channel
-      this.apiService.get(ApiService.STATIC_DATA_PROP_CONFIG+"Channel").subscribe(  
+      this.apiService.get(ApiService.STATIC_DATA_PROP_CONFIG + "Channel").subscribe(
         (response) => {
           console.log("response=====>", JSON.stringify(response));
         },
@@ -69,7 +96,7 @@ export class AddEditTradingTiersComponent implements OnInit {
         "searchCriteria": JSON.stringify(variable),
         "entityName": "currencypair"
       }
-      this.apiService.post(ApiService.StaticData_URL+"currency-pairs/search?page=0&size=10",Obj).subscribe(  
+      this.apiService.post(ApiService.StaticData_URL + "currency-pairs/search?page=0&size=10", Obj).subscribe(
         (response) => {
           console.log("response=====>", JSON.stringify(response));
         },
@@ -78,12 +105,98 @@ export class AddEditTradingTiersComponent implements OnInit {
         }
       );
 
-    }catch(e){
+    } catch (e) {
       console.log("Exception in Add Trading Tiers", e)
     }
   }
 
   ngOnInit() {
+    this.getCCYPair();
+    this.addTenor();
+  }
+
+  getCCYPair() {
+    this.tradingTier.getCCYPair().subscribe(data => {
+      if (data && Array.isArray(data)) {
+        const uniqueCCYPairs = data
+          .map(item => item.ccyPair)
+          .filter(ccyPair => !this.selectedCCYPairs.includes(ccyPair));
+        this.availableCCYPairs = uniqueCCYPairs;
+      }
+    });
+  }
+
+  get tenorRanges(): FormArray {
+    return this.tradingTierForm.get('tenorRange') as FormArray;
+  }
+
+
+
+  createTenorGroup(): FormGroup {
+    return this.fb.group({
+      from: ['', Validators.required],
+      to: ['', Validators.required],
+      price: ['']
+    });
+  }
+
+  addTenor(): void {
+    this.tenorRanges.push(this.createTenorGroup());
+  }
+
+  removeTenor(index: number): void {
+    this.tenorRanges.removeAt(index);
+  }
+
+  toggleSection() {
+    this.showSecondSection = !this.showSecondSection;
+  }
+
+  closeModal(): void {
+    this.dialogRef.close();
+  }
+
+  onPreviousButtonClick() {
+    this.setDefualtPrice();
+    this.showSecondSection = !this.showSecondSection;
+    console.log(this.tradingTierForm);
+
+  }
+
+  setDefualtPrice() {
+    const formArray = this.tradingTierForm.get('tenorRange') as FormArray;
+    formArray.controls.forEach(control => {
+      console.log('Price value' + control.get('price').value);
+      if (control.get('price').value == '') {
+        control.get('price').setValue(this.tradingTierForm.get('defaultPrice').value);
+      }
+    });
+    console.log(this.tradingTierForm);
+
+  }
+
+  get filteredAvailableCCYPairs(): string[] {
+    return this.availableCCYPairs.filter(item => item.toLowerCase().includes(this.tradingTierForm.get('availableCCYPairsSearch').value.toLowerCase()));
+  }
+
+  get filteredSelectedCCYPairs(): string[] {
+    return this.selectedCCYPairs.filter(item => item.toLowerCase().includes(this.tradingTierForm.get('selectedCCYPairsSearch').value.toLowerCase()));
+  }
+
+  drop(event: CdkDragDrop<string[]>, filteredArray: string[]) {
+    const previousIndex = event.previousIndex;
+    const currentIndex = event.currentIndex;
+
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, previousIndex, currentIndex);
+    } else {
+      const draggedItem = filteredArray[previousIndex];
+
+      const filteredPreviousIndex = event.previousContainer.data.indexOf(draggedItem);
+      const filteredCurrentIndex = currentIndex;
+
+      transferArrayItem(event.previousContainer.data, event.container.data, filteredPreviousIndex, filteredCurrentIndex);
+    }
   }
 
 }
