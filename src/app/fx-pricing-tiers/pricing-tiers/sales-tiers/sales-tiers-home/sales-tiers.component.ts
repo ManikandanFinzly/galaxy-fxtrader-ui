@@ -10,63 +10,7 @@ import { SalesTierDeleteConfirmationDialogComponent } from '../sales-tier-delete
 })
 export class SalesTiersComponent implements OnInit {
 
-  availableColumns = ['USDINR','EURUSD'];
-  selectedColumns = [];
-  tierList:any=[
-    {
-      type:"Normal",
-      id:1,
-      amount:1200
-    },
-    {
-      type:"Gold",
-      id:2,
-      amount:1500
-    },
-    {
-      type:"Platinum",
-      id:3,
-      amount:1800
-    }
-  ];
-
-  defaultTableList = [{
-    ccypair:"defualt",spot:"spot",oneMonth:"3%",threeMonth:"2%",fiveMonth:"3%", year:"Dealer"
-  },]
-
-  tierTableList=[
-    {
-      id: 1, ccypair:"AUDUSD",spot:"spot",oneMonth:"3%",threeMonth:"2%",fiveMonth:"3%", year:"Dealer"
-    },
-    {
-      id: 1, ccypair:"EURUSD",spot:"1M-3M",oneMonth:"3%",threeMonth:"2%",fiveMonth:"3%", year:"Dealer"
-    },
-    {    
-      id: 1, ccypair:"GBPUSD",spot:"3M-5M",oneMonth:"3%",threeMonth:"2%",fiveMonth:"3%", year:"Dealer"
-    },
-    {
-      id: 1, ccypair:"JPYUSD",spot:"5M-1Y",oneMonth:"3%",threeMonth:"2%",fiveMonth:"3%", year:"Dealer"
-    },
-    {    
-      id: 1, ccypair:"ZARUSD",spot:"1Y+",oneMonth:"3%",threeMonth:"2%",fiveMonth:"3%", year:"Dealer"
-    },
-    {
-      id: 2, ccypair:"AUDUSD",spot:"spot",oneMonth:"3%",threeMonth:"2%",fiveMonth:"3%", year:"Dealer"
-    },
-    {
-      id: 2, ccypair:"EURUSD",spot:"1M-3M",oneMonth:"3%",threeMonth:"2%",fiveMonth:"3%", year:"Dealer"
-    },
-    {    
-      id: 2, ccypair:"GBPUSD",spot:"3M-5M",oneMonth:"3%",threeMonth:"2%",fiveMonth:"3%", year:"Dealer"
-    },
-    {
-      id: 2, ccypair:"JPYUSD",spot:"5M-1Y",oneMonth:"3%",threeMonth:"2%",fiveMonth:"3%", year:"Dealer"
-    },
-    {    
-      id: 2, ccypair:"ZARUSD",spot:"1Y+",oneMonth:"3%",threeMonth:"2%",fiveMonth:"3%", year:"Dealer"
-    }
-  ]
-
+  
 
   constructor(public dialog: MatDialog) {
     console.log("sales tier called...");
@@ -75,17 +19,99 @@ export class SalesTiersComponent implements OnInit {
   ngOnInit() {
   }
 
-  openDeleteConfirmationDialog(){
-    const dialogRef = this.dialog.open(SalesTierDeleteConfirmationDialogComponent, {
-      width: '300px',
-      height:'350px',
-    })
-      dialogRef.afterClosed().subscribe(result => {
-        console.log(`Dialog result: ${result}`);
+  salesTier = [
+    {
+      tierName: 'Platinum',
+      ccyGroup: [
+        {
+          ccypairs: ["default"],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '3M', price: 'Flat 3%' },
+            { from: '5M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%'
+        },
+        {
+          ccypairs: ["AUDUSD", "EURUSD", "GBPUSD"],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '2M', price: 'Flat 3%' },
+            { from: '2M', to: '3M', price: 'Flat 3%' },
+            { from: '3M', to: '4M', price: 'Flat 2%' },
+            { from: '4M', to: '5M', price: 'Flat 3%' },
+            { from: '5M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        },
+        {
+          ccypairs: ["JPYUSD", "ZARUSD", "QARUSD"],
+          tenorRange: [
+            { from: '1M', to: '2M', price: 'Flat 2%' },
+            { from: '2M', to: '5M', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        }
+      ],
+    },
+    {
+      tierName: 'Gold',
+      ccyGroup: [
+        {
+          ccypairs: ["default"],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '3M', price: 'Flat 3%' },
+            { from: '5M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%'
+        },
+        {
+          ccypairs: ["AUDUSD", "EURUSD", "GBPUSD"],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '3M', price: 'Flat 3%' },
+            { from: '5M', to: '7M', price: 'Flat 3%' },
+            { from: '7M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        },
+        {
+          ccypairs: ["JJJUSD", "ZARUSD", "QARUSD"],
+          tenorRange: [
+            { from: '1M', to: '2M', price: 'Flat 2%' },
+            { from: '2M', to: '5M', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        }
+      ],
+    }
+  ];
+
+  selectedTier: any = null;
+  tableData: any[] = [];
+
+  onSelectTier(tierName: string) {
+    this.selectedTier = this.salesTier.find(tier => tier.tierName === tierName);
+    if (this.selectedTier) {
+      this.tableData = this.selectedTier.ccyGroup.map(group => {
+        const columns = Array.from(new Set(group.tenorRange.map(tr => `${tr.from}-${tr.to}`)));
+        const row: any = { ccypairs: group.ccypairs.join(', ') };
+        group.tenorRange.forEach(tr => {
+          row[`${tr.from}-${tr.to}`] = tr.price;
+        });
+        return { columns, row };
       });
+    } else {
+      this.tableData = [];
+    }
   }
-
-
-
-
 }
+
+
+
+
