@@ -19,6 +19,16 @@ export class SalesTiersComponent implements OnInit {
   ngOnInit() {
   }
 
+  openDeleteConfirmationDialog(){
+    const dialogRef = this.dialog.open(SalesTierDeleteConfirmationDialogComponent, {
+      width: '300px',
+      height:'350px',
+    })
+      dialogRef.afterClosed().subscribe(result => {
+        console.log(`Dialog result: ${result}`);
+      });
+  }
+
   salesTier = [
     {
       tierName: 'Platinum',
