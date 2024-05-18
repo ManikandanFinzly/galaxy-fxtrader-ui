@@ -1,26 +1,248 @@
-<h2 mat-dialog-title class="mat-dialog-title">New Default Trading Tier</h2>
 <mat-dialog-content class="mat-typography mat-dialog-content">
-  <div>
-    <div class="row">
-      <div class="form-group col-12 w-100 p-3 h-25">
-        <mat-form-field appearance="outline">
-          <mat-label>Tier Name</mat-label>
-          <input matInput>
-        </mat-form-field>
+  <form [formGroup]="tradingTierForm">
+    <div class="clearfix mt-0">
+      <div class="float-right">
+        <button type="submit" style="border: none;" class="round-button" mat-icon-button (click)="closeModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 70%; height: 70%">
+            <line x1="19" y1="5" x2="5" y2="19" fill="#fff" stroke="#000" stroke-miterlimit="10" />
+            <line x1="5" y1="5" x2="19" y2="19" fill="#fff" stroke="#000" stroke-miterlimit="10" />
+          </svg>
+        </button>
       </div>
     </div>
-    <div class="row">
-      <div class="col-8">
-        <label>Pricing Duration</label>
+    <h2 mat-dialog-title class="mat-dialog-title">Configure Trading Tier</h2>
+    <div *ngIf="!showSecondSection">
+      <div>
+        <div>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label class="required-fields">Tier Name</mat-label>
+            <input matInput formControlName="tierName" />
+            <mat-error *ngIf="tradingTierForm.get('tierName').hasError('required')">
+              Tier Name is required
+            </mat-error>
+          </mat-form-field>
+        </div>
       </div>
-      <div class="col-4">
-        <mat-slide-toggle>All day</mat-slide-toggle>
+
+      <div class="row">
+        <div class="col-8">
+          <label>Pricing Duration</label>
+        </div>
+        <div class="col-4">
+          <mat-slide-toggle>All day</mat-slide-toggle>
+        </div>
+      </div>
+
+
+      <div class="col-12 d-md-flex p-0">
+        <mat-form-field appearance="outline" class="col-6 p-0">
+          <mat-label class="required-fields">From</mat-label>
+          <mat-select formControlName="fromTime">
+            <mat-option *ngFor="let from of from" [value]="from">
+              {{ from }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="tradingTierForm.get('fromTime').hasError('required')">
+            From is required
+          </mat-error>
+        </mat-form-field>
+        &nbsp;
+        <mat-form-field appearance="outline" class="col-6 p-0">
+          <mat-label class="required-fields">To</mat-label>
+          <mat-select formControlName="toTime">
+            <mat-option *ngFor="let to of to" [value]="to">
+              {{ to }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="tradingTierForm.get('toTime').hasError('required')">
+            To is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-12 d-md-flex p-0">
+        <mat-form-field appearance="outline" class="col-6 p-0">
+          <mat-label class="required-fields">Rate Source</mat-label>
+          <mat-select formControlName="rateSource">
+            <mat-option *ngFor="let source of rateSources" [value]="source">
+              {{ source }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="tradingTierForm.get('toTime').hasError('required')">
+            Rate Source is required
+          </mat-error>
+        </mat-form-field>
+        &nbsp;
+        <mat-form-field appearance="outline" class="col-6 p-0">
+          <mat-label class="required-fields">Default Price</mat-label>
+          <mat-select formControlName="defaultPrice">
+            <mat-option *ngFor="let price of defaultPrices" [value]="price">
+              {{ price }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="tradingTierForm.get('defaultPrice').hasError('required')">
+            Default Price is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <div>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label class="required-fields">No Quote Message</mat-label>
+            <input matInput formControlName="noQuoteMessage" />
+            <mat-error *ngIf="tradingTierForm.get('toTime').hasError('required')">
+              No Quote Message is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8">
+          <label>Tenor Range</label>
+        </div>
+      </div>
+
+      <div formArrayName="tenorRange" class="col-12 p-0">
+        <div *ngFor="let tenor of tenorRanges.controls; let i = index">
+          <div [formGroupName]="i">
+            <mat-form-field appearance="outline" class="col-5 p-0">
+              <mat-label>From</mat-label>
+              <mat-select formControlName="from">
+                <mat-option *ngFor="let range of tenorOptions" [value]="range">
+                  {{ range }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            &nbsp;&nbsp;&nbsp;
+            <mat-form-field appearance="outline" class="col-5 p-0">
+              <mat-label>To</mat-label>
+              <mat-select formControlName="to">
+                <mat-option *ngFor="let range of tenorOptions" [value]="range">
+                  {{ range }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <button class="round-button" style="border: none;" mat-icon-button (click)="removeTenor(i)">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 50%; height: 50%;">
+                <polyline points="3 7 5 7 21 7" fill="none" stroke="#000" />
+                <path d="M18.5,7l-1,14H6.5L5.5,7M8,7l.5-3.5h7L16,7" fill="none" stroke="#000" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-2">
+          <button mat-raised-button class="btn btn-radius w-100 p-2"
+            style="color: #19A0DB; background-color: white; border: 1px solid gray;" (click)="addTenor()">+
+            Add</button>
+        </div>
+      </div>
+
+      <div class="py-2">
+        <button class="btn btn-landing col-12" mat-raised-button color="primary" [disabled]="tradingTierForm.invalid"
+          (click)="onPreviousButtonClick()">Next</button>
       </div>
     </div>
 
-  </div>
+
+    <div *ngIf="showSecondSection">
+      <div class="row text-center mt-2">
+        <div class="col-5 w-100 text-center">
+          <mat-label>Available Pairs</mat-label>
+        </div>
+        <div class="col-2 w-100 text-center">
+          <button type="submit" style="border: none;" class="round-button" mat-icon-button>
+            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#000000">
+              <path
+                d="M288-168 96-360l192-192 51 51-105 105h294v72H234l105 105-51 51Zm384-240-51-51 105-105H432v-72h294L621-741l51-51 192 192-192 192Z" />
+            </svg>
+          </button>
+        </div>
+        <div class="col-5 w-100 text-center">
+          <mat-label>Selected Pairs</mat-label>
+        </div>
+      </div>
+
+      <div class="row text-center">
+        <div class="col-6 w-100 example-container text-center">
+          <input type="text" placeholder="Search" formControlName="availableCCYPairsSearch"
+            class="form-control border-radius-none">
+          <div style="height: 140px; overflow-y: auto; overflow-x: hidden;" cdkDropList
+            #availableCCYPairsList="cdkDropList" [cdkDropListData]="availableCCYPairs"
+            [cdkDropListConnectedTo]="[selectedCCYPairsList]" class="example-list"
+            (cdkDropListDropped)="drop($event, filteredSelectedCCYPairs)">
+            <div class="example-box" *ngFor="let item of filteredAvailableCCYPairs; let e = even; let o = odd"
+              [ngClass]="e? 'evenRow' : 'oddRow'" cdkDrag>{{item}}</div>
+          </div>
+        </div>
+
+        <div class="col-6 w-100 example-container text-center">
+          <input type="text" placeholder="Search" formControlName="selectedCCYPairsSearch" class="form-control">
+          <div style="height: 140px; overflow-y: auto; overflow-x: hidden;" cdkDropList
+            #selectedCCYPairsList="cdkDropList" [cdkDropListData]="selectedCCYPairs"
+            [cdkDropListConnectedTo]="[availableCCYPairsList]" class="example-list"
+            (cdkDropListDropped)="drop($event, filteredAvailableCCYPairs)">
+            <div class="example-box" *ngFor="let item of filteredSelectedCCYPairs; let e = even; let o = odd"
+              [ngClass]="e? 'evenRow' : 'oddRow'" cdkDrag>{{item}}</div>
+          </div>
+        </div>
+      </div>
+      <mat-error *ngIf="selectedCCYPairs.length === 0">Please select at least one currency pair.</mat-error>
+
+      <div class="mt-3">
+        <div class="row align-items-center justify-content-center" formArrayName="tenorRange"
+          *ngFor="let tier of tradingTierForm.get('tenorRange').controls; let i = index">
+          <div class="col-2 w-100 p-0">
+            <h6 class="text-center font-family-whyte">
+              <span>{{ tier.get('from').value }} - {{ tier.get('to').value }}</span>
+            </h6>
+          </div>
+          <div class="col-7">
+            <div [formGroupName]="i">
+              <mat-form-field appearance="outline" class="col-4 p-0">
+                <!-- <mat-label>Default Price</mat-label> -->
+                <mat-select placeholder="Default Price" disableOptionCentering formControlName="price">
+                  <mat-option *ngFor="let item of defaultPrices" [value]="item">{{item}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-1">
+            <button mat-icon-button class="col-2 p-0 round-button">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <polyline points="9 5 19 5 19 15" fill="none" stroke="#000" stroke-miterlimit="10" />
+                <line x1="19" y1="5" x2="6" y2="18" fill="none" stroke="#000" stroke-miterlimit="10" />
+              </svg>
+            </button>
+          </div>
+          <div class="col-1">
+            <button mat-icon-button (click)="removeTenor(i)" class="col-2 p-0 round-button">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 50%; height: 50%;">
+                <polyline points="3 7 5 7 21 7" fill="none" stroke="#000" />
+                <path d="M18.5,7l-1,14H6.5L5.5,7M8,7l.5-3.5h7L16,7" fill="none" stroke="#000" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-2" style="display: flex; width: 100%;">
+        <div class="col">
+          <div>
+            <button class="btn btn-radius btn-radius float-right" style="border: 0.5px solid grey; width: 100%;"
+              mat-button (click)="toggleSection()">Back</button>
+          </div>
+        </div>
+
+        <div class="col">
+          <div>
+            <button class="btn btn-landing btn-radius float-right" style="width: 100%;" mat-button
+              (click)="onSaveButtonClick()">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </form>
 </mat-dialog-content>
-<mat-dialog-actions align="end" class="mat-dialog-footer">
-  <button class="btn btn-landing" mat-button mat-dialog-close>Next</button>&nbsp;&nbsp;
-  <button class="btn btn-landing" mat-button [mat-dialog-close]="true" cdkFocusInitial>Close</button>
-</mat-dialog-actions>
