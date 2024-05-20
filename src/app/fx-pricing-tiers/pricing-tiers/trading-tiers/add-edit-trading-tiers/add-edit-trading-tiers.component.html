@@ -1,17 +1,17 @@
+<div class="clearfix mt-0">
+  <div class="float-right">
+    <button type="submit" style="border: none;" class="round-button" mat-icon-button (click)="closeModal()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 70%; height: 70%">
+        <line x1="19" y1="5" x2="5" y2="19" fill="#fff" stroke="#000" stroke-miterlimit="10" />
+        <line x1="5" y1="5" x2="19" y2="19" fill="#fff" stroke="#000" stroke-miterlimit="10" />
+      </svg>
+    </button>
+  </div>
+</div>
+<h2 mat-dialog-title>Configure Trading Tier</h2>
 <mat-dialog-content class="mat-typography mat-dialog-content">
   <form [formGroup]="tradingTierForm">
-    <div class="clearfix mt-0">
-      <div class="float-right">
-        <button type="submit" style="border: none;" class="round-button" mat-icon-button (click)="closeModal()">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 70%; height: 70%">
-            <line x1="19" y1="5" x2="5" y2="19" fill="#fff" stroke="#000" stroke-miterlimit="10" />
-            <line x1="5" y1="5" x2="19" y2="19" fill="#fff" stroke="#000" stroke-miterlimit="10" />
-          </svg>
-        </button>
-      </div>
-    </div>
-    <h2 mat-dialog-title class="mat-dialog-title">Configure Trading Tier</h2>
-    <div *ngIf="!showSecondSection">
+    <div *ngIf="isFirstPage">
       <div>
         <div>
           <mat-form-field appearance="outline" class="w-100">
@@ -97,6 +97,7 @@
           </mat-form-field>
         </div>
       </div>
+
       <div class="row">
         <div class="col-8">
           <label>Tenor Range</label>
@@ -123,7 +124,8 @@
                 </mat-option>
               </mat-select>
             </mat-form-field>
-            <button class="round-button" style="border: none;" mat-icon-button (click)="removeTenor(i)">
+            &nbsp;&nbsp;
+            <button *ngIf="i !== 0" class="round-button" mat-icon-button (click)="removeTenor(i)">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 50%; height: 50%;">
                 <polyline points="3 7 5 7 21 7" fill="none" stroke="#000" />
                 <path d="M18.5,7l-1,14H6.5L5.5,7M8,7l.5-3.5h7L16,7" fill="none" stroke="#000" />
@@ -138,15 +140,9 @@
             Add</button>
         </div>
       </div>
-
-      <div class="py-2">
-        <button class="btn btn-landing col-12" mat-raised-button color="primary" [disabled]="tradingTierForm.invalid"
-          (click)="onPreviousButtonClick()">Next</button>
-      </div>
     </div>
 
-
-    <div *ngIf="showSecondSection">
+    <div *ngIf="!isFirstPage">
       <div class="row text-center mt-2">
         <div class="col-5 w-100 text-center">
           <mat-label>Available Pairs</mat-label>
@@ -190,59 +186,64 @@
       </div>
       <mat-error *ngIf="selectedCCYPairs.length === 0">Please select at least one currency pair.</mat-error>
 
-      <div class="mt-3">
-        <div class="row align-items-center justify-content-center" formArrayName="tenorRange"
-          *ngFor="let tier of tradingTierForm.get('tenorRange').controls; let i = index">
-          <div class="col-2 w-100 p-0">
-            <h6 class="text-center font-family-whyte">
-              <span>{{ tier.get('from').value }} - {{ tier.get('to').value }}</span>
-            </h6>
-          </div>
-          <div class="col-7">
-            <div [formGroupName]="i">
-              <mat-form-field appearance="outline" class="col-4 p-0">
-                <!-- <mat-label>Default Price</mat-label> -->
-                <mat-select placeholder="Default Price" disableOptionCentering formControlName="price">
-                  <mat-option *ngFor="let item of defaultPrices" [value]="item">{{item}}</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-          </div>
-          <div class="col-1">
-            <button mat-icon-button class="col-2 p-0 round-button">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <polyline points="9 5 19 5 19 15" fill="none" stroke="#000" stroke-miterlimit="10" />
-                <line x1="19" y1="5" x2="6" y2="18" fill="none" stroke="#000" stroke-miterlimit="10" />
-              </svg>
-            </button>
-          </div>
-          <div class="col-1">
-            <button mat-icon-button (click)="removeTenor(i)" class="col-2 p-0 round-button">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 50%; height: 50%;">
-                <polyline points="3 7 5 7 21 7" fill="none" stroke="#000" />
-                <path d="M18.5,7l-1,14H6.5L5.5,7M8,7l.5-3.5h7L16,7" fill="none" stroke="#000" />
-              </svg>
-            </button>
+
+      <div class="row mt-2 col-12" formArrayName="tenorRange"
+        *ngFor="let tier of tradingTierForm.get('tenorRange').controls; let i = index">
+        <div class="col-4 mt-4">
+          <h6 class="text-center font-family-whyte">
+            <span>{{ tier.get('from').value }} - {{ tier.get('to').value }}</span>
+          </h6>
+        </div>
+        <div class="col-5">
+          <div [formGroupName]="i">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Default Price</mat-label>
+              <mat-select placeholder="Default Price" disableOptionCentering [value]="defaultPriceValue"
+                formControlName="price">
+                <mat-option *ngFor="let price of defaultPrices" [value]="price">{{price}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
           </div>
         </div>
+
+
+        <button class="round-button p-2" mat-icon-button>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <polyline points="9 5 19 5 19 15" fill="none" stroke="#000" stroke-miterlimit="10" />
+            <line x1="19" y1="5" x2="6" y2="18" fill="none" stroke="#000" stroke-miterlimit="10" />
+          </svg>
+        </button>
+
+        <button *ngIf="i !== 0" class="round-button ml-2" mat-icon-button (click)="removeTenor(i)">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 50%; height: 50%;">
+            <polyline points="3 7 5 7 21 7" fill="none" stroke="#000" />
+            <path d="M18.5,7l-1,14H6.5L5.5,7M8,7l.5-3.5h7L16,7" fill="none" stroke="#000" />
+          </svg>
+        </button>
       </div>
 
-      <div class="row mt-2" style="display: flex; width: 100%;">
-        <div class="col">
-          <div>
-            <button class="btn btn-radius btn-radius float-right" style="border: 0.5px solid grey; width: 100%;"
-              mat-button (click)="toggleSection()">Back</button>
-          </div>
-        </div>
-
-        <div class="col">
-          <div>
-            <button class="btn btn-landing btn-radius float-right" style="width: 100%;" mat-button
-              (click)="onSaveButtonClick()">Save</button>
-          </div>
-        </div>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <div class="mt-2 text-center col-12">
+    <button *ngIf="isFirstPage" mat-raised-button class="btn btn-landing btn-radius w-100 p-2" color="primary"
+      [disabled]="tradingTierForm.invalid" (click)="onNextButtonClick()">Next</button>
+  </div>
+  <div *ngIf="!isFirstPage" class="row mt-2" style="display: flex; width: 100%;">
+    <div class="col">
+      <div>
+        <button class="btn btn-radius btn-radius float-right" style="border: 0.5px solid grey; width: 100%;" mat-button
+          (click)="onPreviousButtonClick()">Back</button>
       </div>
     </div>
 
-  </form>
-</mat-dialog-content>
+    <div class="col">
+      <div>
+        <button class="btn btn-landing btn-radius float-right" style="width: 100%;" mat-button
+          (click)="onSaveButtonClick()">Save</button>
+      </div>
+    </div>
+  </div>
+</mat-dialog-actions>

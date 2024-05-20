@@ -14,7 +14,6 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 })
 export class AddEditTradingTiersComponent implements OnInit {
 
-  showSecondSection: boolean = false;
   tradingTierForm: FormGroup;
   from: string[] = ['00:00', '23:00'];
   to: string[] = ['00:00', '23:00'];
@@ -23,7 +22,8 @@ export class AddEditTradingTiersComponent implements OnInit {
   tenorOptions: string[] = ['Spot', '1M', '3M', '6M', '1Y'];
   availableCCYPairs: any = [];
   selectedCCYPairs: any = [];
-  isFirstPage: boolean;
+  isFirstPage: boolean = true;
+  isDefaultTradingTier: boolean = true;
 
   constructor(private dialogRef: MatDialogRef<AddEditTradingTiersComponent>, public apiService: ApiService, private fb: FormBuilder, private tradingTier: TradingTiersService) {
     this.tradingTierForm = this.fb.group({
@@ -148,17 +148,17 @@ export class AddEditTradingTiersComponent implements OnInit {
     this.tenorRanges.removeAt(index);
   }
 
-  toggleSection() {
-    this.showSecondSection = !this.showSecondSection;
+  onPreviousButtonClick() {
+    this.isFirstPage = !this.isFirstPage;
   }
 
   closeModal(): void {
     this.dialogRef.close();
   }
 
-  onPreviousButtonClick() {
+  onNextButtonClick() {
     this.setDefualtPrice();
-    this.showSecondSection = !this.showSecondSection;
+    this.isFirstPage = !this.isFirstPage;
     console.log(this.tradingTierForm);
 
   }
@@ -167,7 +167,7 @@ export class AddEditTradingTiersComponent implements OnInit {
     const formArray = this.tradingTierForm.get('tenorRange') as FormArray;
     formArray.controls.forEach(control => {
       console.log('Price value' + control.get('price').value);
-      if (control.get('price').value == '') {
+      if (control.get('price').value === '') {
         control.get('price').setValue(this.tradingTierForm.get('defaultPrice').value);
       }
     });

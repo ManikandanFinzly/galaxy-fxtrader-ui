@@ -27,24 +27,25 @@ export class LandingComponentComponent implements OnInit {
     this.globals.tabName = tabValue
   }
 
-  addIndividualTiers(){
+  addIndividualTiers() {
     console.log("addIndividualTiers()==>")
     // this.tabName.emit(this.globals.tabName);
-    if(this.globals.tabName == this.globals.SALES_TIERS_CONSTANT){
-      const dialogRef = this.dialog.open(AddEditSalesTierComponent,{width: '500px',
-      height: '90vh', panelClass: 'custom-dialog-container'});
-      dialogRef.afterClosed().subscribe(result => {
-        console.log(`Dialog result: ${result}`);
-      }); 
-    }else if(this.globals.tabName == this.globals.TRADING_TIERS_CONSTANT){
-      const dialogRef = this.dialog.open(AddEditTradingTiersComponent,{width: '400px',
-      height: '500px', panelClass: 'custom-dialog-container'});
+    if (this.globals.tabName == this.globals.SALES_TIERS_CONSTANT) {
+      const dialogRef = this.dialog.open(AddEditSalesTierComponent, {
+        width: '500px',
+        height: '90vh', panelClass: 'custom-dialog-container'
+      });
       dialogRef.afterClosed().subscribe(result => {
         console.log(`Dialog result: ${result}`);
       });
-    }else if(this.globals.tabName == this.globals.RATE_SOURCE_CONSTANT){
+    } else if (this.globals.tabName == this.globals.TRADING_TIERS_CONSTANT) {
+      const dialogRef = this.dialog.open(AddEditTradingTiersComponent);
+      dialogRef.afterClosed().subscribe(result => {
+        console.log(`Dialog result: ${result}`);
+      });
+    } else if (this.globals.tabName == this.globals.RATE_SOURCE_CONSTANT) {
 
-    }else if(this.globals.tabName == this.globals.AMOUNT_TIERS_CONSTANT){
+    } else if (this.globals.tabName == this.globals.AMOUNT_TIERS_CONSTANT) {
       this.router.navigate(['amount-tiers/configureAmountTier']);
     }
   }
