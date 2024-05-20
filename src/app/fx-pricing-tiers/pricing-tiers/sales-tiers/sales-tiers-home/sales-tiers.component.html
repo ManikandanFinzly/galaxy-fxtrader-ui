@@ -20,48 +20,56 @@
       </mat-card>
     </div>
   </div>
-  <div class="col-9">
-    <div *ngIf="tableData.length > 0">
-      <div *ngFor="let data of tableData" class="mb-3">
-        <ngx-datatable class="material container-right-margin"
-                       [rows]="[data.row]"
-                       [columnMode]="'flex'"
-                       [headerHeight]="50"
-                       
-                       [scrollbarH]="true"
-                       rowHeight="50">
-          <ngx-datatable-column name="Currency Pairs" [flexGrow]="1">
-            <ng-template let-row="row" ngx-datatable-cell-template>
-              {{ row.ccypairs }}
-            </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column *ngFor="let column of data.columns" [name]="column" [flexGrow]="1">
-            <ng-template let-row="row" ngx-datatable-cell-template>
-              {{ row[column] }}
-            </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column [flexGrow]="1">
-            <ng-template ngx-datatable-header-template>
-              <div class="d-flex justify-content-end align-items-center">
-                <button class="mat-menu" mat-icon-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
-                <mat-menu #menu="matMenu">
-                  <button mat-menu-item>
-                    <span>Edit</span>
-                  </button>
-                  <button mat-menu-item (click)="openDeleteConfirmationDialog()">
-                    <span>Delete</span>
-                  </button>
-                </mat-menu>
-              </div>
-            </ng-template>
-          </ngx-datatable-column>
-        </ngx-datatable>
+  <div class="col-9 pt-3" *ngIf="tableData.length > 0">
+    <div class="row" >
+      <div class="col-12">
+        <div *ngFor="let data of tableData" class="mb-3">
+          <ngx-datatable class="material container-right-margin"
+                         [rows]="[data.row]"
+                         [columnMode]="'flex'"
+                         [headerHeight]="50"
+                         
+                         [scrollbarH]="true"
+                         rowHeight="50">
+            <ngx-datatable-column name="Currency Pairs" [flexGrow]="1">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ row.ccypairs }}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column *ngFor="let column of data.columns" [name]="column" [flexGrow]="1">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ row[column] }}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column [flexGrow]="1">
+              <ng-template ngx-datatable-header-template>
+                <div class="d-flex justify-content-end align-items-center">
+                  <button class="mat-menu" mat-icon-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item>
+                      <span>Edit</span>
+                    </button>
+                    <button mat-menu-item (click)="openDeleteConfirmationDialog()">
+                      <span>Delete</span>
+                    </button>
+                  </mat-menu>
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+          </ngx-datatable>
+        </div>
       </div>
     </div>
-    <mat-card class="mat-card-bottom">
-      <div class="center-wrapper">
-        <i class="fa fa-plus plusIcon" aria-hidden="true"></i>
+    <div class="row">
+      <div class="col-12">
+        <mat-card class="mat-card-bottom">
+          <div class="center-wrapper">
+            <i class="fa fa-plus plusIcon" aria-hidden="true"></i>
+          </div>
+        </mat-card>
       </div>
-    </mat-card>
+    </div>
+    
+   
   </div>
 </div>
