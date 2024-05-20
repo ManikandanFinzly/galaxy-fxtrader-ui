@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import {Injectable} from "@angular/core";
+import { FormArray, FormGroup } from "@angular/forms";
 
 /*
     Just a simple service that keeps some global variables.
@@ -27,5 +28,16 @@ export class Globals {
     SELECTED_COST_CENTER=null;
     OTP_URL="/admin/v1/otp";
     ADMIN_URL="/admin/";
+
+    markFormGroupTouched(formGroup: FormGroup) {
+        Object.values(formGroup.controls).forEach(control => {
+            control.markAsTouched();
+            if (control instanceof FormGroup) {
+              this.markFormGroupTouched(control);
+            } else if (control instanceof FormArray) {
+              control.controls.forEach((group: FormGroup) => this.markFormGroupTouched(group));
+            }
+        });
+    }
 }
 
