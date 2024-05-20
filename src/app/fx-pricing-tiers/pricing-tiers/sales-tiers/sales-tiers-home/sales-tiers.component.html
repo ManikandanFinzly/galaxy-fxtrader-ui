@@ -46,7 +46,7 @@
                 <div class="d-flex justify-content-end align-items-center">
                   <button class="mat-menu" mat-icon-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
                   <mat-menu #menu="matMenu">
-                    <button mat-menu-item>
+                    <button mat-menu-item (click)="editTier(data.row.ccypairs)">
                       <span>Edit</span>
                     </button>
                     <button mat-menu-item (click)="openDeleteConfirmationDialog()">
@@ -64,7 +64,7 @@
       <div class="col-12">
         <mat-card class="mat-card-bottom">
           <div class="center-wrapper">
-            <i class="fa fa-plus plusIcon" aria-hidden="true"></i>
+            <i class="fa fa-plus plusIcon" aria-hidden="true" (click)="addCCYGroup()"></i>
           </div>
         </mat-card>
       </div>

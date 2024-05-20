@@ -32,7 +32,10 @@ export class LandingComponentComponent implements OnInit {
     // this.tabName.emit(this.globals.tabName);
     if(this.globals.tabName == this.globals.SALES_TIERS_CONSTANT){
       const dialogRef = this.dialog.open(AddEditSalesTierComponent,{width: '500px',
-      height: '90vh', panelClass: 'custom-dialog-container'});
+      height: '90vh', panelClass: 'custom-dialog-container',
+      data: {
+        isDefaultSalesTier: true,
+      }});
       dialogRef.afterClosed().subscribe(result => {
         console.log(`Dialog result: ${result}`);
       }); 
