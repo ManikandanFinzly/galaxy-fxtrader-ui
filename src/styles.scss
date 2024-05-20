@@ -125,6 +125,24 @@ $fa-font-path : "../node_modules/font-awesome/fonts";
   color: #FF8087;
 }
 
+.btn:hover {
+ color: #fff;
+}
+.btn:focus {
+  box-shadow: none !important;
+}
+
+.round-button {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  color: black;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Mat Radio Button */
 
 .mat-radio-outer-circle,
