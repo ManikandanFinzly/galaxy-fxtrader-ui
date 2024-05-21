@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { DeleteComfirmationDialogComponent } from '../delete-comfirmation-dialog/delete-comfirmation-dialog.component';
-// import { MatDialog } from '@angular/material/dialog';
-// import { DeleteComfirmationDialogComponent } from '../delete-comfirmation-dialog/delete-comfirmation-dialog.component';
+import { AmountTiersService } from '../amount-tiers.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-amount-tiers',
@@ -12,32 +12,40 @@ import { DeleteComfirmationDialogComponent } from '../delete-comfirmation-dialog
 })
 export class AmountTiersComponent implements OnInit {
 
-  rows=[
-    {
-      tierName:"mercy",status:"Active",action:"Nairobi"
-    },
-    {
-      tierName:"Vincent",status:"Active",action:"Kampala"
-    },
-    {    
-      tierName:"Wesley",status:"Active",action:"Cairo"
-    }
-  ]
-  constructor(public dialog: MatDialog) {
-    console.log("amount tier called...");
+  rows
+  constructor(public dialog: MatDialog, public amountTiersService: AmountTiersService, private router: Router) {
+    this.getAmountTier();
   }
 
   ngOnInit() {
   }
 
+  getAmountTier() {
+    this.amountTiersService.getAmountTier().subscribe(data => {
+      if (data) {
+        this.rows = data;
+      }
+    });
+  }
 
-  openDeleteConfirmationDialog(){
+  getStatus(isEnabled: number): string {
+    return isEnabled === 1 ? 'Active' : 'Disabled';
+  }
+
+  openEditScreen(index: number) {
+    if (this.rows[index]) {
+      const queryParams = { param1: JSON.stringify(this.rows[index]) };
+      this.router.navigate(['/amount-tiers/configureAmountTier'], { queryParams });
+    }
+  }
+
+  openDeleteConfirmationDialog(index: number) {
     const dialogRef = this.dialog.open(DeleteComfirmationDialogComponent, {
       width: '300px',
-      height:'350px',
+      height: '350px',
     })
-      dialogRef.afterClosed().subscribe(result => {
-        console.log(`Dialog result: ${result}`);
-      });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
   }
 }

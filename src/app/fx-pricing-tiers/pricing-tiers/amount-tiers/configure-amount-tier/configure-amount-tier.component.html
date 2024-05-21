@@ -2,6 +2,7 @@
 
 <form [formGroup]="configAmountTierForm" (ngSubmit)="onSubmit()">
   <div class="configAmountTierForm pb-4">
+    
     <div class="flex-column">
       <mat-form-field appearance="outline" class="col-lg-3 mt-4 ml-4">
         <mat-label>Tier Name</mat-label>
@@ -13,13 +14,14 @@
     <h6 class="ml-5"><b>Tier Amount in terms of </b></h6>
 
     <div class="ml-3 mt-3">
-      <mat-radio-group [value]="selectedTier">
-        <mat-radio-button class="col-xl-auto" *ngFor="let tierAmount of tierAmounts" [value]="tierAmount"
-          [class.selected-radio]="selectedTier === tierAmount" (change)="selectedTier = tierAmount">
-          {{tierAmount}}
+      <mat-radio-group formControlName="selectedTier">
+        <mat-radio-button class="col-xl-auto" *ngFor="let tierAmount of tierAmounts" [value]="tierAmount.value"
+          [class.selected-radio]="selectedTier === tierAmount.value" (change)="selectedTier = tierAmount.value">
+          {{tierAmount.viewValue}}
         </mat-radio-button>
       </mat-radio-group>
     </div>
+
     <!-- AmountTier Range starts here. -->
     <div formArrayName="amountTier">
       <div class="row mt-3 ml-3 col-form-label-sm col-md-12"
@@ -73,7 +75,7 @@
           <mat-error *ngIf="formGroup.get('spreadUnits').hasError('required')">Spread Units is required.</mat-error>
         </mat-form-field>
 
-        <button *ngIf="i !== 0" class="round-button" mat-icon-button (click)="removeAmountRangeRow(i)">
+        <button *ngIf="i !== 0" class="round-button mt-2" mat-icon-button (click)="removeAmountRangeRow(i)">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 50%; height: 50%;">
             <polyline points="3 7 5 7 21 7" fill="none" stroke="#000" />
             <path d="M18.5,7l-1,14H6.5L5.5,7M8,7l.5-3.5h7L16,7" fill="none" stroke="#000" />
@@ -81,7 +83,6 @@
         </button>
 
       </div>
-
     </div>
 
     <div class="plusicon border rounded ml-5 col-10" (click)="addAmountRangeRow()">
@@ -92,7 +93,7 @@
   <div class="row col-10 ml-3 pt-4">
     <button mat-raised-button class="col-3 mat-btn-save" type="submit">Save</button>&nbsp; &nbsp;
     <button mat-raised-button class="col-3 mat-btn-cancel" (click)="cancel()">Cancel</button>&nbsp; &nbsp;
-    <button mat-raised-button class="col-3 mat-btn-reset" (click)="resetForm()">Reset</button>
+    <p mat-raised-button class="btn col-3 mat-btn-reset" (click)="resetForm()">Reset</p>
   </div>
 
 </form>
