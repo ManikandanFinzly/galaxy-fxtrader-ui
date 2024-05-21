@@ -124,7 +124,8 @@ $fa-font-path : "../node_modules/font-awesome/fonts";
 
 .plusicon,
 .fa-minus,
-.fa-plus {
+.fa-plus,
+.mat-menu-item {
     color: #19A0DB;
 }
 
@@ -272,11 +273,3 @@ $fa-font-path : "../node_modules/font-awesome/fonts";
   color: #19A0DB;
 }
 
-
-.mat-select-panel {
-  position: relative;
-  top: -45px;
-  right: 1rem;
-  left: 1rem;
-  height: 15rem;
-}

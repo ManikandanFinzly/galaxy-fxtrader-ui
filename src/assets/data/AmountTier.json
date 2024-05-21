@@ -1,0 +1,39 @@
+[
+  {
+    "id": "someId",
+    "tierName": "Tier 2",
+    "inTermsOf": 1,
+    "isEnabled": 1,
+    "amountRanges": [
+      {
+        "fromAmount": 1000,
+        "toAmount": 5000,
+        "bankBuys": 1.2,
+        "bankSells": 1.3,
+        "spreadUnits": "pips"
+      }
+    ]
+  },
+  {
+    "id": "someOtherId",
+    "tierName": "Tier 1",
+    "inTermsOf": 1,
+    "isEnabled": 0,
+    "amountRanges": [
+      {
+        "fromAmount": 1000,
+        "toAmount": 5000,
+        "bankBuys": 1.2,
+        "bankSells": 1.3,
+        "spreadUnits": "pips"
+      },
+      {
+        "fromAmount": 5010,
+        "toAmount": 5100,
+        "bankBuys": 5.2,
+        "bankSells": 41.3,
+        "spreadUnits": "percentage"
+      }
+    ]
+  }
+]

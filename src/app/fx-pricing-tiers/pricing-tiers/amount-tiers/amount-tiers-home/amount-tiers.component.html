@@ -1,22 +1,27 @@
 <div class="col-md-12 mb-3" style="margin-top: 10px;">
   <ngx-datatable class="material container" [rows]="rows" [columnMode]="'flex'" [headerHeight]="50" rowHeight="auto">
+
     <ngx-datatable-column name="Tier Name" [flexGrow]="3.5">
-      <ng-template let-row="row" ngx-datatable-cell-template>
-        <b>{{ row?.tierName}}</b>
+      <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
+        <b>{{ row?.tierName }}</b>
       </ng-template>
     </ngx-datatable-column>
+    
     <ngx-datatable-column name="Status" [flexGrow]="2.5">
-      <ng-template let-row="row" ngx-datatable-cell-template>
-        <span class="{{row?.status}}"> {{row?.status}} </span>
+      <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
+        <span [ngClass]="getStatus(row.isEnabled)">
+          {{ getStatus(row.isEnabled) }}
+        </span>
       </ng-template>
     </ngx-datatable-column>
+    
     <ngx-datatable-column name="Action" [flexGrow]="1.5">
-      <ng-template let-row="row" ngx-datatable-cell-template>
-        <div class="pull-center center">
-          <button mat-icon-button class="mat-menu">
-            <i class="fa fa-pencil edit" style="cursor: pointer;" aria-hidden="true"></i>
+      <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
+        <div class="pull-center row">
+          <button mat-icon-button class="mat-menu" (click)="openEditScreen(rowIndex)">
+            <i class="fa fa-pencil edit" aria-hidden="true"></i>
           </button>
-           &nbsp; &nbsp;
+          &nbsp; &nbsp;
           <button mat-icon-button [matMenuTriggerFor]="menu" class="mat-menu">
             <mat-icon>more_vert</mat-icon>
           </button>
@@ -30,28 +35,13 @@
             <button mat-menu-item>
               <span>Audit</span>
             </button>
-            <button mat-menu-item>
-              <span class="delete" (click)="openDeleteConfirmationDialog()">Delete</span>
+            <button mat-menu-item (click)="openDeleteConfirmationDialog(rowIndex)">
+              <span class="delete">Delete</span>
             </button>
           </mat-menu>
         </div>
       </ng-template>
     </ngx-datatable-column>
-
+    
   </ngx-datatable>
 </div>
-
-
-<!-- <ol>
-  <li>
-    <mat-form-field>
-      <input matInput [(ngModel)]="name" placeholder="What's your name?">
-    </mat-form-field>
-  </li>
-  <li>
-    <button mat-raised-button (click)="openDialog()">Pick one</button>
-  </li>
-  <li *ngIf="animal">
-    You chose: <i>{{animal}}</i>
-  </li>
-</ol> -->

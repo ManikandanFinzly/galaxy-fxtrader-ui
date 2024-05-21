@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Globals } from 'globals.service';
+import { AmountTiersService } from '../amount-tiers.service';
 
 @Component({
   selector: 'app-configure-amount-tier',
@@ -18,24 +19,43 @@ export class ConfigureAmountTierComponent implements OnInit {
     { value: 'usDollar', viewValue: 'US Dollar' },
     { value: 'dealerIntervention', viewValue: 'Dealer Intervention (DI)' }
   ];
-  tierAmounts: string[] = ['Foreign Ccy', 'Quote Ccy', 'Book Ccy', 'Base Ccy'];
-  selectedTier: string = 'Book Ccy';
-  tierName: any;
+  tierAmounts: { value: number; viewValue: string; }[] = [
+    { value: 1, viewValue: 'Foreign Ccy' },
+    { value: 2, viewValue: 'Quote Ccy' },
+    { value: 3, viewValue: 'Book Ccy' },
+    { value: 4, viewValue: 'Base Ccy' }
+  ];
+  defaultSelectedTier: number = 3; // Default selected value for tierAmounts
+  selectedTier: number;
 
-  constructor(private formBuilder: FormBuilder, private router: Router, public globalService: Globals) { }
+  constructor(private formBuilder: FormBuilder, private router: Router, public globalService: Globals,
+    public amountTiersService: AmountTiersService, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.initializeForm();
   }
 
   initializeForm() {
-    this.configAmountTierForm = this.formBuilder.group({
-      tierName: ['', Validators.required],
-      amountTier: this.formBuilder.array([this.createAmountTier()])
-    });
-  }
-  get amountTier(): FormArray {
-    return this.configAmountTierForm.get('amountTier') as FormArray;
+    const responseData = this.route.snapshot.queryParams['param1'];
+    if (responseData) {
+      const selectedRowValues = JSON.parse(responseData);
+      this.configAmountTierForm = this.formBuilder.group({
+        tierName: [selectedRowValues ? selectedRowValues.tierName || '' : '', Validators.required],
+        selectedTier: [selectedRowValues ? selectedRowValues.inTermsOf || '' : '', Validators.required],
+        amountTier: this.formBuilder.array([])
+      });
+
+      let amountTierArray = this.configAmountTierForm.get('amountTier') as FormArray;
+      selectedRowValues.amountRanges.forEach(range => {
+        amountTierArray.push(this.createAmountTierWithValues(range));
+      });
+    } else {
+      this.configAmountTierForm = this.formBuilder.group({
+        tierName: ['', Validators.required],
+        selectedTier: [this.defaultSelectedTier],
+        amountTier: this.formBuilder.array([this.createAmountTier()])
+      });
+    }
   }
 
   createAmountTier(): FormGroup {
@@ -48,6 +68,20 @@ export class ConfigureAmountTierComponent implements OnInit {
     });
     newRow.setValidators(this.amountPrediction());
     return newRow;
+  }
+
+  createAmountTierWithValues(range: any): FormGroup {
+    return this.formBuilder.group({
+      fromAmount: [range.fromAmount || '', Validators.required],
+      toAmount: [range.toAmount || '', Validators.required],
+      bankBuys: [range.bankBuys || '', [Validators.required, Validators.pattern('^[0-9]*$')]],
+      bankSells: [range.bankSells || '', [Validators.required, Validators.pattern('^[0-9]*$')]],
+      spreadUnits: [range.spreadUnits || '', Validators.required],
+    });
+  }
+
+  get amountTier(): FormArray {
+    return this.configAmountTierForm.get('amountTier') as FormArray;
   }
 
   addAmountRangeRow() {
@@ -101,29 +135,20 @@ export class ConfigureAmountTierComponent implements OnInit {
   }
 
   resetForm() {
-      // Reset the form to its initial state
-      this.configAmountTierForm.reset();   
-      
-      // Remove all rows except the first one
-      while (this.amountTier.length > 1) {
-        this.amountTier.removeAt(1);
-      }
-      this.configAmountTierForm.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+    this.configAmountTierForm.reset();
+    // Remove all rows except the first one
+    while (this.amountTier.length > 1) {
+      this.amountTier.removeAt(1);
+    }
+    this.configAmountTierForm.patchValue({ selectedTier: this.defaultSelectedTier });
   }
 
   onSubmit() {
-    debugger
-    // const nameControl = this.configAmountTierForm.get('tierName');  
-    // if (!nameControl.value) {
-    //   nameControl.setErrors({ required: true });
-    //   return;
-    // }
     if (this.configAmountTierForm.valid) {
-      console.log(this.configAmountTierForm.value);
       let obj: any = {
-        // tierName: this.tierName,
-        tierAmounts: this.selectedTier,
-        amountTiers: this.amountTier.controls.map((control) => {
+        tierName: this.configAmountTierForm.get('tierName').value,
+        inTermsOf: this.configAmountTierForm.get('selectedTier').value,
+        amountRanges: this.amountTier.controls.map((control) => {
           const group = control as FormGroup;
           return {
             fromAmount: group.get('fromAmount').value,
@@ -135,7 +160,7 @@ export class ConfigureAmountTierComponent implements OnInit {
         }),
       };
       console.log("Print Object :::", obj);
+    }
   }
-}
 
 }
