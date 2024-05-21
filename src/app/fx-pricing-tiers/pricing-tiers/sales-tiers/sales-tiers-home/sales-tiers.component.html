@@ -1,36 +1,37 @@
-<div class="row">
-  <div class="col-3">
-    <div *ngFor="let data of salesTier">
-      <mat-card class="mat-card-tier" (click)="onSelectTier(data.tierName)">
-        {{data.tierName}}
-        <div class="pull-right">
-          <button class="mat-menu" mat-icon-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item>
-              <span>Copy</span>
-            </button>
-            <button mat-menu-item>
-              <span>Enable</span>
-            </button>
-            <button mat-menu-item>
-              <span>Audit</span>
-            </button>
-          </mat-menu>
-        </div>
-      </mat-card>
+<div class="container-fluid custom-container">
+  <div class="row full-height">
+    <div class="col-3 tier-list">
+      <div *ngFor="let data of salesTier">
+        <mat-card class="mat-card-tier" (click)="onSelectTier(data.tierName)">
+          {{data.tierName}}
+          <div class="pull-right">
+            <button class="mat-menu" mat-icon-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item>
+                <span>Copy</span>
+              </button>
+              <button mat-menu-item>
+                <span>Enable</span>
+              </button>
+              <button mat-menu-item>
+                <span>Audit</span>
+              </button>
+            </mat-menu>
+          </div>
+        </mat-card>
+      </div>
     </div>
-  </div>
-  <div class="col-9 pt-3" *ngIf="tableData.length > 0">
-    <div class="row" >
-      <div class="col-12">
-        <div *ngFor="let data of tableData" class="mb-3">
+    <div class="col-9 pt-3 content-area">
+      <div *ngIf="tableData.length > 0" class="flex-grow overflow-auto">
+        <div *ngFor="let data of tableData; let i=index" class="mb-3 transparent-bg">
           <ngx-datatable class="material container-right-margin"
-                         [rows]="[data.row]"
+                         [class.first-ngx-table]="i === 0"
+                         [rows]="data.rows"
                          [columnMode]="'flex'"
                          [headerHeight]="50"
-                         
-                         [scrollbarH]="true"
-                         rowHeight="50">
+                         [rowHeight]="getRowHeight"
+                         [scrollbarV]="true">
+                        
             <ngx-datatable-column name="Currency Pairs" [flexGrow]="1">
               <ng-template let-row="row" ngx-datatable-cell-template>
                 {{ row.ccypairs }}
@@ -46,11 +47,11 @@
                 <div class="d-flex justify-content-end align-items-center">
                   <button class="mat-menu" mat-icon-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
                   <mat-menu #menu="matMenu">
-                    <button mat-menu-item (click)="editTier(data.row.ccypairs)">
+                    <button mat-menu-item (click)="editTier(data.rows[0].ccypairs)">
                       <span>Edit</span>
                     </button>
                     <button mat-menu-item (click)="openDeleteConfirmationDialog()">
-                      <span>Delete</span>
+                      <span class="delete">Delete</span>
                     </button>
                   </mat-menu>
                 </div>
@@ -59,17 +60,11 @@
           </ngx-datatable>
         </div>
       </div>
+      <mat-card class="mat-card-bottom">
+        <div class="center-wrapper">
+          <i class="fa fa-plus plusIcon" aria-hidden="true" (click)="addCCYGroup()"></i>
+        </div>
+      </mat-card>
     </div>
-    <div class="row">
-      <div class="col-12">
-        <mat-card class="mat-card-bottom">
-          <div class="center-wrapper">
-            <i class="fa fa-plus plusIcon" aria-hidden="true" (click)="addCCYGroup()"></i>
-          </div>
-        </mat-card>
-      </div>
-    </div>
-    
-   
   </div>
 </div>

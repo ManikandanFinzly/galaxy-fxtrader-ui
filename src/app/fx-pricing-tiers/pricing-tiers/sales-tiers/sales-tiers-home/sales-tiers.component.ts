@@ -18,6 +18,7 @@ export class SalesTiersComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.onSelectTier(this.salesTier[0].tierName);
   }
 
   openDeleteConfirmationDialog(){
@@ -30,6 +31,11 @@ export class SalesTiersComponent implements OnInit {
       });
   }
 
+  getRowHeight() {
+    const height = 50;
+    return height;
+  }
+  
   salesTier = [
     {
       tierName: 'Platinum',
@@ -44,7 +50,36 @@ export class SalesTiersComponent implements OnInit {
           defaultPrice: 'Flat 1%'
         },
         {
-          ccypairs: ["AUDUSD", "EURUSD", "GBPUSD"],
+          ccypairs: [
+            "AUDAUD", "AUDMYR", "AUDUSD", "CADCAD", "CHFCHF", "EURCAD", "EUREUR", 
+            "EURJPY", "EURUSD", "GBPAUD", "GBPGBP", "GBPUSD", "HKDHKD", "JPYJPY", 
+            "MXNMXN", "NZDUSD", "USDAED", "USDAFN", "USDAMD", "USDANG", "USDARS", 
+            "USDAWG", "USDAZM", "USDAZN", "USDBAM", "USDBBD", "USDBDT", "USDBGN", 
+            "USDBHD", "USDBIF", "USDBMD", "USDBND", "USDBOB", "USDBRL", "USDBSD", 
+            "USDBWP", "USDBZD", "USDCAD", "USDCDF", "USDCHF"
+        ],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '2M', price: 'Flat 3%' },
+            { from: '2M', to: '3M', price: 'Flat 3%' },
+            { from: '3M', to: '4M', price: 'Flat 2%' },
+            { from: '4M', to: '5M', price: 'Flat 3%' },
+            { from: '5M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        },
+        {
+          ccypairs: ["JPYUSD", "ZARUSD", "QARUSD"],
+          tenorRange: [
+            { from: '1M', to: '2M', price: 'Flat 2%' },
+            { from: '2M', to: '5M', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        },
+        {
+          ccypairs: ["AUDUSD", "EURUSD", "GBPUSD", "JJJUSD", "ZARUSD", "QARUSD"],
           tenorRange: [
             { from: 'ON', to: 'TN', price: 'Flat 2%' },
             { from: '1M', to: '2M', price: 'Flat 3%' },
@@ -100,23 +135,322 @@ export class SalesTiersComponent implements OnInit {
           applicableChannel: ['Online', 'Channel1']
         }
       ],
+    },
+    {
+      tierName: 'Silver',
+      ccyGroup: [
+        {
+          ccypairs: ["default"],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '3M', price: 'Flat 3%' },
+            { from: '5M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%'
+        },
+        {
+          ccypairs: [
+            "AUDAUD", "AUDMYR", "AUDUSD", "CADCAD", "CHFCHF", "EURCAD", "EUREUR", 
+            "EURJPY", "EURUSD", "GBPAUD", "GBPGBP", "GBPUSD", "HKDHKD", "JPYJPY", 
+            "MXNMXN", "NZDUSD", "USDAED", "USDAFN", "USDAMD", "USDANG", "USDARS", 
+            "USDAWG", "USDAZM", "USDAZN", "USDBAM", "USDBBD", "USDBDT", "USDBGN", 
+            "USDBHD", "USDBIF", "USDBMD", "USDBND", "USDBOB", "USDBRL", "USDBSD", 
+            "USDBWP", "USDBZD", "USDCAD", "USDCDF", "USDCHF"
+        ],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '2M', price: 'Flat 3%' },
+            { from: '2M', to: '3M', price: 'Flat 3%' },
+            { from: '3M', to: '4M', price: 'Flat 2%' },
+            { from: '4M', to: '5M', price: 'Flat 3%' },
+            { from: '5M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        },
+        {
+          ccypairs: ["JPYUSD", "ZARUSD", "QARUSD"],
+          tenorRange: [
+            { from: '1M', to: '2M', price: 'Flat 2%' },
+            { from: '2M', to: '5M', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        },
+        {
+          ccypairs: ["AUDUSD", "EURUSD", "GBPUSD", "JJJUSD", "ZARUSD", "QARUSD"],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '2M', price: 'Flat 3%' },
+            { from: '2M', to: '3M', price: 'Flat 3%' },
+            { from: '3M', to: '4M', price: 'Flat 2%' },
+            { from: '4M', to: '5M', price: 'Flat 3%' },
+            { from: '5M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        },
+        {
+          ccypairs: ["JPYUSD", "ZARUSD", "QARUSD"],
+          tenorRange: [
+            { from: '1M', to: '2M', price: 'Flat 2%' },
+            { from: '2M', to: '5M', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        }
+      ],
+    },
+    {
+      tierName: 'Bronze',
+      ccyGroup: [
+        {
+          ccypairs: ["default"],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '3M', price: 'Flat 3%' },
+            { from: '5M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%'
+        },
+        {
+          ccypairs: ["AUDUSD", "EURUSD", "GBPUSD"],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '3M', price: 'Flat 3%' },
+            { from: '5M', to: '7M', price: 'Flat 3%' },
+            { from: '7M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        }
+      ],
+    },
+    {
+      tierName: 'Copper',
+      ccyGroup: [
+        {
+          ccypairs: ["default"],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '3M', price: 'Flat 3%' },
+            { from: '5M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%'
+        },
+        {
+          ccypairs: [
+            "AUDAUD", "AUDMYR", "AUDUSD", "CADCAD", "CHFCHF", "EURCAD", "EUREUR", 
+            "EURJPY", "EURUSD", "GBPAUD", "GBPGBP", "GBPUSD", "HKDHKD", "JPYJPY", 
+            "MXNMXN", "NZDUSD", "USDAED", "USDAFN", "USDAMD", "USDANG", "USDARS", 
+            "USDAWG", "USDAZM", "USDAZN", "USDBAM", "USDBBD", "USDBDT", "USDBGN", 
+            "USDBHD", "USDBIF", "USDBMD", "USDBND", "USDBOB", "USDBRL", "USDBSD", 
+            "USDBWP", "USDBZD", "USDCAD", "USDCDF", "USDCHF"
+        ],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '2M', price: 'Flat 3%' },
+            { from: '2M', to: '3M', price: 'Flat 3%' },
+            { from: '3M', to: '4M', price: 'Flat 2%' },
+            { from: '4M', to: '5M', price: 'Flat 3%' },
+            { from: '5M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        },
+        {
+          ccypairs: ["JPYUSD", "ZARUSD", "QARUSD"],
+          tenorRange: [
+            { from: '1M', to: '2M', price: 'Flat 2%' },
+            { from: '2M', to: '5M', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        },
+        {
+          ccypairs: ["AUDUSD", "EURUSD", "GBPUSD", "JJJUSD", "ZARUSD", "QARUSD"],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '2M', price: 'Flat 3%' },
+            { from: '2M', to: '3M', price: 'Flat 3%' },
+            { from: '3M', to: '4M', price: 'Flat 2%' },
+            { from: '4M', to: '5M', price: 'Flat 3%' },
+            { from: '5M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        },
+        {
+          ccypairs: ["JPYUSD", "ZARUSD", "QARUSD"],
+          tenorRange: [
+            { from: '1M', to: '2M', price: 'Flat 2%' },
+            { from: '2M', to: '5M', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        }
+      ],
+    },
+    {
+      tierName: 'Uranium',
+      ccyGroup: [
+        {
+          ccypairs: ["default"],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '3M', price: 'Flat 3%' },
+            { from: '5M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%'
+        },
+        {
+          ccypairs: ["AUDUSD", "EURUSD", "GBPUSD"],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '3M', price: 'Flat 3%' },
+            { from: '5M', to: '7M', price: 'Flat 3%' },
+            { from: '7M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        },
+        {
+          ccypairs: ["JJJUSD", "ZARUSD", "QARUSD"],
+          tenorRange: [
+            { from: '1M', to: '2M', price: 'Flat 2%' },
+            { from: '2M', to: '5M', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        }
+      ],
+    },
+    {
+      tierName: 'Radium',
+      ccyGroup: [
+        {
+          ccypairs: ["default"],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '3M', price: 'Flat 3%' },
+            { from: '5M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%'
+        },
+        {
+          ccypairs: [
+            "AUDAUD", "AUDMYR", "AUDUSD", "CADCAD", "CHFCHF", "EURCAD", "EUREUR", 
+            "EURJPY", "EURUSD", "GBPAUD", "GBPGBP", "GBPUSD", "HKDHKD", "JPYJPY", 
+            "MXNMXN", "NZDUSD", "USDAED", "USDAFN", "USDAMD", "USDANG", "USDARS", 
+            "USDAWG", "USDAZM", "USDAZN", "USDBAM", "USDBBD", "USDBDT", "USDBGN", 
+            "USDBHD", "USDBIF", "USDBMD", "USDBND", "USDBOB", "USDBRL", "USDBSD", 
+            "USDBWP", "USDBZD", "USDCAD", "USDCDF", "USDCHF"
+        ],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '2M', price: 'Flat 3%' },
+            { from: '2M', to: '3M', price: 'Flat 3%' },
+            { from: '3M', to: '4M', price: 'Flat 2%' },
+            { from: '4M', to: '5M', price: 'Flat 3%' },
+            { from: '5M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        },
+        {
+          ccypairs: ["JPYUSD", "ZARUSD", "QARUSD"],
+          tenorRange: [
+            { from: '1M', to: '2M', price: 'Flat 2%' },
+            { from: '2M', to: '5M', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        },
+        {
+          ccypairs: ["AUDUSD", "EURUSD", "GBPUSD", "JJJUSD", "ZARUSD", "QARUSD"],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '2M', price: 'Flat 3%' },
+            { from: '2M', to: '3M', price: 'Flat 3%' },
+            { from: '3M', to: '4M', price: 'Flat 2%' },
+            { from: '4M', to: '5M', price: 'Flat 3%' },
+            { from: '5M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        },
+        {
+          ccypairs: ["JPYUSD", "ZARUSD", "QARUSD"],
+          tenorRange: [
+            { from: '1M', to: '2M', price: 'Flat 2%' },
+            { from: '2M', to: '5M', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        }
+      ],
+    },
+    {
+      tierName: 'Plutonium',
+      ccyGroup: [
+        {
+          ccypairs: ["default"],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '3M', price: 'Flat 3%' },
+            { from: '5M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%'
+        },
+        {
+          ccypairs: ["AUDUSD", "EURUSD", "GBPUSD"],
+          tenorRange: [
+            { from: 'ON', to: 'TN', price: 'Flat 2%' },
+            { from: '1M', to: '3M', price: 'Flat 3%' },
+            { from: '5M', to: '7M', price: 'Flat 3%' },
+            { from: '7M', to: '1Y', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        },
+        {
+          ccypairs: ["JJJUSD", "ZARUSD", "QARUSD"],
+          tenorRange: [
+            { from: '1M', to: '2M', price: 'Flat 2%' },
+            { from: '2M', to: '5M', price: 'Flat 3%' }
+          ],
+          defaultPrice: 'Flat 1%',
+          applicableChannel: ['Online', 'Channel1']
+        }
+      ],
     }
   ];
 
   selectedTier: any = null;
   tableData: any[] = [];
+ 
+  columnData: any;
 
   onSelectTier(tierName: string) {
-    this.selectedTier = this.salesTier.find(tier => tier.tierName === tierName);
-    if (this.selectedTier) {
-      this.tableData = this.selectedTier.ccyGroup.map(group => {
-        const columns = Array.from(new Set(group.tenorRange.map(tr => `${tr.from}-${tr.to}`)));
-        const row: any = { ccypairs: group.ccypairs.join(', ') };
-        group.tenorRange.forEach(tr => {
-          row[`${tr.from}-${tr.to}`] = tr.price;
+  this.selectedTier = this.salesTier.find(tier => tier.tierName === tierName);
+  if (this.selectedTier) {
+    this.tableData = this.selectedTier.ccyGroup.map(group => {
+      const columns = Array.from(new Set(group.tenorRange.map(tr => `${tr.from}-${tr.to}`)));
+      const rows = [];
+      if (group.ccypairs) {
+        group.ccypairs.forEach(currencyPair => {
+          const row: any = { ccypairs: currencyPair };
+          if (group.tenorRange) {
+            group.tenorRange.forEach(tr => {
+              row[`${tr.from}-${tr.to}`] = tr.price;
+            });
+          }
+          rows.push(row);
         });
-        return { columns, row };
-      });
+        console.log("Columns, rows: ", columns, rows);
+        return { columns, rows };
+      }
+    },console.log(this.tableData));
     } else {
       this.tableData = [];
     }
@@ -134,7 +468,7 @@ export class SalesTiersComponent implements OnInit {
       }); 
   }
 
-  editTier(ccyGroupName){    
+  editTier(ccyGroupName){   
     let data:any;
     if(ccyGroupName == 'default'){
       data = {
