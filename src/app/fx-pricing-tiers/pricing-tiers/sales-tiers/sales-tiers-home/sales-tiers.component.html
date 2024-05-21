@@ -2,10 +2,10 @@
   <div class="row full-height">
     <div class="col-3 tier-list">
       <div *ngFor="let data of salesTier">
-        <mat-card class="mat-card-tier" (click)="onSelectTier(data.tierName)">
+        <mat-card class="mat-card-tier" (click)="onSelectTier(data.tierName)" [class.selected-tier]="selectedTier.tierName === data.tierName">
           {{data.tierName}}
           <div class="pull-right">
-            <button class="mat-menu" mat-icon-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
+            <button class="mat-menu" mat-icon-button [matMenuTriggerFor]="menu" [class.selected-tier]="selectedTier.tierName === data.tierName"><mat-icon>more_vert</mat-icon></button>
             <mat-menu #menu="matMenu">
               <button mat-menu-item>
                 <span>Copy</span>
