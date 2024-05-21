@@ -15,11 +15,9 @@ export class AddEditSalesTierComponent implements OnInit {
 
   salesTierId;
   ccyGroupId;
-  salesTierData;
-  ccyGroupData;
   isDefaultSalesTier = false;
+  isTierNameReadOnly = true;
   isFirstPage = true;
-  isTierNameEditable = true;;
 
   tenorsList:any;
   defaultPricesList = ['Flat 1%', 'Flat 2%', 'Flat 3%']
@@ -33,16 +31,17 @@ export class AddEditSalesTierComponent implements OnInit {
    private _formBuilder: FormBuilder, private salesService: SalesTiersService, private apiService: ApiService) {
     if(data && data.isDefaultSalesTier){
       this.isDefaultSalesTier = true;
-      if(data.salesTierId){
+      if(data.salesTierId && data.ccyGroupId){
         this.salesTierId = data.salesTierId;
+        this.ccyGroupId = data.ccyGroupId;
       }
       else{
-        this.isTierNameEditable = false;
+        this.isTierNameReadOnly = false;
       }
     }
     else if(data && !data.isDefaultSalesTier && data.salesTierId){
-      this.salesTierId = data.salesTierId;
       this.isDefaultSalesTier = false;
+      this.salesTierId = data.salesTierId;
       if(data.ccyGroupId){
         this.ccyGroupId = data.ccyGroupId;
       }
@@ -53,55 +52,44 @@ export class AddEditSalesTierComponent implements OnInit {
     this.getApplicableChannels();
     this.getCCYPair();
     this.getTenor();
-    this.initializeForm(this.getSalesTierById());
+    this.initializeForm();
   }
 
-  getSalesTierById(){
-    if(this.isDefaultSalesTier && this.salesTierId){
-      const data = this.salesService.getSalesTierById(this.salesTierId)
-      if(data){
-        this.salesTierData = data;
-        return this.salesTierData;
+  getSalesTierById(tierId:any){
+    this.salesService.getSalesTierById(tierId).subscribe(
+      (data) => {
+        return data;    
       }
-    }
-    else if(!this.isDefaultSalesTier && this.salesTierId){
-      if(this.ccyGroupId){
-        const data = this.salesService.getCCYGroupById(this.ccyGroupId);
-        if(data){
-          this.ccyGroupData = data;
-          return this.ccyGroupData;
-        }
-      }
-      const data = this.salesService.getCCYGroupById(this.salesTierId)
-      if(data){
-        this.ccyGroupData = data;
-        return this.ccyGroupData;
-      }
-    }
-    else{
-      return null;
-    }
+    );
   }
 
   getCCYPair() {
     this.apiService.get(ApiService.StaticData_URL+"currency-pairs").subscribe(  
       (data) => {
-      if (data && Array.isArray(data)) {
-        const uniqueCCYPairs = data
-          .map(item => item.ccyPair)
-          .filter(ccyPair => !this.selectedCCYPairs.includes(ccyPair));
-        this.availableCCYPairs = uniqueCCYPairs;
+        if (data && Array.isArray(data)) {
+          const uniqueCCYPairs = data
+            .map(item => item.ccyPair)
+            .filter(ccyPair => !this.selectedCCYPairs.includes(ccyPair));
+          this.availableCCYPairs = uniqueCCYPairs;
+        }
+      },
+      (error) => {
+        console.error("Error fetching data:", error);
       }
-    });
+    );
   }
 
   getTenor() {
     this.apiService.get(ApiService.STATIC_DATA_PROP_CONFIG+"IndexTenors").subscribe(  
       (data:any) => {
-      if (data) {  
-        this.tenorsList = (data.value).split(',');
+        if (data) {  
+          this.tenorsList = (data.value).split(',');
+        }
+      },
+      (error) => {
+        console.error("Error fetching data:", error);
       }
-    });
+    );
   }
 
   getApplicableChannels(){
@@ -114,44 +102,77 @@ export class AddEditSalesTierComponent implements OnInit {
       }
     );
   }
-  
-  initializeForm(object?: any) {
+
+  initializeForm() {
     const formGroupConfig: any = {
-      tierName: [object ? object.tierName : '', Validators.required],
-      tenorRange: this._formBuilder.array([]),
-      defaultPrice: [object ? object.defaultPrice : '', Validators.required],
+      tierName: ['', Validators.required],
+      tenorRange: this._formBuilder.array([
+          this.initTenorRange()
+      ]),
+      defaultPrice: ['', Validators.required],
       availableCCYPairsSearch: [''],
       selectedCCYPairsSearch: ['']
     };
     
-
     if (!this.isDefaultSalesTier) {
-      formGroupConfig.applicableChannel = [object ? object.applicableChannel : [], Validators.required];
+      formGroupConfig.applicableChannel = [[], Validators.required];
     }
 
     this.configSalesTierForm = this._formBuilder.group(formGroupConfig);
 
-    const tenorRangeArray = this.configSalesTierForm.get('tenorRange') as FormArray;
-    if (object && object.tenorRange && object.tenorRange.length > 0) {
-      object.tenorRange.forEach(tenor => {
-        tenorRangeArray.push(this.initTenorRange(tenor));
-      });
+    if(this.salesTierId){
+      this.salesService.getSalesTierById(this.salesTierId).subscribe(
+        (data) => {
+          if(data){
+            this.configSalesTierForm.patchValue({
+              tierName: data.tierName,
+            });           
+            
+            if(this.ccyGroupId){
+              this.configSalesTierForm.get('defaultPrice').setValue(this.salesService.getDefaultPriceNameById(data.defaultPrice));
+
+              if(!this.isDefaultSalesTier){
+                this.configSalesTierForm.get('applicableChannel').setValue(data.channels);
+              }
+
+              const tenorRangeArray = this.configSalesTierForm.get('tenorRange') as FormArray;
+              while (tenorRangeArray.length) {
+                tenorRangeArray.removeAt(0);
+              }
+
+              if (data.ccyGroups && data.ccyGroups.length > 0) {
+                let ccyGroup = data.ccyGroups.find(ccyGrp => ccyGrp.id === this.ccyGroupId);
+                ccyGroup.tenors.forEach((tenorRange: any) => {
+                  tenorRangeArray.push(this.initTenorRange(tenorRange));
+                });
+
+                if(ccyGroup.pricingCcySet && ccyGroup.pricingCcySet.length > 0){
+                  ccyGroup.pricingCcySet.forEach((ccyPair:any) => {
+                    this.selectedCCYPairs.push(ccyPair.ccyPair);
+                  })
+                }
+              } 
+            }
+          }
+        }
+      );
     }
-    else{
-      tenorRangeArray.push(this.initTenorRange());
-    }    
   }
 
   initTenorRange(tenorRange?: any) {
     return this._formBuilder.group({
-      from: [tenorRange ? tenorRange.from : '', Validators.required],
-      to: [tenorRange ? tenorRange.to : '', Validators.required],
-      price: [tenorRange ? tenorRange.price : '']
+      from: [tenorRange ? tenorRange.rangeFrom : '', Validators.required],
+      to: [tenorRange ? tenorRange.rangeTo : '', Validators.required],
+      price: [(tenorRange && tenorRange.pricingAmount && tenorRange.pricingAmount.tierName) ? tenorRange.pricingAmount.tierName : '']
     });
   }
 
-
   addTier() {
+    for (const controlName in this.configSalesTierForm.controls) {
+      if (this.configSalesTierForm.controls[controlName].invalid) {
+        console.log(`Invalid control: ${controlName}`);
+      }
+    }
     const control = this.configSalesTierForm.get('tenorRange') as FormArray;
     const lastIndex = control.length - 1;
   

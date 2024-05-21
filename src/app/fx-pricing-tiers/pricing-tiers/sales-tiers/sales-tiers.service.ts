@@ -1,30 +1,29 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Globals } from 'globals.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SalesTiersService {
 
-  goldTier = {
-    tierName: 'Gold',
-    tenorRange: [
-      { from: 'TN', to: 'TN', price: 'Flat 2%'},
-      { from: 'ON', to: 'TN', price: 'Flat 3%'}
-    ],
-    defaultPrice: 'Flat 1%',
-    applicableChannel: ['ONLINE', 'FXDESK']
-  };
+  private jsonUrl = 'assets/salesTier.json';
 
   constructor(private http: HttpClient, private global: Globals) { }
 
-  public getSalesTierById(id){
-    return this.goldTier;
+  public getSalesTier(): Observable<any[]>{
+    return this.http.get<any[]>(this.jsonUrl);
   }
 
-  public getCCYGroupById(id){
-    return this.goldTier;
+  public getSalesTierById(id:any): Observable<any|undefined>{
+    return this.getSalesTier().pipe(
+      map(items => items.find(item => item.id === id))
+    );
+  }
+
+  public getDefaultPriceNameById(id){
+    return 'Flat 1%';
   }
 }
