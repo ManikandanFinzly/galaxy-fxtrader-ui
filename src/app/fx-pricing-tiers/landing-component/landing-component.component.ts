@@ -30,11 +30,12 @@ export class LandingComponentComponent implements OnInit {
   addIndividualTiers() {
     console.log("addIndividualTiers()==>")
     // this.tabName.emit(this.globals.tabName);
-    if (this.globals.tabName == this.globals.SALES_TIERS_CONSTANT) {
-      const dialogRef = this.dialog.open(AddEditSalesTierComponent, {
-        width: '500px',
-        height: '90vh', panelClass: 'custom-dialog-container'
-      });
+    if(this.globals.tabName == this.globals.SALES_TIERS_CONSTANT){
+      const dialogRef = this.dialog.open(AddEditSalesTierComponent,{width: '500px',
+      height: '90vh', panelClass: 'custom-dialog-container',
+      data: {
+        isDefaultSalesTier: true,
+      }});
       dialogRef.afterClosed().subscribe(result => {
         console.log(`Dialog result: ${result}`);
       });

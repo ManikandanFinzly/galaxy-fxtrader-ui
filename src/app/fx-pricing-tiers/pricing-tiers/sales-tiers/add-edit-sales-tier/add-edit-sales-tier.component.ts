@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { SalesTiersService } from '../sales-tiers.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { ApiService } from 'app/services/api.service';
 
 @Component({
   selector: 'app-add-edit-sales-tier',
@@ -12,38 +13,79 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 })
 export class AddEditSalesTierComponent implements OnInit {
 
-  goldTier = {
-    tierName: 'Gold',
-    tenorRange: [
-      { from: 'TN', to: 'TN', price: 'Flat 2%'},
-      { from: 'ON', to: 'TN', price: 'Flat 3%'}
-    ],
-    defaultPrice: 'Flat 1%',
-    applicableChannel: ['Online', 'Channel1']
-  };
-
+  salesTierId;
+  ccyGroupId;
+  salesTierData;
+  ccyGroupData;
   isDefaultSalesTier = false;
-  isFirstPage = true
+  isFirstPage = true;
+  isTierNameEditable = true;;
 
   tenorsList:any;
   defaultPricesList = ['Flat 1%', 'Flat 2%', 'Flat 3%']
-  applicableChannelsList = ['Online', 'Channel1', 'Channel2', 'Channel3','Channel4', 'Channel5', 'Channel6','Channel7', 'Channel8', 'Channel9']
+  applicableChannelsList = []
   availableCCYPairs:any = [];
   selectedCCYPairs:any = [];
 
   configSalesTierForm: FormGroup;
 
-
-  constructor(private dialogRef: MatDialogRef<AddEditSalesTierComponent>, private _formBuilder: FormBuilder, private salesService: SalesTiersService) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any,private dialogRef: MatDialogRef<AddEditSalesTierComponent>,
+   private _formBuilder: FormBuilder, private salesService: SalesTiersService, private apiService: ApiService) {
+    if(data && data.isDefaultSalesTier){
+      this.isDefaultSalesTier = true;
+      if(data.salesTierId){
+        this.salesTierId = data.salesTierId;
+      }
+      else{
+        this.isTierNameEditable = false;
+      }
+    }
+    else if(data && !data.isDefaultSalesTier && data.salesTierId){
+      this.salesTierId = data.salesTierId;
+      this.isDefaultSalesTier = false;
+      if(data.ccyGroupId){
+        this.ccyGroupId = data.ccyGroupId;
+      }
+    }
+  }
 
   ngOnInit() {
+    this.getApplicableChannels();
     this.getCCYPair();
     this.getTenor();
-    this.initializeForm(this.goldTier);
+    this.initializeForm(this.getSalesTierById());
+  }
+
+  getSalesTierById(){
+    if(this.isDefaultSalesTier && this.salesTierId){
+      const data = this.salesService.getSalesTierById(this.salesTierId)
+      if(data){
+        this.salesTierData = data;
+        return this.salesTierData;
+      }
+    }
+    else if(!this.isDefaultSalesTier && this.salesTierId){
+      if(this.ccyGroupId){
+        const data = this.salesService.getCCYGroupById(this.ccyGroupId);
+        if(data){
+          this.ccyGroupData = data;
+          return this.ccyGroupData;
+        }
+      }
+      const data = this.salesService.getCCYGroupById(this.salesTierId)
+      if(data){
+        this.ccyGroupData = data;
+        return this.ccyGroupData;
+      }
+    }
+    else{
+      return null;
+    }
   }
 
   getCCYPair() {
-    this.salesService.getCCYPair().subscribe(data => {
+    this.apiService.get(ApiService.StaticData_URL+"currency-pairs").subscribe(  
+      (data) => {
       if (data && Array.isArray(data)) {
         const uniqueCCYPairs = data
           .map(item => item.ccyPair)
@@ -54,22 +96,40 @@ export class AddEditSalesTierComponent implements OnInit {
   }
 
   getTenor() {
-    this.salesService.getTenor().subscribe((data:any) => {
+    this.apiService.get(ApiService.STATIC_DATA_PROP_CONFIG+"IndexTenors").subscribe(  
+      (data:any) => {
       if (data) {  
         this.tenorsList = (data.value).split(',');
       }
     });
   }
+
+  getApplicableChannels(){
+    this.apiService.get(ApiService.STATIC_DATA_PROP_CONFIG+"Channel").subscribe(  
+      (data:any) => {
+        this.applicableChannelsList = (data.value).split(',');
+      },
+      (error) => {
+        console.error("Error fetching data:", error);
+      }
+    );
+  }
   
   initializeForm(object?: any) {
-    this.configSalesTierForm = this._formBuilder.group({
-      tierName: [object ? object.tierName : '', Validators.required], 
+    const formGroupConfig: any = {
+      tierName: [object ? object.tierName : '', Validators.required],
       tenorRange: this._formBuilder.array([]),
       defaultPrice: [object ? object.defaultPrice : '', Validators.required],
-      applicableChannel: [object ? object.applicableChannel : [], Validators.required],
       availableCCYPairsSearch: [''],
-      selectedCCYPairsSearch: [''],
-    });
+      selectedCCYPairsSearch: ['']
+    };
+    
+
+    if (!this.isDefaultSalesTier) {
+      formGroupConfig.applicableChannel = [object ? object.applicableChannel : [], Validators.required];
+    }
+
+    this.configSalesTierForm = this._formBuilder.group(formGroupConfig);
 
     const tenorRangeArray = this.configSalesTierForm.get('tenorRange') as FormArray;
     if (object && object.tenorRange && object.tenorRange.length > 0) {
@@ -101,7 +161,6 @@ export class AddEditSalesTierComponent implements OnInit {
       const to = lastTier.get('to').value;
   
       if (!from || !to) {
-        console.log("Please enter values for 'From' and 'To' before adding a new tier.");
         lastTier.get('from').markAsTouched();
         lastTier.get('to').markAsTouched();
         return;
@@ -129,14 +188,12 @@ export class AddEditSalesTierComponent implements OnInit {
       this.setDefualtPrice();
     } else {
       this.markFormGroupAsTouched(this.configSalesTierForm);
-      console.log('Form is invalid');
     }
   }
 
   setDefualtPrice(){
     const formArray = this.configSalesTierForm.get('tenorRange') as FormArray;
     formArray.controls.forEach(control => {
-      console.log('Price value'+control.get('price').value);
       if (control.get('price').value === '') {
         control.get('price').setValue(this.configSalesTierForm.get('defaultPrice').value);
       }
@@ -144,14 +201,17 @@ export class AddEditSalesTierComponent implements OnInit {
   }
 
   onSaveButtonClick(){
-    if (this.configSalesTierForm.valid && this.selectedCCYPairs.length!=0) {
+    if (this.configSalesTierForm.valid) {
+      if(!this.isDefaultSalesTier && this.selectedCCYPairs.length == 0){
+        this.markFormGroupAsTouched(this.configSalesTierForm);
+        return;
+      }
       const formValues = this.configSalesTierForm.value;
       console.log('Form Values:', formValues);  
       console.log(this.selectedCCYPairs);
       this.closeModal();
     } else {
       this.markFormGroupAsTouched(this.configSalesTierForm);
-      console.log('Form is invalid');
     }
   }
 

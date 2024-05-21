@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { SalesTierDeleteConfirmationDialogComponent } from '../sales-tier-delete-confirmation-dialog/sales-tier-delete-confirmation-dialog.component';
+import { AddEditSalesTierComponent } from '../add-edit-sales-tier/add-edit-sales-tier.component';
 
 @Component({
   selector: 'app-sales-tiers',
@@ -119,6 +120,37 @@ export class SalesTiersComponent implements OnInit {
     } else {
       this.tableData = [];
     }
+  }
+
+  addCCYGroup(){
+    const dialogRef = this.dialog.open(AddEditSalesTierComponent,{width: '500px',
+      height: '90vh', panelClass: 'custom-dialog-container',
+      data: {
+        isDefaultSalesTier: false,
+        salesTierId: '1',
+        ccyGroupId: '1'
+      }});
+      dialogRef.afterClosed().subscribe(result => {
+        console.log(`Dialog result: ${result}`);
+      }); 
+  }
+
+  editTier(ccyGroupName){
+    let data;
+    if(ccyGroupName == 'default'){
+      data.isDefaultSalesTier = true;
+      data.salesTierId = '1'
+    }
+    else{
+      data.salesTierId = '1',
+      data.ccyGroupId = ''
+    }
+    const dialogRef = this.dialog.open(AddEditSalesTierComponent,{width: '500px',
+    height: '90vh', panelClass: 'custom-dialog-container',
+    data : data});
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    }); 
   }
 }
 
