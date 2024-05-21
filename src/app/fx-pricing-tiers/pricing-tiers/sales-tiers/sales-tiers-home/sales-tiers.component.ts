@@ -127,23 +127,29 @@ export class SalesTiersComponent implements OnInit {
       height: '90vh', panelClass: 'custom-dialog-container',
       data: {
         isDefaultSalesTier: false,
-        salesTierId: '1',
-        ccyGroupId: '1'
+        salesTierId: '1a2b3c4d-1234-5678-90ab-cdef12345678',
       }});
       dialogRef.afterClosed().subscribe(result => {
         console.log(`Dialog result: ${result}`);
       }); 
   }
 
-  editTier(ccyGroupName){
-    let data;
+  editTier(ccyGroupName){    
+    let data:any;
     if(ccyGroupName == 'default'){
-      data.isDefaultSalesTier = true;
-      data.salesTierId = '1'
+      data = {
+        isDefaultSalesTier: true,
+        salesTierId: '1a2b3c4d-1234-5678-90ab-cdef12345678',
+        ccyGroupId: 'abcd1234-5678-90ab-cdef-9876543210ac'
+      }
+      
     }
     else{
-      data.salesTierId = '1',
-      data.ccyGroupId = ''
+      data = {
+        isDefaultSalesTier: false,
+        salesTierId: '1a2b3c4d-1234-5678-90ab-cdef12345678',
+        ccyGroupId: 'abcd1234-5678-90ab-cdef-9876543210ab'
+      }
     }
     const dialogRef = this.dialog.open(AddEditSalesTierComponent,{width: '500px',
     height: '90vh', panelClass: 'custom-dialog-container',
