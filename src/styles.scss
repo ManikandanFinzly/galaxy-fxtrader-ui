@@ -76,8 +76,18 @@ $fa-font-path : "../node_modules/font-awesome/fonts";
   padding-left: 2.7rem !important;
 }
 
+.pt-1{
+  padding-top: 1rem !important;
+}
+
 .pt-6{
    padding-top: 6rem !important;
+}
+
+
+
+.ml-6{
+  margin-left: 3.35rem !important;
 }
 
 .mat-btn-delete{
@@ -225,6 +235,12 @@ $fa-font-path : "../node_modules/font-awesome/fonts";
   background-color: #19A0DB;
   border-color: #19A0DB;
   border-radius: 10px;
+}
+
+.btn-popup {
+  @extend .btn-landing;
+  padding: 8px 8px !important;
+  font-size: 14px !important;
 }
 
 .has-search .form-control-feedback {

@@ -1,39 +1,52 @@
- .mat-card{
-    margin-top: 1rem !important;
-    margin-left: 3rem !important;
-    margin-right: 1rem !important;
-    border-radius: 1rem !important;
-  }
+ .mat-card {
+     margin-top: 1rem !important;
+     margin-left: 3rem !important;
+     margin-right: 1rem !important;
+     border-radius: 1rem !important;
+ }
 
-  .mat-card-bottom{
-    margin-right: 2.5rem !important;
-    margin-left: 2.5rem !important;
-    margin-top: 0rem !important;
-    margin-bottom: 0rem !important;
-    text-align: center;
-    /* width: 493px; */
-    height: 1px !important;
-  }
+ .mat-card-bottom {
+     margin-right: 2.5rem !important;
+     margin-left: 2.5rem !important;
+     margin-top: 0rem !important;
+     margin-bottom: 0rem !important;
+     text-align: center;
+     /* width: 493px; */
+     height: 1px !important;
+ }
 
-  .three-dot {
-    width: 10px;
-    height: 10px;
-    background: red;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-  }
+ .three-dot {
+     width: 10px;
+     height: 10px;
+     background: red;
+     -moz-border-radius: 5px;
+     -webkit-border-radius: 5px;
+     border-radius: 5px;
+ }
 
-  .col-md-12 .material{
-    border-radius: 10px !important;
-    max-width: 95% !important;
-  }
+ .col-md-12 .material {
+     border-radius: 10px !important;
+     max-width: 95% !important;
+ }
 
-  .plusIcon {
-    color: #19A0DB;
-    margin-bottom: 17rem !important;
-  }
-  .threeDots{
-    color: #19A0DB;
-  }
+ .plusIcon {
+     color: #19A0DB;
+     margin-bottom: 17rem !important;
+ }
 
+ .threeDots {
+     color: #19A0DB;
+ }
+
+ .plusicon,
+ .fa-minus,
+ .fa-plus {
+     padding: 5px;
+     text-align: center;
+     background-color: #fff;
+     border-radius: 10px;
+ }
+
+ .col-11 {
+     max-width: 90.666667%;
+ }
