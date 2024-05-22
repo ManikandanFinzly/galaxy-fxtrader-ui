@@ -3,15 +3,15 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 @Component({
-  selector: 'app-comfirmation-dialog',
-  templateUrl: './comfirmation-dialog.component.html',
-  styleUrls: ['./comfirmation-dialog.component.scss'],
+  selector: 'app-confirmation-dialog',
+  templateUrl: './confirmation-dialog.component.html',
+  styleUrls: ['./confirmation-dialog.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class ComfirmationDialogComponent implements OnInit {
+export class ConfirmationDialogComponent implements OnInit {
   formGroup: FormGroup;
   data
-  constructor(public dialogRef: MatDialogRef<ComfirmationDialogComponent>, @Inject(MAT_DIALOG_DATA) public dialogData: any, private formBuilder: FormBuilder) {
+  constructor(public dialogRef: MatDialogRef<ConfirmationDialogComponent>, @Inject(MAT_DIALOG_DATA) public dialogData: any, private formBuilder: FormBuilder) {
     this.data = dialogData.reqdata;
     this.formGroup = this.formBuilder.group({
       tierName: ['', Validators.required]

@@ -35,6 +35,7 @@ export class ConfigureAmountTierComponent implements OnInit {
 
   ngOnInit() {
     this.initializeForm();
+    this.selectedTier = this.configAmountTierForm.get('selectedTier').value;//for the lable color change
   }
 
   initializeForm() {
@@ -144,6 +145,7 @@ export class ConfigureAmountTierComponent implements OnInit {
       this.configAmountTierForm.patchValue({ tierName: tierNameValue });
     }
     this.configAmountTierForm.patchValue({ selectedTier: this.defaultSelectedTier });
+    this.selectedTier = this.defaultSelectedTier; //for the lable color change
     // Remove all rows except the first one
     while (this.amountTier.length > 1) {
       this.amountTier.removeAt(1);

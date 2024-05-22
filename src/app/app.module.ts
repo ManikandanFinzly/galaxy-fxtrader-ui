@@ -34,7 +34,7 @@ import { RateSourceComponent } from './fx-pricing-tiers/pricing-tiers/rate-sourc
 import { AmountTiersComponent } from './fx-pricing-tiers/pricing-tiers/amount-tiers/amount-tiers-home/amount-tiers.component';
 import { HeaderComponent } from './theme/components/header/header.component';
 import { GlobalControlModuleModule } from './globalModules-components/global-control-module.module';
-import { ComfirmationDialogComponent } from './globalModules-components/comfirmation-dialog/comfirmation-dialog.component';
+import { ConfirmationDialogComponent } from './globalModules-components/confirmation-dialog/confirmation-dialog.component';
 import { ConfigureAmountTierComponent } from './fx-pricing-tiers/pricing-tiers/amount-tiers/configure-amount-tier/configure-amount-tier.component';
 import { AddEditSalesTierComponent } from './fx-pricing-tiers/pricing-tiers/sales-tiers/add-edit-sales-tier/add-edit-sales-tier.component';
 import { SalesTierDeleteConfirmationDialogComponent } from './fx-pricing-tiers/pricing-tiers/sales-tiers/sales-tier-delete-confirmation-dialog/sales-tier-delete-confirmation-dialog.component';
@@ -50,7 +50,7 @@ import { SalesTierDeleteConfirmationDialogComponent } from './fx-pricing-tiers/p
     TradingTiersComponent,
     RateSourceComponent,
     AmountTiersComponent,
-    ComfirmationDialogComponent,
+    ConfirmationDialogComponent,
     ConfigureAmountTierComponent,
     HeaderComponent,
     SalesTierDeleteConfirmationDialogComponent
@@ -109,7 +109,7 @@ import { SalesTierDeleteConfirmationDialogComponent } from './fx-pricing-tiers/p
                 multi: true
             }],
   bootstrap: [ AppComponent ],
-  entryComponents: [AddEditSalesTierComponent, AddEditTradingTiersComponent, ComfirmationDialogComponent, ConfigureAmountTierComponent, SalesTierDeleteConfirmationDialogComponent],
+  entryComponents: [AddEditSalesTierComponent, AddEditTradingTiersComponent, ConfirmationDialogComponent, ConfigureAmountTierComponent, SalesTierDeleteConfirmationDialogComponent],
 })
 
 export class AppModule { 
