@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { DeleteComfirmationDialogComponent } from '../delete-comfirmation-dialog/delete-comfirmation-dialog.component';
+import { ComfirmationDialogComponent } from '../../../../globalModules-components/comfirmation-dialog/comfirmation-dialog.component';
 import { AmountTiersService } from '../amount-tiers.service';
 import { Router } from '@angular/router';
 
@@ -39,13 +39,47 @@ export class AmountTiersComponent implements OnInit {
     }
   }
 
+  openEnableDisableAmountTier(index: number) {
+    if (this.rows[index]) {
+      const particularRecord = this.rows[index];
+      const action = particularRecord.isEnabled === 0 ? 'enable' : 'disable';
+      this.openConfirmationDialog(action, index);
+    }
+  }
+
+  openCopyConfirmationDialog(index: number) {
+    this.openConfirmationDialog('copy', index);
+  }
+
   openDeleteConfirmationDialog(index: number) {
-    const dialogRef = this.dialog.open(DeleteComfirmationDialogComponent, {
+    this.openConfirmationDialog('delete', index);
+  }
+
+  openConfirmationDialog(action: string, index: number) {
+    const reqdata = [];
+    reqdata['action'] = action;
+    reqdata['displayName'] = "Amount Tier";
+    const dialogRef = this.dialog.open(ComfirmationDialogComponent, {
       width: '300px',
       height: '350px',
-    })
+      data: { reqdata }
+    });
     dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
+      if (result) {
+        if (result.action === 'delete') {
+          
+          console.log("Delete action is called.")
+        } else if (result.action === 'copy' && result.formValue) {
+          
+          console.log('Form Value:', result.formValue);
+        } else if (result.action === 'enable') {
+          this.rows[index].isEnabled = 1;
+        } else if (result.action === 'disable') {
+          this.rows[index].isEnabled = 0;
+        }
+        console.log(`Dialog result: ${result}`);
+      }
     });
   }
+
 }

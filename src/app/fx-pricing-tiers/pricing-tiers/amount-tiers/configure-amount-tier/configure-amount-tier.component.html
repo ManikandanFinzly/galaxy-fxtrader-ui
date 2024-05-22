@@ -7,7 +7,7 @@
       <mat-form-field appearance="outline" class="col-lg-3 mt-4 ml-4">
         <mat-label>Tier Name</mat-label>
         <input matInput formControlName="tierName">
-        <mat-error *ngIf="!tierName">Tier Name is required.</mat-error>
+        <mat-error *ngIf="!configAmountTierForm.get('tierName').value">Tier Name is required.</mat-error>
       </mat-form-field>
     </div>
 
