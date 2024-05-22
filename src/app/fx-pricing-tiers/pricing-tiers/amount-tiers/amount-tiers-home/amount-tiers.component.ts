@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { ComfirmationDialogComponent } from '../../../../globalModules-components/comfirmation-dialog/comfirmation-dialog.component';
+import { ConfirmationDialogComponent } from '../../../../globalModules-components/confirmation-dialog/confirmation-dialog.component';
 import { AmountTiersService } from '../amount-tiers.service';
 import { Router } from '@angular/router';
 
@@ -59,7 +59,7 @@ export class AmountTiersComponent implements OnInit {
     const reqdata = [];
     reqdata['action'] = action;
     reqdata['displayName'] = "Amount Tier";
-    const dialogRef = this.dialog.open(ComfirmationDialogComponent, {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '300px',
       height: '350px',
       data: { reqdata }

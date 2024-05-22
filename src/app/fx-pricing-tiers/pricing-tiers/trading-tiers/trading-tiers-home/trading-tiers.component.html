@@ -1,20 +1,23 @@
 <ng-container class="container">
   <div class="row ">
       <div class="col-3">
-          <div *ngFor="let data of tierList">
+          <div *ngFor="let data of tierList; let rowIndex= index">
             <mat-card class="matcard">
               {{data.type}}
               <div class="pull-right">
                   <i class="fa fa-ellipsis-v threeDots" aria-hidden="true" [matMenuTriggerFor]="menu"></i>
                 <mat-menu #menu="matMenu">
-                  <button mat-menu-item>
+                  <button mat-menu-item (click)="openCopyConfirmationDialog(rowIndex)">
                     <span>Copy</span>
                   </button>
-                  <button mat-menu-item disabled>
+                  <button mat-menu-item disabled (click)="openEnableDisableDialog(rowIndex)">
                     <span>Enable</span>
                   </button>
                   <button mat-menu-item>
                     <span>Audit</span>
+                  </button>
+                  <button mat-menu-item (click)="openDeleteConfirmationDialog(rowIndex)">
+                    <span class="delete">Delete</span>
                   </button>
                 </mat-menu>
               </div>
