@@ -1,4 +1,4 @@
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { ModuleWithProviders } from '@angular/core';
 import { AmountTiersComponent } from './amount-tiers-home/amount-tiers.component';
 import { ConfigureAmountTierComponent } from './configure-amount-tier/configure-amount-tier.component';

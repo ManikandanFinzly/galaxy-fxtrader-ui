@@ -26,11 +26,11 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item>
+            <button mat-menu-item (click)="openCopyConfirmationDialog(rowIndex)">
               <span>Copy</span>
             </button>
-            <button mat-menu-item>
-              <span>Disable</span>
+            <button mat-menu-item (click)="openEnableDisableAmountTier(rowIndex)">
+              <span>{{ row.isEnabled ? 'Disable' : 'Enable' }}</span>
             </button>
             <button mat-menu-item>
               <span>Audit</span>
@@ -42,6 +42,6 @@
         </div>
       </ng-template>
     </ngx-datatable-column>
-    
+
   </ngx-datatable>
 </div>

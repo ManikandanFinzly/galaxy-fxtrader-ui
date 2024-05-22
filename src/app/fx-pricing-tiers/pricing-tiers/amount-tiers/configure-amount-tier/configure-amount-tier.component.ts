@@ -27,6 +27,8 @@ export class ConfigureAmountTierComponent implements OnInit {
   ];
   defaultSelectedTier: number = 3; // Default selected value for tierAmounts
   selectedTier: number;
+  tierName: any;
+  isEditMode: boolean = false;
 
   constructor(private formBuilder: FormBuilder, private router: Router, public globalService: Globals,
     public amountTiersService: AmountTiersService, private route: ActivatedRoute) { }
@@ -49,6 +51,7 @@ export class ConfigureAmountTierComponent implements OnInit {
       selectedRowValues.amountRanges.forEach(range => {
         amountTierArray.push(this.createAmountTierWithValues(range));
       });
+      this.isEditMode = true;
     } else {
       this.configAmountTierForm = this.formBuilder.group({
         tierName: ['', Validators.required],
@@ -135,12 +138,16 @@ export class ConfigureAmountTierComponent implements OnInit {
   }
 
   resetForm() {
+    const tierNameValue = this.configAmountTierForm.get('tierName').value;
     this.configAmountTierForm.reset();
+    if (this.isEditMode) {
+      this.configAmountTierForm.patchValue({ tierName: tierNameValue });
+    }
+    this.configAmountTierForm.patchValue({ selectedTier: this.defaultSelectedTier });
     // Remove all rows except the first one
     while (this.amountTier.length > 1) {
       this.amountTier.removeAt(1);
     }
-    this.configAmountTierForm.patchValue({ selectedTier: this.defaultSelectedTier });
   }
 
   onSubmit() {
