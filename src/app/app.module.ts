@@ -37,7 +37,6 @@ import { GlobalControlModuleModule } from './globalModules-components/global-con
 import { ConfirmationDialogComponent } from './globalModules-components/confirmation-dialog/confirmation-dialog.component';
 import { ConfigureAmountTierComponent } from './fx-pricing-tiers/pricing-tiers/amount-tiers/configure-amount-tier/configure-amount-tier.component';
 import { AddEditSalesTierComponent } from './fx-pricing-tiers/pricing-tiers/sales-tiers/add-edit-sales-tier/add-edit-sales-tier.component';
-import { SalesTierDeleteConfirmationDialogComponent } from './fx-pricing-tiers/pricing-tiers/sales-tiers/sales-tier-delete-confirmation-dialog/sales-tier-delete-confirmation-dialog.component';
 
 
 
@@ -53,7 +52,6 @@ import { SalesTierDeleteConfirmationDialogComponent } from './fx-pricing-tiers/p
     ConfirmationDialogComponent,
     ConfigureAmountTierComponent,
     HeaderComponent,
-    SalesTierDeleteConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -109,7 +107,7 @@ import { SalesTierDeleteConfirmationDialogComponent } from './fx-pricing-tiers/p
                 multi: true
             }],
   bootstrap: [ AppComponent ],
-  entryComponents: [AddEditSalesTierComponent, AddEditTradingTiersComponent, ConfirmationDialogComponent, ConfigureAmountTierComponent, SalesTierDeleteConfirmationDialogComponent],
+  entryComponents: [AddEditSalesTierComponent, AddEditTradingTiersComponent, ConfirmationDialogComponent, ConfigureAmountTierComponent],
 })
 
 export class AppModule { 
