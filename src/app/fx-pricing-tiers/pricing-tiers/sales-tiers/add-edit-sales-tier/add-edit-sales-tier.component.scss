@@ -1,22 +1,14 @@
-.round-button {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%; 
-    color: black;
-    background-color: #ffffff; 
-    border: 1px solid #cccccc;
-    justify-content: center;
-    align-items: center;
-}
-
-.example-list {
+.ccyPair-list {
     border: solid 1px #ccc;
     font-weight: 500;
     scrollbar-width: thin; 
     crollbar-color: #f1f1f1;
+    height: 140px; 
+    overflow-y: auto; 
+    overflow-x: hidden;
 }
 
-.example-box {
+.ccyPair-box {
     padding: 4px 10px;
     border-bottom: solid 1px #ccc;
     color: rgba(0, 0, 0, 0.87);
@@ -46,7 +38,7 @@
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
   
-.example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+.ccyPair-list.cdk-drop-list-dragging .ccyPair-box:not(.cdk-drag-placeholder) {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
@@ -65,3 +57,16 @@
 .form-control{
     border-radius: 0;
 }
+
+.addBtn, .addBtn:hover{
+    color: #19A0DB; 
+    background-color: white; 
+    border: 1px solid #dadada;
+}
+
+// .mat-select-panel {
+//     position: relative !important;
+//     margin-top: -20rem !important;
+//     right: 1rem;
+//     left: 1rem;
+//   }

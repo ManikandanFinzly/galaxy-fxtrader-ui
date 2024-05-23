@@ -1,6 +1,6 @@
 <div class="container-fluid custom-container">
   <div class="row full-height">
-    <div class="col-3 tier-list">
+    <div class="col-3 tier-list pl-0">
       <div *ngFor="let data of salesTier; let rowIndex=index">
         <mat-card class="mat-card-tier" (click)="onSelectTier(data.tierName)" [class.selected-tier]="selectedTier.tierName === data.tierName">
           {{data.tierName}} 

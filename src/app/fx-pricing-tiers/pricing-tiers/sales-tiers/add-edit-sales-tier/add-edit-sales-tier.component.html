@@ -2,14 +2,15 @@
   <div class="d-flex flex-column">
     <div class="clearfix mt-0">
       <div class="float-right">
-        <button type="submit" style="border: none;" class="round-button" mat-icon-button (click)="closeModal()">
+        <button type="submit" class="round-button border-0" mat-icon-button (click)="closeModal()">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 70%; height: 70%">
-            <line x1="19" y1="5" x2="5" y2="19" fill="#fff" stroke="#000" stroke-miterlimit="10"/>
-            <line x1="5" y1="5" x2="19" y2="19" fill="#fff" stroke="#000" stroke-miterlimit="10"/></svg>
+            <line x1="19" y1="5" x2="5" y2="19" fill="#fff" stroke="#000" stroke-miterlimit="10" />
+            <line x1="5" y1="5" x2="19" y2="19" fill="#fff" stroke="#000" stroke-miterlimit="10" />
+          </svg>
         </button>
       </div>
     </div>
-  
+
     <div class="row">
       <div class="col-12" *ngIf="isFirstPage">
         <h4 *ngIf="!isDefaultSalesTier" class="text-center popup-heading font-24 font-weight-500 font-family-whyte">
@@ -29,65 +30,71 @@
   </div>
 </div>
 
-
 <mat-dialog-content class="mat-typography mat-dialog-content">
-<div class="container-fluid">
-  <div class="d-flex flex-column">
-    <form [formGroup]="configSalesTierForm" >
+  <div class="container-fluid">
+    <div class="d-flex flex-column">
+      <form [formGroup]="configSalesTierForm">
 
-      <div *ngIf="isFirstPage">
-        <div class="row mt-2 ">
-          <div class="col-12">
-            <mat-form-field appearance="outline" class="w-100" [ngClass]="isTierNameReadOnly?'readonlyCls':''">
-              <mat-label>Tier Name</mat-label>
-              <input formControlName="tierName" matInput placeholder="Tier Name" autocomplete="off" [readonly]="isTierNameReadOnly">
-              <mat-error *ngIf="configSalesTierForm.get('tierName').invalid && configSalesTierForm.get('tierName').touched">Tier Name is required</mat-error>
-            </mat-form-field>
-          </div>
-        </div>
-
-        <mat-label>Tenor Range</mat-label>
-        <div class="row mt-2" formArrayName="tenorRange" *ngFor="let tier of configSalesTierForm.get('tenorRange').controls; let i = index">
-          <div class="col-5">
-            <div [formGroupName]="i">
-              <mat-form-field appearance="outline" class="w-100">
-                <mat-label>From</mat-label>
-                <mat-select placeholder="From" formControlName="from">
-                  <mat-option *ngFor="let item of tenorsList" [value]="item">{{item}}</mat-option>
-                </mat-select>
-                <mat-error *ngIf="configSalesTierForm.get('tenorRange').at(i).get('from').invalid && configSalesTierForm.get('tenorRange').at(i).get('from').touched">
-                  From is required
-                </mat-error>
+        <div *ngIf="isFirstPage">
+          <div class="row mt-2 ">
+            <div class="col-12">
+              <mat-form-field appearance="outline" class="w-100" [ngClass]="isTierNameReadOnly?'readonlyCls':''">
+                <mat-label>Tier Name</mat-label>
+                <input formControlName="tierName" matInput placeholder="Tier Name" autocomplete="off"
+                  [readonly]="isTierNameReadOnly">
+                <mat-error
+                  *ngIf="configSalesTierForm.get('tierName').invalid && configSalesTierForm.get('tierName').touched">Tier
+                  Name is required</mat-error>
               </mat-form-field>
             </div>
           </div>
 
-          <div class="col-5">
-            <div [formGroupName]="i">
-              <mat-form-field appearance="outline" class="w-100">
-                <mat-label>To</mat-label>
-                <mat-select placeholder="To" formControlName="to">
-                  <mat-option *ngFor="let item of tenorsList" [value]="item">{{item}}</mat-option>
-                </mat-select>
-                <mat-error *ngIf="configSalesTierForm.get('tenorRange').at(i).get('to').invalid && configSalesTierForm.get('tenorRange').at(i).get('to').touched">
-                  To is required
-                </mat-error>
-              </mat-form-field>
+          <mat-label>Tenor Range</mat-label>
+          <div class="row mt-2" formArrayName="tenorRange"
+            *ngFor="let tier of configSalesTierForm.get('tenorRange').controls; let i = index">
+            <div class="col-5">
+              <div [formGroupName]="i">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>From</mat-label>
+                  <mat-select placeholder="From" formControlName="from">
+                    <mat-option *ngFor="let item of tenorsList" [value]="item" [disabled]="disableOption(item, i, 'from')">{{item}}</mat-option>
+                  </mat-select>
+                  <mat-error
+                    *ngIf="configSalesTierForm.get('tenorRange').at(i).get('from').invalid && configSalesTierForm.get('tenorRange').at(i).get('from').touched">
+                    From is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
             </div>
-          </div>
-          
-          <div class="col-2 p-2">
-            <button *ngIf="i !== 0" class="round-button" mat-icon-button (click)="deleteTier(i)">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 50%; height: 50%;">
-                <polyline points="3 7 5 7 21 7" fill="none" stroke="#000"/>
-                <path d="M18.5,7l-1,14H6.5L5.5,7M8,7l.5-3.5h7L16,7" fill="none" stroke="#000"/>
-              </svg>
-            </button>
-          </div>
+
+            <div class="col-5">
+              <div [formGroupName]="i">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>To</mat-label>
+                  <mat-select placeholder="To" formControlName="to">
+                    <mat-option *ngFor="let item of tenorsList" [value]="item" [disabled]="disableOption(item, i, 'to')">{{item}}</mat-option>
+                  </mat-select>
+                  <mat-error
+                    *ngIf="configSalesTierForm.get('tenorRange').at(i).get('to').invalid && configSalesTierForm.get('tenorRange').at(i).get('to').touched">
+                    To is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="col-2 p-2">
+              <button *ngIf="i !== 0" class="round-button" mat-icon-button (click)="deleteTier(i)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 50%; height: 50%;">
+                  <polyline points="3 7 5 7 21 7" fill="none" stroke="#000" />
+                  <path d="M18.5,7l-1,14H6.5L5.5,7M8,7l.5-3.5h7L16,7" fill="none" stroke="#000" />
+                </svg>
+              </button>
+            </div>
           </div>
 
           <div>
-            <div class="btn btn-radius w-100 p-2" style="color: #19A0DB; background-color: white; border: 1px solid #dadada;" (click)="addTier()">+ Add</div>
+            <div class="btn btn-radius w-100 p-2 addBtn" (click)="addTier()">+ Add
+            </div>
           </div>
 
           <div class="row mt-4">
@@ -98,8 +105,9 @@
                   <mat-option *ngFor="let item of defaultPricesList" [value]="item">
                     {{item}}
                   </mat-option>
-                </mat-select>  
-                <mat-error *ngIf="configSalesTierForm.get('defaultPrice').invalid && configSalesTierForm.get('defaultPrice').touched">
+                </mat-select>
+                <mat-error
+                  *ngIf="configSalesTierForm.get('defaultPrice').invalid && configSalesTierForm.get('defaultPrice').touched">
                   Default Price is required
                 </mat-error>
               </mat-form-field>
@@ -113,7 +121,8 @@
                 <mat-select placeholder="Applicable Channel" multiple formControlName="applicableChannel">
                   <mat-option *ngFor="let item of applicableChannelsList" [value]="item">{{item}}</mat-option>
                 </mat-select>
-                <mat-error *ngIf="configSalesTierForm.get('applicableChannel').invalid && configSalesTierForm.get('applicableChannel').touched">
+                <mat-error
+                  *ngIf="configSalesTierForm.get('applicableChannel').invalid && configSalesTierForm.get('applicableChannel').touched">
                   Applicable Channel is required
                 </mat-error>
               </mat-form-field>
@@ -123,13 +132,16 @@
 
         <div *ngIf="!isFirstPage">
           <div class="row text-center mt-2 justify-content-space-between">
-            <div class="col-5 w-100 text-center">              
+            <div class="col-5 w-100 text-center">
               <mat-label>Available Pairs</mat-label>
             </div>
             <div class="col-2 w-100 text-center">
-              <button type="submit" style="border: none;" class="round-button" mat-icon-button>
-                <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#000000">
-                <path d="M288-168 96-360l192-192 51 51-105 105h294v72H234l105 105-51 51Zm384-240-51-51 105-105H432v-72h294L621-741l51-51 192 192-192 192Z"/></svg>
+              <button type="submit" class="round-button border-0" mat-icon-button>
+                <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px"
+                  fill="#000000">
+                  <path
+                    d="M288-168 96-360l192-192 51 51-105 105h294v72H234l105 105-51 51Zm384-240-51-51 105-105H432v-72h294L621-741l51-51 192 192-192 192Z" />
+                </svg>
               </button>
             </div>
             <div class="col-5 w-100 text-center">
@@ -138,45 +150,48 @@
           </div>
 
           <div class="row text-center">
-            <div class="col-6 w-100 example-container text-center">
-              <input type="text" placeholder="Search" formControlName="availableCCYPairsSearch" class="form-control">
-              <div style="height: 140px; overflow-y: auto; overflow-x: hidden;"
-                cdkDropList
-                #availableCCYPairsList="cdkDropList"
-                [cdkDropListData]="availableCCYPairs"
-                [cdkDropListConnectedTo]="[selectedCCYPairsList]"
-                class="example-list"
+            <div class="col-6">
+              <div  class="form-group has-search mb-0">
+                <span class="fa fa-search form-control-feedback"></span>
+                <input type="text" placeholder="Search" formControlName="availableCCYPairsSearch" class="form-control pl-6">
+              </div>
+              <div cdkDropList
+                #availableCCYPairsList="cdkDropList" [cdkDropListData]="availableCCYPairs"
+                [cdkDropListConnectedTo]="[selectedCCYPairsList]" class="ccyPair-list"
                 (cdkDropListDropped)="drop($event, filteredSelectedCCYPairs)">
-                <div class="example-box" *ngFor="let item of filteredAvailableCCYPairs; let e = even; let o = odd" [ngClass]="e? 'evenRow' : 'oddRow'" cdkDrag>{{item}}</div>
+                <div class="ccyPair-box" *ngFor="let item of filteredAvailableCCYPairs; let e = even; let o = odd"
+                  [ngClass]="e? 'evenRow' : 'oddRow'" cdkDrag>{{item}}</div>
               </div>
             </div>
-              
-            <div class="col-6 w-100 example-container text-center">
-              <input type="text" placeholder="Search" formControlName="selectedCCYPairsSearch" class="form-control">
-              <div style="height: 140px; overflow-y: auto; overflow-x: hidden;"
-                cdkDropList
-                #selectedCCYPairsList="cdkDropList"
-                [cdkDropListData]="selectedCCYPairs"
-                [cdkDropListConnectedTo]="[availableCCYPairsList]"
-                class="example-list"
+
+            <div class="col-6">
+              <div  class="form-group has-search mb-0">
+                <span class="fa fa-search form-control-feedback"></span>
+                <input type="text" placeholder="Search" formControlName="availableCCYPairsSearch" class="form-control pl-6">
+              </div>              
+              <div cdkDropList
+                #selectedCCYPairsList="cdkDropList" [cdkDropListData]="selectedCCYPairs"
+                [cdkDropListConnectedTo]="[availableCCYPairsList]" class="ccyPair-list"
                 (cdkDropListDropped)="drop($event, filteredAvailableCCYPairs)">
-                <div class="example-box" *ngFor="let item of filteredSelectedCCYPairs; let e = even; let o = odd" [ngClass]="e? 'evenRow' : 'oddRow'" cdkDrag>{{item}}</div>
+                <div class="ccyPair-box" *ngFor="let item of filteredSelectedCCYPairs; let e = even; let o = odd"
+                  [ngClass]="e? 'evenRow' : 'oddRow'" cdkDrag>{{item}}</div>
               </div>
             </div>
           </div>
           <mat-error *ngIf="selectedCCYPairs.length === 0">Please select at least one currency pair.</mat-error>
-      
+
           <div class="mt-3">
-            <div class="row align-items-center justify-content-center" formArrayName="tenorRange" *ngFor="let tier of configSalesTierForm.get('tenorRange').controls; let i = index">
+            <div class="row align-items-center justify-content-center" formArrayName="tenorRange"
+              *ngFor="let tier of configSalesTierForm.get('tenorRange').controls; let i = index">
               <div class="col-2 w-100 p-0 pb-3">
-                <h6 class="text-center font-family-whyte font-weight-bold" >
+                <h6 class="text-center font-family-whyte font-weight-bold">
                   <span>{{ tier.get('from').value }} - {{ tier.get('to').value }}</span>
                 </h6>
               </div>
-            
+
               <div class="col-6">
                 <div [formGroupName]="i">
-                  <mat-form-field  appearance="outline" class="w-100">
+                  <mat-form-field appearance="outline" class="w-100">
                     <mat-label>Default Price</mat-label>
                     <mat-select placeholder="Default Price" formControlName="price">
                       <mat-option *ngFor="let item of defaultPricesList" [value]="item">{{item}}</mat-option>
@@ -184,21 +199,21 @@
                   </mat-form-field>
                 </div>
               </div>
-            
+
               <div class="col-2 pb-4">
                 <button class="round-button p-2" mat-icon-button>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <polyline points="9 5 19 5 19 15" fill="none" stroke="#000" stroke-miterlimit="10"/>
-                    <line x1="19" y1="5" x2="6" y2="18" fill="none" stroke="#000" stroke-miterlimit="10"/>
+                    <polyline points="9 5 19 5 19 15" fill="none" stroke="#000" stroke-miterlimit="10" />
+                    <line x1="19" y1="5" x2="6" y2="18" fill="none" stroke="#000" stroke-miterlimit="10" />
                   </svg>
                 </button>
               </div>
-            
+
               <div class="col-2 pb-4">
                 <button *ngIf="i !== 0" class="round-button p-2" mat-icon-button (click)="deleteTier(i)">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <polyline points="3 7 5 7 21 7" fill="none" stroke="#000"/>
-                    <path d="M18.5,7l-1,14H6.5L5.5,7M8,7l.5-3.5h7L16,7" fill="none" stroke="#000"/>
+                    <polyline points="3 7 5 7 21 7" fill="none" stroke="#000" />
+                    <path d="M18.5,7l-1,14H6.5L5.5,7M8,7l.5-3.5h7L16,7" fill="none" stroke="#000" />
                   </svg>
                 </button>
               </div>
@@ -206,29 +221,32 @@
           </div>
         </div>
       </form>
+    </div>
   </div>
-</div>
 </mat-dialog-content>
 
 
 <mat-dialog-actions>
   <div class=" col-12 mt-2 text-center">
-    <button *ngIf="!isDefaultSalesTier && isFirstPage" style="width: 70%;" class="mat-btn-save" (click)="onNextButtonClick()" >Next</button>
-    <button *ngIf="isDefaultSalesTier && isFirstPage" class="mat-btn-save" style="width: 70%;" (click)="onSaveButtonClick()" >Save</button>
+    <button *ngIf="!isDefaultSalesTier && isFirstPage" class="mat-btn-save" style="width: 70%;"
+      (click)="onNextButtonClick()">Next</button>
+    <button *ngIf="isDefaultSalesTier && isFirstPage" class="mat-btn-save" style="width: 70%;"
+      (click)="onSaveButtonClick()">Save</button>
   </div>
 
-  <div class="row mt-2" style="display: flex; width: 100%;">
+  <div class="row mt-2 w-100">
     <div class="col">
       <div>
-        <button *ngIf="!isDefaultSalesTier && !isFirstPage" class="mat-btn-cancel" style="border: 0.5px solid grey; width: 100%;" mat-button (click)="onPreviousButtonClick()">Back</button>
+        <button *ngIf="!isDefaultSalesTier && !isFirstPage" class="mat-btn-cancel w-100"
+          mat-button (click)="onPreviousButtonClick()">Back</button>
       </div>
     </div>
 
     <div class="col">
       <div>
-        <button *ngIf="!isDefaultSalesTier && !isFirstPage" class="mat-btn-save" style="width: 100%;" mat-raised-button (click)="onSaveButtonClick()">Save</button>
+        <button *ngIf="!isDefaultSalesTier && !isFirstPage" class="mat-btn-save w-100" mat-raised-button
+          (click)="onSaveButtonClick()">Save</button>
       </div>
     </div>
   </div>
 </mat-dialog-actions>
- 
