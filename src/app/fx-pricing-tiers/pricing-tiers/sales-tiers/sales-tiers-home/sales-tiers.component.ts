@@ -468,6 +468,9 @@ export class SalesTiersComponent implements OnInit {
         salesTierId: '1a2b3c4d-1234-5678-90ab-cdef12345678',
       }});
       dialogRef.afterClosed().subscribe(result => {
+        if(result){
+          this.toastr.success("Saved Successfully")
+        }
         console.log(`Dialog result: ${result}`);
       }); 
   }
@@ -493,6 +496,9 @@ export class SalesTiersComponent implements OnInit {
     height: '90vh', panelClass: 'custom-dialog-container',
     data : data});
     dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.toastr.success("Saved Successfully")
+      }
       console.log(`Dialog result: ${result}`);
     }); 
   }

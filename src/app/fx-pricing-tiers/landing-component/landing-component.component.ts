@@ -4,6 +4,7 @@ import { Globals } from 'globals.service';
 import { AddEditTradingTiersComponent } from '../pricing-tiers/trading-tiers/add-edit-trading-tiers/add-edit-trading-tiers.component';
 import { Router } from '@angular/router';
 import { AddEditSalesTierComponent } from '../pricing-tiers/sales-tiers/add-edit-sales-tier/add-edit-sales-tier.component';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -16,7 +17,7 @@ export class LandingComponentComponent implements OnInit {
 
   fontStyleControl:any=this.globals.SALES_TIERS_CONSTANT; 
   @Output() tabName = new EventEmitter<string>();
-  constructor(public globals: Globals,  public dialog: MatDialog, private router: Router) {
+  constructor(public globals: Globals,  public dialog: MatDialog, private router: Router, private toastr: ToastrService) {
     this.globals.tabName = this.globals.SALES_TIERS_CONSTANT;
   }
 
@@ -37,6 +38,9 @@ export class LandingComponentComponent implements OnInit {
         isDefaultSalesTier: true,
       }});
       dialogRef.afterClosed().subscribe(result => {
+        if(result){
+          this.toastr.success("Saved Successfully")
+        }
         console.log(`Dialog result: ${result}`);
       });
     } else if (this.globals.tabName == this.globals.TRADING_TIERS_CONSTANT) {

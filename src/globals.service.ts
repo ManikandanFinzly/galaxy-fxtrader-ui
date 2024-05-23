@@ -39,5 +39,115 @@ export class Globals {
             }
         });
     }
-}
 
+    tenorRanges: Map<string, string> = new Map([
+      ['ON', '1'],
+      ['TN', '2'],
+      ['SPOT', '3'],
+      ['1D', '4'],
+      ['2D', '5'],
+      ['3D', '6'],
+      ['1W', '7'],
+      ['2W', '8'],
+      ['3W', '9'],
+      ['1M', '10'],
+      ['2M', '11'],
+      ['3M', '12'],
+      ['6M', '13'],
+      ['9M', '14'],
+      ['1Y', '15'],
+      ['18M', '16'],
+      ['2Y', '17'],
+      ['3Y', '18'],
+      ['4Y', '19'],
+      ['5Y', '20'],
+      ['6Y', '21'],
+      ['7Y', '22'],
+      ['8Y', '23'],
+      ['9Y', '24'],
+      ['10Y', '25'],
+      ['12Y', '26'],
+      ['15Y', '27'],
+      ['20Y', '28'],
+      ['25Y', '29'],
+      ['30Y', '30'],
+      ['40Y', '31'],
+      ['50Y', '32'],
+    ]);
+
+    disableOption(item: string, currentIndex: number, fieldType: 'from' | 'to', form: FormArray): boolean {
+      const itemValue = this.convertKeyToValue(item);
+      let isDisabled = false;
+  
+      const control = form;
+      const lastTier = control.at(currentIndex);
+      let currentFrom = this.convertKeyToValue(lastTier.get('from').value);
+      let currentTo = this.convertKeyToValue(lastTier.get('to').value);
+  
+      let maxFrom = 1;
+      let minTo = 32;
+  
+      form.controls.forEach((control, key) => {
+        const from = this.convertKeyToValue(control.get('from').value);
+        const to = this.convertKeyToValue(control.get('to').value);
+  
+  
+        if(currentIndex !== key){
+          if(itemValue > from && itemValue < to){
+            isDisabled = true;
+          }
+  
+          if(fieldType == 'from'){
+            if(itemValue === from){
+              isDisabled = true;
+            }
+            if(currentTo > to && itemValue < to){
+              isDisabled = true;
+            }
+            
+          }
+          else if (fieldType === 'to') {
+            if(itemValue === to){
+              isDisabled = true;
+            }
+            if(currentFrom < from && itemValue > from){
+              isDisabled = true;
+            }
+          }
+        }
+        else{
+          if(fieldType == 'from'){
+            if(to != 0 && itemValue >= to){
+              isDisabled = true;
+            }
+            if(key != 0 && to && to >=minTo && itemValue < minTo){
+              isDisabled = true;
+            }
+          }
+          else if (fieldType === 'to') {
+            if(itemValue <= from){
+              isDisabled = true;
+            }
+            if(key !=0 && from <= maxFrom && itemValue > maxFrom){
+              isDisabled = true; 
+            }
+          }
+        }
+  
+        if(from > maxFrom){
+          maxFrom = from;
+        }
+        if(to < minTo){
+          minTo = to;
+        }
+      });
+  
+      return isDisabled;
+  
+    }
+  
+    convertKeyToValue(key: string): number | undefined {
+      const value = this.tenorRanges.get(key);
+      return value ? Number(value) : undefined;
+    }
+}
