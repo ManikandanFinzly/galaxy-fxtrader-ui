@@ -1,76 +1,70 @@
-<ng-container class="container">
-  <div class="row ">
-      <div class="col-3">
-          <div *ngFor="let data of tierList; let rowIndex= index">
-            <mat-card class="matcard">
-              {{data.type}}
-              <div class="pull-right">
-                  <i class="fa fa-ellipsis-v threeDots" aria-hidden="true" [matMenuTriggerFor]="menu"></i>
-                <mat-menu #menu="matMenu">
-                  <button mat-menu-item (click)="openCopyConfirmationDialog(rowIndex)">
-                    <span>Copy</span>
-                  </button>
-                  <button mat-menu-item disabled (click)="openEnableDisableDialog(rowIndex)">
-                    <span>Enable</span>
-                  </button>
-                  <button mat-menu-item>
-                    <span>Audit</span>
-                  </button>
-                  <button mat-menu-item (click)="openDeleteConfirmationDialog(rowIndex)">
-                    <span class="delete">Delete</span>
-                  </button>
-                </mat-menu>
-              </div>
-            </mat-card>
+<div class="container-fluid custom-container">
+  <div class="row full-height">
+    <div class="col-3 tier-list">
+      <div *ngFor="let data of salesTier">
+        <mat-card class="mat-card-tier" (click)="onSelectTier(data.tierName)" [class.selected-tier]="selectedTier.tierName === data.tierName">
+          {{data.tierName}}
+          <div class="pull-right">
+            <button class="mat-menu" mat-icon-button [matMenuTriggerFor]="menu" [class.selected-tier]="selectedTier.tierName === data.tierName"><mat-icon>more_vert</mat-icon></button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item>
+                <span>Copy</span>
+              </button>
+              <button mat-menu-item>
+                <span>Enable</span>
+              </button>
+              <button mat-menu-item>
+                <span>Audit</span>
+              </button>
+            </mat-menu>
           </div>
+        </mat-card>
       </div>
-      <div class="col-9">
-      <div class="border-top" style="margin-bottom: 1rem !important;">
-         
-      </div>
-       
-      <div class="col-md-12 mb-3" style="margin-top: 10px;">
-          <ngx-datatable class="material container striped" [rows]="tierTableList" [columnMode]="'flex'" [headerHeight]="50" [footerHeight]="50" rowHeight="auto">
-              <ngx-datatable-column name="#" [flexGrow]="0.5">
-                  <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
-                      {{(rowIndex + 1)}}
-                  </ng-template>
-              </ngx-datatable-column>
-              <ngx-datatable-column name="Spot" [flexGrow]="2">
-                  <ng-template let-row="row" ngx-datatable-cell-template>
-                      {{ row?.spot | titlecase }}
-                  </ng-template>
-              </ngx-datatable-column>
-              <ngx-datatable-column name="1M-3M" [flexGrow]="2">
-                  <ng-template let-row="row" ngx-datatable-cell-template>
-                      {{row?.oneMonth}}
-                  </ng-template>
-              </ngx-datatable-column>
-              <ngx-datatable-column name="3M-5M" [flexGrow]="2">
-                  <ng-template let-row="row" ngx-datatable-cell-template>
-                      {{row?.threeMonth}}
-                  </ng-template>
-              </ngx-datatable-column>
-              <ngx-datatable-column name="5M-1Y" [flexGrow]="2">
-                  <ng-template let-row="row" ngx-datatable-cell-template>
-                      {{row?.fiveMonth}}
-                  </ng-template>
-              </ngx-datatable-column>
-              <ngx-datatable-column name="1Y+" [flexGrow]="2">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                    {{row?.year}}
-                </ng-template>
+    </div>
+    <div class="col-9 pt-3 content-area">
+      <div *ngIf="tableData.length > 0" class="flex-grow overflow-auto">
+        <div *ngFor="let data of tableData; let i=index" class="mb-3 transparent-bg">
+          <ngx-datatable class="material container-right-margin"
+                         [class.first-ngx-table]="i === 0"
+                         [rows]="data.rows"
+                         [columnMode]="'flex'"
+                         [headerHeight]="50"
+                         [rowHeight]="getRowHeight"
+                         [scrollbarV]="true">
+                        
+            <ngx-datatable-column name="Currency Pairs" [flexGrow]="1">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ row.ccypairs }}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column *ngFor="let column of data.columns" [name]="column" [flexGrow]="1">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ row[column] }}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column [flexGrow]="1">
+              <ng-template ngx-datatable-header-template>
+                <div class="d-flex justify-content-end align-items-center">
+                  <button class="mat-menu" mat-icon-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="editTier(data.rows[0].ccypairs)">
+                      <span>Edit</span>
+                    </button>
+                    <button mat-menu-item (click)="openDeleteConfirmationDialog()">
+                      <span class="delete">Delete</span>
+                    </button>
+                  </mat-menu>
+                </div>
+              </ng-template>
             </ngx-datatable-column>
           </ngx-datatable>
+        </div>
       </div>
-
-      <div class="plusicon border col-11 ml-6" (click)="addIndividualTiers()">
-        <i class="fa fa-plus" aria-hidden="true"></i>
-      </div>
-
-
-      </div>
+      <mat-card class="mat-card-bottom">
+        <div class="center-wrapper">
+          <i class="fa fa-plus plusIcon" aria-hidden="true" (click)="addCCYGroup()"></i>
+        </div>
+      </mat-card>
+    </div>
   </div>
-</ng-container>
-
-
+</div>

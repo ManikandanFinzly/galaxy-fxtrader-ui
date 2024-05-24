@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, Input, Output, EventEmitter } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Globals } from 'globals.service';
 import { AddEditTradingTiersComponent } from '../pricing-tiers/trading-tiers/add-edit-trading-tiers/add-edit-trading-tiers.component';
 import { Router } from '@angular/router';
@@ -44,7 +44,11 @@ export class LandingComponentComponent implements OnInit {
         console.log(`Dialog result: ${result}`);
       });
     } else if (this.globals.tabName == this.globals.TRADING_TIERS_CONSTANT) {
-      const dialogRef = this.dialog.open(AddEditTradingTiersComponent);
+      const dialogRef = this.dialog.open(AddEditTradingTiersComponent, {width: '500px',
+      height: '90vh', panelClass: 'custom-dialog-container',
+      data: {
+        isDefaultTradingTier: true,
+      }});
       dialogRef.afterClosed().subscribe(result => {
         console.log(`Dialog result: ${result}`);
       });
