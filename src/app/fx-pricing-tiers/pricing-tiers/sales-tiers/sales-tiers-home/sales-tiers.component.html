@@ -1,7 +1,7 @@
 <div class="container-fluid custom-container">
-  <div class="row full-height">
-    <div class="col-3 tier-list pl-0">
-      <div *ngFor="let data of salesTier; let rowIndex=index">
+  <div class="d-flex">
+    <div class="col-3 tier-list">
+      <div *ngFor="let data of salesTier">
         <mat-card class="mat-card-tier" (click)="onSelectTier(data.tierName)" [class.selected-tier]="selectedTier.tierName === data.tierName">
           {{data.tierName}} 
           <div class="pull-right">
@@ -24,7 +24,7 @@
         </mat-card>
       </div>
     </div>
-    <div class="col-9 pt-3 content-area">
+    <div class="col-9 pt-3 content-area pr-2">
       <div *ngIf="tableData.length > 0" class="flex-grow overflow-auto">
         <div *ngFor="let data of tableData; let i=index" class="mb-3 transparent-bg">
           <ngx-datatable class="material container-right-margin"

@@ -1,5 +1,6 @@
 <div class="col-md-12 mb-3" style="margin-top: 10px;">
-  <ngx-datatable class="material container" [rows]="rows" [columnMode]="'flex'" [headerHeight]="50" rowHeight="auto">
+  <div class="col-md-12">
+  <ngx-datatable class="material container col-md-12" [rows]="rows" [columnMode]="'flex'" [headerHeight]="50" rowHeight="auto">
 
     <ngx-datatable-column name="Tier Name" [flexGrow]="3.5">
       <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
@@ -44,4 +45,5 @@
     </ngx-datatable-column>
 
   </ngx-datatable>
+  </div>
 </div>
