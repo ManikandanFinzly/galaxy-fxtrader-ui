@@ -1,7 +1,7 @@
-<ng-container class="container">
-  <div class="row">
-    <div class="col-md-7 pl-7">
-      <div  class="btn btn-secondary active transaction-tab tab-style">
+<ng-container class="container-fluid custom-container">
+  <div class="d-flex align-items-center p-3">
+    <div class="col-md-7">
+      <div  class="btn btn-secondary active transaction-tab tab-style p-0">
         <mat-button-toggle-group [(ngModel)]="fontStyleControl" name="fontStyle" aria-label="Font Style">
           <mat-button-toggle value="{{globals.SALES_TIERS_CONSTANT}}"  (click)="clicktab(globals.SALES_TIERS_CONSTANT)" routerLink="/sales-tiers">{{globals.SALES_TIERS_CONSTANT}}</mat-button-toggle>
           <mat-button-toggle value="{{globals.TRADING_TIERS_CONSTANT}}" (click)="clicktab(globals.TRADING_TIERS_CONSTANT)" routerLink="/trading-tiers">{{globals.TRADING_TIERS_CONSTANT}}</mat-button-toggle>
@@ -12,13 +12,13 @@
     </div>
   
     <div class="col-md-3">
-      <div  class="form-group has-search">
+      <div  class="has-search">
         <span class="fa fa-search form-control-feedback"></span>
         <input  class="form-control form-control-landing" placeholder="Search" type="text">
       </div>
     </div>
-    <div class="col-md-2 pl-6 pt-1">
-      <button class="btn btn-landing" (click)="addIndividualTiers()">+ Add {{globals?.tabName}}</button>
+    <div class="d-flex col-md-2 justify-content-end">
+      <button class="btn btn-landing col-12" (click)="addIndividualTiers()">+ Add {{globals?.tabName}}</button>
     </div>
   </div>
 </ng-container>
