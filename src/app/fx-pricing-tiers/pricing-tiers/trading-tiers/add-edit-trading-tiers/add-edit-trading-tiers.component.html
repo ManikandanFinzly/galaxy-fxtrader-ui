@@ -129,7 +129,7 @@
                 <mat-form-field appearance="outline" class="w-100">
                   <mat-label>From</mat-label>
                   <mat-select placeholder="From" formControlName="from">
-                    <mat-option *ngFor="let item of tenorsList" [value]="item">{{item}}</mat-option>
+                    <mat-option *ngFor="let item of tenorsList" [value]="item" [disabled]="disableOption(item, i, 'from')">{{item}}</mat-option>
                   </mat-select>
                   <mat-error
                     *ngIf="tradingTierForm.get('tenorRange').at(i).get('from').invalid && tradingTierForm.get('tenorRange').at(i).get('from').touched">
@@ -144,7 +144,7 @@
                 <mat-form-field appearance="outline" class="w-100">
                   <mat-label>To</mat-label>
                   <mat-select placeholder="To" formControlName="to">
-                    <mat-option *ngFor="let item of tenorsList" [value]="item">{{item}}</mat-option>
+                    <mat-option *ngFor="let item of tenorsList" [value]="item" [disabled]="disableOption(item, i, 'to')">{{item}}</mat-option>
                   </mat-select>
                   <mat-error
                     *ngIf="tradingTierForm.get('tenorRange').at(i).get('to').invalid && tradingTierForm.get('tenorRange').at(i).get('to').touched">
