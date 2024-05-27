@@ -1,20 +1,23 @@
 <div class="container-fluid custom-container">
   <div class="d-flex">
     <div class="col-3 tier-list">
-      <div *ngFor="let data of salesTier">
+      <div *ngFor="let data of tradingTier; let rowIndex=index">
         <mat-card class="mat-card-tier" (click)="onSelectTier(data.tierName)" [class.selected-tier]="selectedTier.tierName === data.tierName">
-          {{data.tierName}}
+          {{data.tierName}} 
           <div class="pull-right">
             <button class="mat-menu" mat-icon-button [matMenuTriggerFor]="menu" [class.selected-tier]="selectedTier.tierName === data.tierName"><mat-icon>more_vert</mat-icon></button>
             <mat-menu #menu="matMenu">
-              <button mat-menu-item>
+              <button mat-menu-item [disabled]="!data.isEnabled" (click)="openCopyConfirmationDialog(rowIndex)">
                 <span>Copy</span>
               </button>
-              <button mat-menu-item>
-                <span>Enable</span>
+              <button mat-menu-item (click)="openEnableDisableAmountTier(rowIndex)">
+                <span> {{data.isEnabled ? 'Disable' : 'Enable'}}</span>
               </button>
               <button mat-menu-item>
                 <span  (click)="onAudit(data.id)" href="javascript:void(0);">Audit</span>
+              </button>
+              <button mat-menu-item [disabled]="!data.isEnabled" (click)="openDeleteConfirmationDialog(rowIndex)">
+                <span class="delete">Delete</span>
               </button>
             </mat-menu>
           </div>
@@ -43,14 +46,14 @@
               </ng-template>
             </ngx-datatable-column>
             <ngx-datatable-column [flexGrow]="1">
-              <ng-template ngx-datatable-header-template>
+              <ng-template ngx-datatable-header-template let-index="index">
                 <div class="d-flex justify-content-end align-items-center">
                   <button class="mat-menu" mat-icon-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
                   <mat-menu #menu="matMenu">
-                    <button mat-menu-item (click)="editTier(data.rows[0].ccypairs)">
+                    <button mat-menu-item (click)="editTier(data.rows[0].ccypairs)" [disabled]="!isEnabled">
                       <span>Edit</span>
                     </button>
-                    <button mat-menu-item (click)="openDeleteConfirmationDialog()">
+                    <button *ngIf="i!=0" mat-menu-item (click)="openDeleteConfirmationDialog(rowIndex, 1)" [disabled]="!isEnabled">
                       <span class="delete">Delete</span>
                     </button>
                   </mat-menu>
