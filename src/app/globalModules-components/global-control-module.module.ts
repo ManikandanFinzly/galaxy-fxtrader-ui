@@ -21,6 +21,7 @@ import { LandingComponentComponent } from 'app/fx-pricing-tiers/landing-componen
 import { CustomDateTimePipe } from 'app/fx-pricing-tiers/custom.datetimepipe';
 import { HorizontalMenuComponent } from 'app/theme/components/menu/horizontal-menu/horizontal-menu.component';
 import { BreadcrumbComponent } from 'app/theme/components/breadcrumb/breadcrumb.component';
+import { AuditHistoryComponent, AuditHistoryModule } from '@npmswapstech/audit-history';
 
 @NgModule({
   imports: [
@@ -33,6 +34,7 @@ import { BreadcrumbComponent } from 'app/theme/components/breadcrumb/breadcrumb.
     MatIconModule, MatFormFieldModule, MatCardModule,MatDialogModule, MatMenuModule,
     BrowserAnimationsModule,
     MatSidenavModule,
+    AuditHistoryModule,
     NgxMatDrpModule,
     NgxDatatableModule,
     FormlyModule.forRoot(),
@@ -47,6 +49,8 @@ import { BreadcrumbComponent } from 'app/theme/components/breadcrumb/breadcrumb.
     MatRadioModule,
     MatSelectModule
   ],
+  entryComponents: [AuditHistoryComponent,],
+
   declarations: [
   ]
 })

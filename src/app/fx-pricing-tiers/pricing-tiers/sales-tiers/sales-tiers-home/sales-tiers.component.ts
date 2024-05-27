@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material';
 import { AddEditSalesTierComponent } from '../add-edit-sales-tier/add-edit-sales-tier.component';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'app/globalModules-components/confirmation-dialog/confirmation-dialog.component';
+import { AuditHistoryComponent } from '@npmswapstech/audit-history';
 
 @Component({
   selector: 'app-sales-tiers',
@@ -548,6 +549,14 @@ export class SalesTiersComponent implements OnInit {
         console.log(`Dialog result: ${result}`);
       }
     });
+  }
+
+  onAudit(id){
+    this.dialog.open(AuditHistoryComponent, {
+    width: '900px',
+    height:'500px',
+    data: {"url": "/fxtrader/service/audit/PricingTier/"+id}
+  });
   }
 }
 

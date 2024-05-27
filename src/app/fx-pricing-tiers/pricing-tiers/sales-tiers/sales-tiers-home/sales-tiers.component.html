@@ -14,7 +14,7 @@
                 <span> {{data.isEnabled ? 'Disable' : 'Enable'}}</span>
               </button>
               <button mat-menu-item>
-                <span>Audit</span>
+                <span (click)="onAudit(data.id)" href="javascript:void(0);" >Audit</span>
               </button>
               <button mat-menu-item [disabled]="!data.isEnabled" (click)="openDeleteConfirmationDialog(rowIndex)">
                 <span class="delete">Delete</span>

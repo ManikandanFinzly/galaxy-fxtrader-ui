@@ -34,7 +34,7 @@
               <span>{{ row.isEnabled ? 'Disable' : 'Enable' }}</span>
             </button>
             <button mat-menu-item>
-              <span>Audit</span>
+              <span  (click)="onAudit(row.id)" href="javascript:void(0);">Audit</span>
             </button>
             <button mat-menu-item (click)="openDeleteConfirmationDialog(rowIndex)">
               <span class="delete">Delete</span>

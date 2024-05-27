@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddEditTradingTiersComponent } from '../add-edit-trading-tiers/add-edit-trading-tiers.component';
 import { ConfirmationDialogComponent } from 'app/globalModules-components/confirmation-dialog/confirmation-dialog.component';
 import { TradingTiersService } from '../trading-tiers.service';
+import { AuditHistoryComponent } from '@npmswapstech/audit-history';
 
 
 @Component({
@@ -514,4 +515,11 @@ export class TradingTiersComponent implements OnInit {
     });
   }
 
+  onAudit(id){
+    this.dialog.open(AuditHistoryComponent, {
+    width: '900px',
+    height:'500px',
+    data: {"url": "/fxtrader/service/audit/PricingTier/"+id}
+  });
+  }
 }
