@@ -4,6 +4,7 @@ import { ApiService } from 'app/services/api.service';
 import { TradingTiersService } from '../trading-tiers.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { Globals } from 'globals.service';
 
 @Component({
   selector: 'app-add-edit-trading-tiers',
@@ -43,12 +44,13 @@ export class AddEditTradingTiersComponent implements OnInit {
   availableCCYPairs: any = [];
   selectedCCYPairs: any = [];
   isToggled: boolean = false;
-
+  
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,
     private dialogRef: MatDialogRef<AddEditTradingTiersComponent>,
     private _formBuilder: FormBuilder,
     public apiService: ApiService,
-    private tradingTier: TradingTiersService) {
+    private tradingTier: TradingTiersService,
+    private globalService: Globals) {
     if (data && data.isDefaultTradingTier) {
       this.isDefaultTradingTier = true;
       if (data.tradingTierId && data.ccyGroupId) {
@@ -139,7 +141,7 @@ export class AddEditTradingTiersComponent implements OnInit {
             if (this.ccyGroupId) {
               this.tradingTierForm.get('defaultPrice').setValue(this.tradingTier.getDefaultPriceNameById(data.defaultPrice));
 
-              const tenorRangeArray = this.tradingTierForm.get('tenorRange') as FormArray;
+              const tenorRangeArray = this.getTenorRangeFormArray;
               while (tenorRangeArray.length) {
                 tenorRangeArray.removeAt(0);
               }
@@ -171,13 +173,12 @@ export class AddEditTradingTiersComponent implements OnInit {
     });
   }
 
+  get getTenorRangeFormArray(): FormArray {
+    return this.tradingTierForm.get('tenorRange') as FormArray;
+  }
+
   addTier() {
-    for (const controlName in this.tradingTierForm.controls) {
-      if (this.tradingTierForm.controls[controlName].invalid) {
-        console.log(`Invalid control: ${controlName}`);
-      }
-    }
-    const control = this.tradingTierForm.get('tenorRange') as FormArray;
+    const control = this.getTenorRangeFormArray;
     const lastIndex = control.length - 1;
 
     if (lastIndex >= 0) {
@@ -191,11 +192,12 @@ export class AddEditTradingTiersComponent implements OnInit {
         return;
       }
     }
+
     control.push(this.initTenorRange());
   }
 
   deleteTier(index: number) {
-    const control = this.tradingTierForm.get('tenorRange') as FormArray;
+    const control = this.getTenorRangeFormArray;
     control.removeAt(index);
   }
 
@@ -215,7 +217,7 @@ export class AddEditTradingTiersComponent implements OnInit {
   }
 
   setDefualtPrice() {
-    const formArray = this.tradingTierForm.get('tenorRange') as FormArray;
+    const formArray = this.getTenorRangeFormArray;
     formArray.controls.forEach(control => {
       if (control.get('price').value === '') {
         control.get('price').setValue(this.tradingTierForm.get('defaultPrice').value);
@@ -285,5 +287,9 @@ export class AddEditTradingTiersComponent implements OnInit {
       const filteredCurrentIndex = currentIndex;
       transferArrayItem(event.previousContainer.data, event.container.data, filteredPreviousIndex, filteredCurrentIndex);
     }
+  }
+
+  disableOption(item: string, currentIndex: number, fieldType: 'from' | 'to'): boolean {
+    return this.globalService.disableOption(item, currentIndex, fieldType, this.getTenorRangeFormArray);
   }
 }
