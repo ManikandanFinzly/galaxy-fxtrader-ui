@@ -1,0 +1,125 @@
+[
+  {
+    "id": "1a2b3c4d-1234-5678-90ab-cdef12345678",
+    "tierName": "Platinum",
+    "tierType": "TRADING",
+    "defaultTierId": "5a6b2c8d-9876-5433-10ab-cdef98765432",
+    "isEnabled": true,
+    "isAllDay": true,
+    "fromTime": "00:00",
+    "toTime": "00:45",
+    "noQuoteMsg": "test",
+    "rateSource": "Online",
+    "ccyGroups": [
+      {
+        "id": "abcd1234-5678-90ab-cdef-9876543210ac",
+        "name": "Currency Group 1",
+        "tenors": [
+          {
+            "id": "a1b2c3d4-5678-90ab-cdef-1234567890ax",
+            "rangeFrom": "1W",
+            "rangeTo": "1M"
+          },
+          {
+            "id": "a1b2c3d4-5678-90ab-cdef-1234567890az",
+            "rangeFrom": "2W",
+            "rangeTo": "3M"
+          }
+        ]
+      },
+      {
+        "id": "abcd1234-5678-90ab-cdef-9876543210ab",
+        "name": "Currency Group 1",
+        "pricingCcySet": [
+          {
+            "id": "dcba4321-8765-0987-fedc-ba0987654321",
+            "ccyPair": "EURUSD"
+          },
+          {
+            "id": "1234abcd-5678-90ab-cdef-0123456789ab",
+            "ccyPair": "GBPUSD"
+          }
+        ],
+        "tenors": [
+          {
+            "id": "a1b2c3d4-5678-90ab-cdef-1234567890pn",
+            "rangeFrom": "1W",
+            "rangeTo": "1M",
+            "pricingAmount": {
+              "id": "543210ab-cdef-0123-4567-890abcdef123",
+              "tierName": "Flat 3%",
+              "amountRanges": [
+                {
+                  "id": "6543210a-bcde-f012-3456-7890abcdef12",
+                  "amountFrom": 100.00,
+                  "amountTo": 200.00,
+                  "bankBuys": 1.23,
+                  "bankSells": 1.25,
+                  "spreadUnit": "PIPS"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "createdBy": "John Doe",
+    "creationTime": "2024-05-20T12:30:45",
+    "lastUpdatedBy": "Jane Smith",
+    "lastUpdatedTime": "2024-05-21T09:15:30"
+  },
+  {
+    "id": "5a6b7c8d-9876-5432-10ab-cdef98765432",
+    "tierName": "Gold",
+    "tierType": "TRADING",
+    "defaultTier": "1234abcd-5678-90ab-cdef-0123456789ab",
+    "isAllDay": true,
+    "isEnabled": true,
+    "fromTime": "00:00",
+    "toTime": "00:45",
+    "noQuoteMsg": "test",
+    "rateSource": "Online",
+    "ccyGroups": [
+      {
+        "id": "56781234-abcd-ef01-2345-6789abcdef01",
+        "name": "Currency Group 2",
+        "pricingCcySet": [
+          {
+            "id": "87654321-dcba-fedc-ba98-76543210abcd",
+            "ccyPair": "USDJPY"
+          },
+          {
+            "id": "2345abcd-ef01-2345-6789-abcd01234567",
+            "ccyPair": "EURGBP"
+          }
+        ],
+        "tenors": [
+          {
+            "id": "b1c2d3e4-5678-90ab-cdef-234567890abc",
+            "rangeFrom": "1M",
+            "rangeTo": "3M",
+            "pricingAmount": {
+              "id": "6789abcd-ef01-2345-6789-abcdef012345",
+              "amountRanges": [
+                {
+                  "id": "7890abcd-ef01-2345-6789-abcdef012345",
+                  "amountFrom": 200.00,
+                  "amountTo": 300.00,
+                  "bankBuys": 1.20,
+                  "bankSells": 1.22,
+                  "spreadUnit": "PERCENTAGE"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "channels": ["Web", "Desktop"],
+    "createdBy": "Alice Johnson",
+    "creationTime": "2024-05-22T08:45:00",
+    "lastUpdatedBy": "Bob Williams",
+    "lastUpdatedTime": "2024-05-23T11:20:15"
+  }
+]
+ 
