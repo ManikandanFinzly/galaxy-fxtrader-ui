@@ -15,6 +15,7 @@ import { AuditHistoryComponent } from '@npmswapstech/audit-history';
 })
 export class TradingTiersComponent implements OnInit {
   isEnabled: boolean;
+  isAllday: boolean;
   isSubTier: boolean;
   constructor(public dialog: MatDialog, private toastr: ToastrService) {
     console.log("Trading tier called...");
@@ -33,6 +34,12 @@ export class TradingTiersComponent implements OnInit {
     {
       tierName: 'Platinum',
       isEnabled: true,
+      isAllDay: true,
+      fromTime: "00:00",
+      toTime: "00:45",
+      noQuoteMsg: "test",
+      rateSource: "online",
+      defaultPrice: 'Flat 3%',
       ccyGroup: [
         {
           ccypairs: ["default"],
@@ -41,7 +48,6 @@ export class TradingTiersComponent implements OnInit {
             { from: '1M', to: '3M', price: 'Flat 3%' },
             { from: '5M', to: '1Y', price: 'Flat 3%' }
           ],
-          defaultPrice: 'Flat 1%'
         },
         {
           ccypairs: [

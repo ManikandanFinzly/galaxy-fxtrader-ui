@@ -61,7 +61,7 @@
             <mat-form-field appearance="outline" class="col-6 p-0">
               <mat-label class="required-fields">From</mat-label>
               <mat-select formControlName="fromTime">
-                <mat-option *ngFor="let from of from" [value]="from">
+                <mat-option *ngFor="let from of fromTime" [value]="from">
                   {{ from }}
                 </mat-option>
                </mat-select> 
@@ -73,7 +73,7 @@
             <mat-form-field appearance="outline" class="col-6 p-0">
               <mat-label class="required-fields">To</mat-label>
               <mat-select formControlName="toTime">
-                <mat-option *ngFor="let to of to" [value]="to">
+                <mat-option *ngFor="let to of toTime" [value]="to">
                   {{ to }}
                 </mat-option>
               </mat-select>
