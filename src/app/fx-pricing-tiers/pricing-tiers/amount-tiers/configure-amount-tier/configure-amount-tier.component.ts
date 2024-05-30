@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Valid
 import { ActivatedRoute, Router } from '@angular/router';
 import { Globals } from 'globals.service';
 import { AmountTiersService } from '../amount-tiers.service';
+import { ApiService } from 'app/services/api.service';
 
 @Component({
   selector: 'app-configure-amount-tier',
@@ -13,11 +14,11 @@ import { AmountTiersService } from '../amount-tiers.service';
 
 export class ConfigureAmountTierComponent implements OnInit {
   configAmountTierForm: FormGroup;
-  spreadUnits = [
-    { value: 'pips', viewValue: 'Pips' },
-    { value: 'percentage', viewValue: '%' },
-    { value: 'usDollar', viewValue: 'US Dollar' },
-    { value: 'dealerIntervention', viewValue: 'Dealer Intervention (DI)' }
+  spreadUnits: { value: number; viewValue: string; }[] = [
+    { value: 1, viewValue: 'Pips' },
+    { value: 2, viewValue: '%' },
+    { value: 3, viewValue: 'US Dollar' },
+    { value: 4, viewValue: 'Dealer Intervention (DI)' }
   ];
   tierAmounts: { value: number; viewValue: string; }[] = [
     { value: 1, viewValue: 'Foreign Ccy' },
@@ -25,50 +26,51 @@ export class ConfigureAmountTierComponent implements OnInit {
     { value: 3, viewValue: 'Book Ccy' },
     { value: 4, viewValue: 'Base Ccy' }
   ];
-  defaultSelectedTier: number = 3; // Default selected value for tierAmounts
-  selectedTier: number;
+  defaultTierAmounts: number = 3; // Default selected value for tierAmounts
+  inTermsOf: number;
   tierName: any;
   isEditMode: boolean = false;
+  selectedRowValues;
 
   constructor(private formBuilder: FormBuilder, private router: Router, public globalService: Globals,
-    public amountTiersService: AmountTiersService, private route: ActivatedRoute) { }
+    public amountTiersService: AmountTiersService, private route: ActivatedRoute, public apiService: ApiService) { }
 
   ngOnInit() {
     this.initializeForm();
-    this.selectedTier = this.configAmountTierForm.get('selectedTier').value;//for the lable color change
+    this.inTermsOf = this.configAmountTierForm.get('inTermsOf').value;//for the lable color change
   }
 
   initializeForm() {
     const responseData = this.route.snapshot.queryParams['param1'];
     if (responseData) {
-      const selectedRowValues = JSON.parse(responseData);
+      this.selectedRowValues = JSON.parse(responseData);
       this.configAmountTierForm = this.formBuilder.group({
-        tierName: [selectedRowValues ? selectedRowValues.tierName || '' : '', Validators.required],
-        selectedTier: [selectedRowValues ? selectedRowValues.inTermsOf || '' : '', Validators.required],
-        amountTier: this.formBuilder.array([])
+        tierName: [this.selectedRowValues ? this.selectedRowValues.tierName || '' : '', Validators.required],
+        inTermsOf: [this.selectedRowValues ? this.selectedRowValues.inTermsOf || '' : '', Validators.required],
+        amountRanges: this.formBuilder.array([])
       });
 
-      let amountTierArray = this.configAmountTierForm.get('amountTier') as FormArray;
-      selectedRowValues.amountRanges.forEach(range => {
+      let amountTierArray = this.configAmountTierForm.get('amountRanges') as FormArray;
+      this.selectedRowValues.amountRanges.forEach(range => {
         amountTierArray.push(this.createAmountTierWithValues(range));
       });
       this.isEditMode = true;
     } else {
       this.configAmountTierForm = this.formBuilder.group({
         tierName: ['', Validators.required],
-        selectedTier: [this.defaultSelectedTier],
-        amountTier: this.formBuilder.array([this.createAmountTier()])
+        inTermsOf: [this.defaultTierAmounts],
+        amountRanges: this.formBuilder.array([this.createAmountTier()])
       });
     }
   }
 
   createAmountTier(): FormGroup {
     const newRow = this.formBuilder.group({
-      fromAmount: ['', Validators.required],
-      toAmount: ['', Validators.required],
+      amountFrom: ['', Validators.required],
+      amountTo: ['', Validators.required],
       bankBuys: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
       bankSells: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-      spreadUnits: ['', Validators.required],
+      spreadUnit: ['', Validators.required],
     });
     newRow.setValidators(this.amountPrediction());
     return newRow;
@@ -76,16 +78,16 @@ export class ConfigureAmountTierComponent implements OnInit {
 
   createAmountTierWithValues(range: any): FormGroup {
     return this.formBuilder.group({
-      fromAmount: [range.fromAmount || '', Validators.required],
-      toAmount: [range.toAmount || '', Validators.required],
+      amountFrom: [range.amountFrom || '', Validators.required],
+      amountTo: [range.amountTo || '', Validators.required],
       bankBuys: [range.bankBuys || '', [Validators.required, Validators.pattern('^[0-9]*$')]],
       bankSells: [range.bankSells || '', [Validators.required, Validators.pattern('^[0-9]*$')]],
-      spreadUnits: [range.spreadUnits || '', Validators.required],
+      spreadUnit: [range.spreadUnit || '', Validators.required],
     });
   }
 
   get amountTier(): FormArray {
-    return this.configAmountTierForm.get('amountTier') as FormArray;
+    return this.configAmountTierForm.get('amountRanges') as FormArray;
   }
 
   addAmountRangeRow() {
@@ -104,15 +106,15 @@ export class ConfigureAmountTierComponent implements OnInit {
   amountPrediction(): ValidatorFn {
     return (group: FormGroup): ValidationErrors => {
       if (group.controls) {
-        const updatedFromAmount = group.controls['fromAmount'];
-        const updatedToAmount = group.controls['toAmount'];
+        const updatedFromAmount = group.controls['amountFrom'];
+        const updatedToAmount = group.controls['amountTo'];
         if (updatedFromAmount.value >= updatedToAmount.value) {
           updatedToAmount.setErrors({ invalidToAmountRange: true });
         }
 
         const lastUpdatedRow = this.amountTier.at(this.amountTier.length - 2);
         if (lastUpdatedRow) {
-          const lastUpdatedToAmount = lastUpdatedRow.get('toAmount').value;
+          const lastUpdatedToAmount = lastUpdatedRow.get('amountTo').value;
           if (lastUpdatedToAmount >= updatedFromAmount.value) {
             updatedFromAmount.setErrors({ invalidFromAmountRange: true });
           }
@@ -144,8 +146,8 @@ export class ConfigureAmountTierComponent implements OnInit {
     if (this.isEditMode) {
       this.configAmountTierForm.patchValue({ tierName: tierNameValue });
     }
-    this.configAmountTierForm.patchValue({ selectedTier: this.defaultSelectedTier });
-    this.selectedTier = this.defaultSelectedTier; //for the lable color change
+    this.configAmountTierForm.patchValue({ inTermsOf: this.defaultTierAmounts });
+    this.inTermsOf = this.defaultTierAmounts; //for the lable color change
     // Remove all rows except the first one
     while (this.amountTier.length > 1) {
       this.amountTier.removeAt(1);
@@ -154,21 +156,41 @@ export class ConfigureAmountTierComponent implements OnInit {
 
   onSubmit() {
     if (this.configAmountTierForm.valid) {
-      let obj: any = {
-        tierName: this.configAmountTierForm.get('tierName').value,
-        inTermsOf: this.configAmountTierForm.get('selectedTier').value,
-        amountRanges: this.amountTier.controls.map((control) => {
-          const group = control as FormGroup;
-          return {
-            fromAmount: group.get('fromAmount').value,
-            toAmount: group.get('toAmount').value,
-            bankBuys: group.get('bankBuys').value,
-            bankSells: group.get('bankSells').value,
-            spreadUnits: group.get('spreadUnits').value,
-          };
-        }),
-      };
-      console.log("Print Object :::", obj);
+      if (!this.isEditMode) {
+        this.apiService.post("/fxtrader/pricingamount", this.configAmountTierForm.value).subscribe(
+          (data) => {
+            console.log("DATA ::", data);
+          },
+          (error) => {
+
+          }
+        );
+      } else if (this.isEditMode) {
+        console.log("URL ::", this.selectedRowValues.id)
+        this.apiService.put("/fxtrader/pricingamount/${this.selectedRowValues.id}", this.configAmountTierForm.value).subscribe(
+          (data) => {
+            console.log("DATA ::", data);
+          },
+          (error) => {
+
+          }
+        );
+      }
+      // let obj: any = {
+      //   tierName: this.configAmountTierForm.get('tierName').value,
+      //   inTermsOf: this.configAmountTierForm.get('selectedTier').value,
+      //   amountRanges: this.amountTier.controls.map((control) => {
+      //     const group = control as FormGroup;
+      //     return {
+      //       fromAmount: group.get('fromAmount').value,
+      //       toAmount: group.get('toAmount').value,
+      //       bankBuys: group.get('bankBuys').value,
+      //       bankSells: group.get('bankSells').value,
+      //       spreadUnits: group.get('spreadUnits').value,
+      //     };
+      //   }),
+      // };
+      // console.log("Print Object :::", obj);
     }
   }
 

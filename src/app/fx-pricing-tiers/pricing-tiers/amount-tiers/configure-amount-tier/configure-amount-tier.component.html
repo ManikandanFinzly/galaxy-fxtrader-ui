@@ -14,32 +14,32 @@
     <h6 class="ml-5"><b>Tier Amount in terms of </b></h6>
 
     <div class="ml-3 mt-3">
-      <mat-radio-group formControlName="selectedTier">
+      <mat-radio-group formControlName="inTermsOf">
         <mat-radio-button class="col-xl-auto" *ngFor="let tierAmount of tierAmounts" [value]="tierAmount.value"
-          [class.selected-radio]="selectedTier === tierAmount.value" (change)="selectedTier = tierAmount.value">
+          [class.selected-radio]="inTermsOf === tierAmount.value" (change)="inTermsOf = tierAmount.value">
           {{tierAmount.viewValue}}
         </mat-radio-button>
       </mat-radio-group>
     </div>
 
     <!-- AmountTier Range starts here. -->
-    <div formArrayName="amountTier">
+    <div formArrayName="amountRanges">
       <div class="row mt-3 ml-3 col-form-label-sm col-md-12"
         *ngFor="let formGroup of amountTier.controls; let i = index" [formGroupName]="i">
 
         <mat-form-field appearance="outline" class="col-lg-2">
           <mat-label>From</mat-label>
-          <input matInput formControlName="fromAmount" type="number">
-          <mat-error *ngIf="formGroup.get('fromAmount').hasError('required')">From Amount is required.</mat-error>
-          <mat-error *ngIf="formGroup.get('fromAmount').hasError('invalidFromAmountRange')">From Amount must be greater
+          <input matInput formControlName="amountFrom" type="number">
+          <mat-error *ngIf="formGroup.get('amountFrom').hasError('required')">From Amount is required.</mat-error>
+          <mat-error *ngIf="formGroup.get('amountFrom').hasError('invalidFromAmountRange')">From Amount must be greater
             than last selected To Amount.</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="col-lg-2">
           <mat-label>To</mat-label>
-          <input matInput formControlName="toAmount" type="number">
-          <mat-error *ngIf="formGroup.get('toAmount').hasError('required')">To Amount is required.</mat-error>
-          <mat-error *ngIf="formGroup.get('toAmount').hasError('invalidToAmountRange')">To Amount must be greater than
+          <input matInput formControlName="amountTo" type="number">
+          <mat-error *ngIf="formGroup.get('amountTo').hasError('required')">To Amount is required.</mat-error>
+          <mat-error *ngIf="formGroup.get('amountTo').hasError('invalidToAmountRange')">To Amount must be greater than
             From Amount.</mat-error>
         </mat-form-field>
 
@@ -67,12 +67,12 @@
 
         <mat-form-field appearance="outline" class="col-lg-2">
           <mat-label>Spread Units</mat-label>
-          <mat-select formControlName="spreadUnits">
+          <mat-select formControlName="spreadUnit">
             <mat-option *ngFor="let spreadUnit of spreadUnits" [value]="spreadUnit.value">
               {{ spreadUnit.viewValue }}
             </mat-option>
           </mat-select>
-          <mat-error *ngIf="formGroup.get('spreadUnits').hasError('required')">Spread Units is required.</mat-error>
+          <mat-error *ngIf="formGroup.get('spreadUnit').hasError('required')">Spread Units is required.</mat-error>
         </mat-form-field>
 
         <button *ngIf="i !== 0" class="round-button mt-2" mat-icon-button (click)="removeAmountRangeRow(i)">
