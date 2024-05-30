@@ -4,6 +4,7 @@ import { ConfirmationDialogComponent } from '../../../../globalModules-component
 import { AmountTiersService } from '../amount-tiers.service';
 import { Router } from '@angular/router';
 import { AuditHistoryComponent } from '@npmswapstech/audit-history';
+import { ApiService } from 'app/services/api.service';
 
 @Component({
   selector: 'app-amount-tiers',
@@ -14,7 +15,7 @@ import { AuditHistoryComponent } from '@npmswapstech/audit-history';
 export class AmountTiersComponent implements OnInit {
 
   rows
-  constructor(public dialog: MatDialog, public amountTiersService: AmountTiersService, private router: Router) {
+  constructor(public dialog: MatDialog, public amountTiersService: AmountTiersService, private router: Router, public apiService: ApiService) {
     this.getAmountTier();
   }
 
@@ -22,11 +23,20 @@ export class AmountTiersComponent implements OnInit {
   }
 
   getAmountTier() {
-    this.amountTiersService.getAmountTier().subscribe(data => {
-      if (data) {
-        this.rows = data;
+    this.apiService.get("/fxtrader/pricingamount").subscribe(
+      (reqData) => {
+       console.log("DATA ::", reqData.data);
+       this.rows = reqData.data;
+      },
+      (error) => {
+        
       }
-    });
+    );
+    // this.amountTiersService.getAmountTier().subscribe(data => {
+    //   if (data) {
+    //     this.rows = data;
+    //   }
+    // });
   }
 
   getStatus(isEnabled: number): string {
@@ -40,7 +50,7 @@ export class AmountTiersComponent implements OnInit {
     }
   }
 
-  openEnableDisableAmountTier(index: number) {
+  enableDisableAmountTier(index: number) {
     if (this.rows[index]) {
       const particularRecord = this.rows[index];
       const action = particularRecord.isEnabled === 0 ? 'enable' : 'disable';
@@ -49,14 +59,15 @@ export class AmountTiersComponent implements OnInit {
   }
 
   openCopyConfirmationDialog(index: number) {
-    this.openConfirmationDialog('copy', index);
+    console.log("rows ::", this.rows[index]);
+    this.openConfirmationDialog('copy', this.rows[index]);
   }
 
   openDeleteConfirmationDialog(index: number) {
     this.openConfirmationDialog('delete', index);
   }
 
-  openConfirmationDialog(action: string, index: number) {
+  openConfirmationDialog(action: string, indexData: any) {
     const reqdata = [];
     reqdata['action'] = action;
     reqdata['displayName'] = "Amount Tier";
@@ -71,12 +82,21 @@ export class AmountTiersComponent implements OnInit {
           
           console.log("Delete action is called.")
         } else if (result.action === 'copy' && result.formValue) {
-          
-          console.log('Form Value:', result.formValue);
+          indexData.tierName = result.formValue.tierName;
+          this.apiService.post("/fxtrader/pricingamount", indexData).subscribe(
+            (data) => {
+              console.log("DATA ::", data);
+              window.location.reload();
+            },
+            (error) => {
+  
+            }
+          );
+        
         } else if (result.action === 'enable') {
-          this.rows[index].isEnabled = 1;
+         // this.rows[index].isEnabled = 1;
         } else if (result.action === 'disable') {
-          this.rows[index].isEnabled = 0;
+        //  this.rows[index].isEnabled = 0;
         }
         console.log(`Dialog result: ${result}`);
       }
