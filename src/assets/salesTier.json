@@ -1,9 +1,9 @@
 [
     {
-      "id": "1a2b3c4d-1234-5678-90ab-cdef12345678",
-      "tierName": "Sales Tier 1",
+      "id": "90e5d88b-f4fe-4257-9cc1-fd9d50a4e408",
+      "tierName": "Silver",
       "tierType": "SALES",
-      "defaultTier": "9876fedc-ba09-8765-4321-dc1a1a1a1a1a",
+      "defaultTier": "abcd1234-5678-90ab-cdef-9876543210ac",
       "ccyGroups": [
         {
           "id": "abcd1234-5678-90ab-cdef-9876543210ac",

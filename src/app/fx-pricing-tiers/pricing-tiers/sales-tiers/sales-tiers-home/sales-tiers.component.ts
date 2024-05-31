@@ -89,7 +89,8 @@ export class SalesTiersComponent implements OnInit {
       height: '90vh', panelClass: 'custom-dialog-container',
       data: {
         isDefaultSalesTier: false,
-        salesTierId: '1a2b3c4d-1234-5678-90ab-cdef12345678',
+        tierId: '1a2b3c4d-1234-5678-90ab-cdef12345678',
+        tierName: 'Silver'
       }
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -105,16 +106,18 @@ export class SalesTiersComponent implements OnInit {
     if (ccyGroupName == 'Default') {
       data = {
         isDefaultSalesTier: true,
-        salesTierId: '1a2b3c4d-1234-5678-90ab-cdef12345678',
-        ccyGroupId: 'abcd1234-5678-90ab-cdef-9876543210ac'
+        tierId: '1a2b3c4d-1234-5678-90ab-cdef12345678',
+        tierName: 'Silver',
+        pricingItem: {}
       }
 
     }
     else {
       data = {
         isDefaultSalesTier: false,
-        salesTierId: '1a2b3c4d-1234-5678-90ab-cdef12345678',
-        ccyGroupId: 'abcd1234-5678-90ab-cdef-9876543210ab'
+        tierId: '1a2b3c4d-1234-5678-90ab-cdef12345678',
+        tierName: 'Silver',
+        pricingItem: {}
       }
     }
     const dialogRef = this.dialog.open(AddEditSalesTierComponent, {

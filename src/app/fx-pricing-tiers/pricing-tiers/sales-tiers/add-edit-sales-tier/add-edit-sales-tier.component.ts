@@ -1,10 +1,11 @@
 import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import { SalesTiersService } from '../sales-tiers.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { ApiService } from 'app/services/api.service';
 import { Globals } from 'globals.service';
+import { ConfigureAmountTierComponent } from '../../amount-tiers/configure-amount-tier/configure-amount-tier.component';
 
 @Component({
   selector: 'app-add-edit-sales-tier',
@@ -14,8 +15,10 @@ import { Globals } from 'globals.service';
 })
 export class AddEditSalesTierComponent implements OnInit {
 
-  salesTierId;
-  ccyGroupId;
+  tierId;
+  tierName;
+  pricingItem;
+
   isDefaultSalesTier = false;
   isTierNameReadOnly = true;
   isFirstPage = true;
@@ -28,24 +31,26 @@ export class AddEditSalesTierComponent implements OnInit {
 
   configSalesTierForm: FormGroup;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<AddEditSalesTierComponent>,
+  constructor(@Inject(MAT_DIALOG_DATA) private data: any, private dialog: MatDialog, private dialogRef: MatDialogRef<AddEditSalesTierComponent>,
     private _formBuilder: FormBuilder, private salesService: SalesTiersService, private apiService: ApiService,
     private globalService: Globals) {
     if (data && data.isDefaultSalesTier) {
       this.isDefaultSalesTier = true;
-      if (data.salesTierId && data.ccyGroupId) {
-        this.salesTierId = data.salesTierId;
-        this.ccyGroupId = data.ccyGroupId;
+      if (data.tierId && data.tierName && data.pricingItem) {
+        this.tierId = data.tierId;
+        this.tierName = data.tierName;
+        this.pricingItem = data.pricingItem;
       }
       else {
         this.isTierNameReadOnly = false;
       }
     }
-    else if (data && !data.isDefaultSalesTier && data.salesTierId) {
+    else if (data && !data.isDefaultSalesTier && data.tierId && data.tierName) {
       this.isDefaultSalesTier = false;
-      this.salesTierId = data.salesTierId;
-      if (data.ccyGroupId) {
-        this.ccyGroupId = data.ccyGroupId;
+      this.tierId = data.tierId;
+      this.tierName = data.tierName;
+      if (data.pricingItem) {
+        this.pricingItem = data.pricingItem;
       }
     }
   }
@@ -57,8 +62,8 @@ export class AddEditSalesTierComponent implements OnInit {
     this.initializeForm();
   }
 
-  getSalesTierById(tierId: any) {
-    this.salesService.getSalesTierById(tierId).subscribe(
+  getSalesTierByName(tierName: any) {
+    this.salesService.getSalesTierByName(tierName).subscribe(
       (data) => {
         return data;
       }
@@ -122,50 +127,45 @@ export class AddEditSalesTierComponent implements OnInit {
 
     this.configSalesTierForm = this._formBuilder.group(formGroupConfig);
 
-    if (this.salesTierId) {
-      this.salesService.getSalesTierById(this.salesTierId).subscribe(
-        (data) => {
-          if (data) {
-            this.configSalesTierForm.patchValue({
-              tierName: data.tierName,
+    if (this.tierName) {
+      this.configSalesTierForm.patchValue({
+        tierName: this.tierName,
+      });
+
+      let data = this.pricingItem;
+
+        if (data) {
+          this.configSalesTierForm.get('defaultPrice').setValue(this.salesService.getDefaultPriceNameById(data.defaultPrice));
+
+          if (!this.isDefaultSalesTier) {
+            this.configSalesTierForm.get('applicableChannel').setValue(data.channels);
+          }
+
+          const tenorRangeArray = this.getTenorRangeFormArray;
+          while (tenorRangeArray.length) {
+            tenorRangeArray.removeAt(0);
+          }
+
+          if (data && data.tenors.length > 0) {
+            data.tenors.forEach((tenor: any) => {
+              tenorRangeArray.push(this.initTenorRange(tenor));
             });
+          }
 
-            if (this.ccyGroupId) {
-              this.configSalesTierForm.get('defaultPrice').setValue(this.salesService.getDefaultPriceNameById(data.defaultPrice));
-
-              if (!this.isDefaultSalesTier) {
-                this.configSalesTierForm.get('applicableChannel').setValue(data.channels);
-              }
-
-              const tenorRangeArray = this.getTenorRangeFormArray;
-              while (tenorRangeArray.length) {
-                tenorRangeArray.removeAt(0);
-              }
-
-              if (data.ccyGroups && data.ccyGroups.length > 0) {
-                let ccyGroup = data.ccyGroups.find(ccyGrp => ccyGrp.id === this.ccyGroupId);
-                ccyGroup.tenors.forEach((tenorRange: any) => {
-                  tenorRangeArray.push(this.initTenorRange(tenorRange));
-                });
-
-                if (ccyGroup.pricingCcySet && ccyGroup.pricingCcySet.length > 0) {
-                  ccyGroup.pricingCcySet.forEach((ccyPair: any) => {
-                    this.selectedCCYPairs.push(ccyPair.ccyPair);
-                  })
-                }
-              }
-            }
+          if (data && data.pricingCcySet && data.pricingCcySet.length > 0) {
+            data.pricingCcySet.forEach((ccyPair: any) => {
+              this.selectedCCYPairs.push(ccyPair.ccyPair);
+            })
           }
         }
-      );
     }
   }
 
-  initTenorRange(tenorRange?: any) {
+  initTenorRange(tenor?: any) {
     return this._formBuilder.group({
-      from: [tenorRange ? tenorRange.rangeFrom : '', Validators.required],
-      to: [tenorRange ? tenorRange.rangeTo : '', Validators.required],
-      price: [(tenorRange && tenorRange.pricingAmount && tenorRange.pricingAmount.tierName) ? tenorRange.pricingAmount.tierName : '']
+      from: [tenor ? tenor.rangeFrom : '', Validators.required],
+      to: [tenor ? tenor.rangeTo : '', Validators.required],
+      price: [(tenor && tenor.pricingAmount && tenor.pricingAmount.tierName) ? tenor.pricingAmount.tierName : '']
     });
   }
 
@@ -201,6 +201,17 @@ export class AddEditSalesTierComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  openAmountTier(id){
+    const dialogRef = this.dialog.open(ConfigureAmountTierComponent,{width: '80%',
+      height: '70%', panelClass: 'custom-dialog-container',
+      data: {
+      }});
+      dialogRef.afterClosed().subscribe(result => {
+      
+        console.log(`Dialog result: ${result}`);
+      });
+  }
+
   onNextButtonClick() {
     const formValues = this.configSalesTierForm.value;
     console.log('Form Values:', formValues);
@@ -231,7 +242,48 @@ export class AddEditSalesTierComponent implements OnInit {
       const formValues = this.configSalesTierForm.value;
       console.log('Form Values:', formValues);
       console.log(this.selectedCCYPairs);
+
+      if(this.isDefaultSalesTier && !this.pricingItem){
+        let data:any = {
+          name: this.configSalesTierForm.get('tierName').value,
+          tierType: 3,
+          pricingItem: [{
+            isDefault: true,
+            tenors: 
+              this.getTenorRangeFormArray.value.map((tenor) => ({
+                rangeFrom: tenor.from,
+                rangeTo: tenor.to
+              })),
+          }]
+        }
+
+        this.salesService.createSalesTier(data).subscribe((result:any) => {
+            
+        })
+      }
+      else if(!this.isDefaultSalesTier && !this.pricingItem){
+        let data = {
+          isDefault: false,
+          channels: this.configSalesTierForm.get('applicableChannel').value,
+          tenors: 
+            this.getTenorRangeFormArray.value.map((tenor) => ({
+              rangeFrom: tenor.from,
+              rangeTo: tenor.to
+            })),
+          pricingCcySet: 
+            this.selectedCCYPairs.map((ccyPair) => ({
+              ccyPair: ccyPair
+            }))
+        }
+
+        this.salesService.createSalesTierItem(this.tierId, data).subscribe((result:any) => {
+          
+        })
+
+      }
+      
       this.dialogRef.close({ result: true });
+
     } else {
       this.markFormGroupAsTouched(this.configSalesTierForm);
     }
