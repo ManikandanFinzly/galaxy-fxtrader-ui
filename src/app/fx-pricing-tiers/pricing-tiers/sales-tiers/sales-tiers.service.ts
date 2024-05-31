@@ -26,4 +26,13 @@ export class SalesTiersService {
   public getDefaultPriceNameById(id){
     return 'Flat 1%';
   }
+
+  public getAllSalesTier(isParent:boolean){
+    console.log("IN Service calling getAllSalesTier:")
+    return (this.http.get(`/fxtrader/salestier?isParent=${isParent}`));
+  }
+
+  public getSalesTierByName(name: string){
+    return (this.http.get(`/fxtrader/salestier/${name}`));
+  }
 }
