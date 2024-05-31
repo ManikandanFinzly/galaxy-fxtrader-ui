@@ -93,8 +93,8 @@
           </div>
 
           <div>
-            <div class="btn btn-radius w-100 p-2 addBtn" (click)="addTier()">+ Add
-            </div>
+            <span class="btn btn-radius w-100 p-2 addBtn" role="button" (click)="addTier()">+ Add
+            </span>
           </div>
 
           <div class="row mt-4">
@@ -167,7 +167,7 @@
             <div class="col-6">
               <div  class="form-group has-search mb-0">
                 <span class="fa fa-search form-control-feedback"></span>
-                <input type="text" placeholder="Search" formControlName="availableCCYPairsSearch" class="form-control pl-6">
+                <input type="text" placeholder="Search" formControlName="selectedCCYPairsSearch" class="form-control pl-6">
               </div>              
               <div cdkDropList
                 #selectedCCYPairsList="cdkDropList" [cdkDropListData]="selectedCCYPairs"
@@ -201,7 +201,7 @@
               </div>
 
               <div class="col-2 pb-4">
-                <button class="round-button p-2" mat-icon-button>
+                <button class="round-button p-2" mat-icon-button (click)="openAmountTier(i)">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <polyline points="9 5 19 5 19 15" fill="none" stroke="#000" stroke-miterlimit="10" />
                     <line x1="19" y1="5" x2="6" y2="18" fill="none" stroke="#000" stroke-miterlimit="10" />
