@@ -2,10 +2,10 @@
   <div class="d-flex">
     <div class="col-3 tier-list">
       <div *ngFor="let data of salesTierNamesData">
-        <mat-card class="mat-card-tier" (click)="onSelectTier(data.name)" [class.selected-tier]="isSelectedTier">
+        <mat-card class="mat-card-tier" (click)="onSelectTier(data.id)" [class.selected-tier]="data.name == selectedTier.name">
           {{data.name}} 
           <div class="pull-right">
-            <button class="mat-menu" mat-icon-button [matMenuTriggerFor]="menu" [class.selected-tier]="isSelectedTier"><mat-icon>more_vert</mat-icon></button>
+            <button class="mat-menu" mat-icon-button [matMenuTriggerFor]="menu" [class.selected-tier]="data.name == selectedTier.name"><mat-icon>more_vert</mat-icon></button>
             <mat-menu #menu="matMenu">
               <button mat-menu-item [disabled]="!data.isEnabled" (click)="openCopyConfirmationDialog(rowIndex)">
                 <span>Copy</span>
@@ -50,7 +50,7 @@
                 <div class="d-flex justify-content-end align-items-center">
                   <button class="mat-menu" mat-icon-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
                   <mat-menu #menu="matMenu">
-                    <button mat-menu-item (click)="editTier(data.rows[0].ccypairs.ccyPair)" [disabled]="!isEnabled">
+                    <button mat-menu-item (click)="editTier(data.pricingItem)" [disabled]="!isEnabled">
                       <span>Edit</span>
                     </button>
                     <button *ngIf="i!=0" mat-menu-item (click)="openDeleteConfirmationDialog(rowIndex, 1)" [disabled]="!isEnabled">

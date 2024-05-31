@@ -62,14 +62,6 @@ export class AddEditSalesTierComponent implements OnInit {
     this.initializeForm();
   }
 
-  getSalesTierByName(tierName: any) {
-    this.salesService.getSalesTierByName(tierName).subscribe(
-      (data) => {
-        return data;
-      }
-    );
-  }
-
   getCCYPair() {
     this.apiService.get(ApiService.StaticData_URL + "currency-pairs").subscribe(
       (data) => {
@@ -277,7 +269,7 @@ export class AddEditSalesTierComponent implements OnInit {
         }
 
         this.salesService.createSalesTierItem(this.tierId, data).subscribe((result:any) => {
-          
+
         })
 
       }

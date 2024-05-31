@@ -48,22 +48,23 @@ export class SalesTiersComponent implements OnInit {
 
   columnData: any;
 
-  onSelectTier(tierName: string) {
+  onSelectTier(tierId: string) {
     this.isSelectedTier = true;
-    this.salesTierService.getSalesTierByName(tierName).subscribe((response: any) => {
+    this.salesTierService.getSalesTierById(tierId).subscribe((response: any) => {
       this.selectedTier = response.data;
       console.log("this.selectedTier: ", this.selectedTier);
       this.isEnabled = this.selectedTier.isEnabled;
       if (!this.selectedTier.isEnabled) {
-        this.toastr.error(tierName + " is disabled");
+        this.toastr.error(tierId + " is disabled");
       }
       if (this.selectedTier) {
         this.tableData = this.selectedTier.pricingItem.map(group => {
+          const pricingItem = group;
           const columns = Array.from(new Set(group.tenors.map(tr => `${tr.rangeFrom}-${tr.rangeTo}`)));
           const rows = [];
           if (group.pricingCcySet) {
             group.pricingCcySet.forEach(currencyPair => {
-              const row: any = { ccypairs: currencyPair };
+              const row: any = { ccypairs: currencyPair, pricingItem: group };
               if (group.tenors) {
                 group.tenors.forEach(tr => {
                   row[`${tr.rangeFrom}-${tr.rangeTo}`] = tr.pricingAmount.tierName;
@@ -71,9 +72,20 @@ export class SalesTiersComponent implements OnInit {
               }
               rows.push(row);
             });
-            console.log("Columns, rows: ", columns, rows);
-            return { columns, rows };
+            console.log("Columns, rows, pricingItems: ", columns, rows, pricingItem);
           }
+          else{
+              const row: any = { ccypairs: {"ccyPair":"Default"}, pricingItem: group };
+              if (group.tenors) {
+                group.tenors.forEach(tr => {
+                  row[`${tr.rangeFrom}-${tr.rangeTo}`] = "Flat";
+                });
+              }
+              rows.push(row);
+            console.log("Columns, rows: ", columns, rows);
+          }
+          return { columns, rows, pricingItem};
+
         }, console.log(this.tableData));
       } else {
         this.tableData = [];
@@ -101,14 +113,16 @@ export class SalesTiersComponent implements OnInit {
     });
   }
 
-  editTier(ccyGroupName) {
+  editTier(item) {
+    console.log(item);
+    
     let data: any;
-    if (ccyGroupName == 'Default') {
+    if (item.isDefault) {
       data = {
         isDefaultSalesTier: true,
         tierId: '1a2b3c4d-1234-5678-90ab-cdef12345678',
         tierName: 'Silver',
-        pricingItem: {}
+        pricingItem: item
       }
 
     }
@@ -117,7 +131,7 @@ export class SalesTiersComponent implements OnInit {
         isDefaultSalesTier: false,
         tierId: '1a2b3c4d-1234-5678-90ab-cdef12345678',
         tierName: 'Silver',
-        pricingItem: {}
+        pricingItem: item
       }
     }
     const dialogRef = this.dialog.open(AddEditSalesTierComponent, {

@@ -26,8 +26,8 @@ export class SalesTiersService {
     return (this.http.get(`/fxtrader/salestier?isParent=${isParent}`));
   }
 
-  public getSalesTierByName(name: string){
-    return (this.http.get(`/fxtrader/salestier/${name}`));
+  public getSalesTierById(id: string){
+    return (this.http.get(`/fxtrader/salestier/${id}`));
   }
 
   public createSalesTier(data) {
