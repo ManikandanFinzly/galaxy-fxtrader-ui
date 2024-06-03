@@ -1,13 +1,13 @@
 <div class="container-fluid custom-container">
   <div class="d-flex">
     <div class="col-3 tier-list">
-      <div *ngFor="let data of salesTierNamesData">
-        <mat-card class="mat-card-tier" (click)="onSelectTier(data.id)" [class.selected-tier]="data.name == selectedTier.name">
+      <div *ngFor="let data of salesTierNamesData; let i=index">
+        <mat-card class="mat-card-tier" (click)="onSelectTier(data.id); onSelectMatCard(i)" [class.selected-tier]="selectedIndex == i">
           {{data.name}} 
           <div class="pull-right">
-            <button class="mat-menu" mat-icon-button [matMenuTriggerFor]="menu" [class.selected-tier]="data.name == selectedTier.name"><mat-icon>more_vert</mat-icon></button>
+            <button class="mat-menu" mat-icon-button [matMenuTriggerFor]="menu" [class.selected-tier]="selectedIndex == i"><mat-icon>more_vert</mat-icon></button>
             <mat-menu #menu="matMenu">
-              <button mat-menu-item [disabled]="!data.isEnabled" (click)="openCopyConfirmationDialog(rowIndex)">
+              <button mat-menu-item [disabled]="!data.isEnabled" (click)="openCopyConfirmationDialog(data.id)">
                 <span>Copy</span>
               </button>
               <button mat-menu-item (click)="openEnableDisableAmountTier(rowIndex)">

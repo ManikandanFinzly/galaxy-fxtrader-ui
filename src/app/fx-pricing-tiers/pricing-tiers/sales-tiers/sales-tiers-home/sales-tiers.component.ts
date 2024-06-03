@@ -16,7 +16,7 @@ export class SalesTiersComponent implements OnInit {
 
   isEnabled: boolean;
   isSubTier: boolean;
-  isSelectedTier: boolean;
+  selectedIndex: any;
 
   salesTierNamesData: any;
   constructor(public dialog: MatDialog, private toastr: ToastrService, private salesTierService: SalesTiersService) {
@@ -33,7 +33,8 @@ export class SalesTiersComponent implements OnInit {
       console.log("AllSalesTierDataNames: ", response);
       if(response.data.length>0){
         this.salesTierNamesData = response.data;
-        this.onSelectTier(response.data[0].name);
+        this.onSelectTier(response.data[0].id);
+        this.selectedIndex = 0;
       }
     })
   }
@@ -43,13 +44,16 @@ export class SalesTiersComponent implements OnInit {
     return height;
   }
 
+  onSelectMatCard(index:any){
+    this.selectedIndex = index;
+  }
   selectedTier: any = null;
   tableData: any[] = [];
 
   columnData: any;
 
   onSelectTier(tierId: string) {
-    this.isSelectedTier = true;
+
     this.salesTierService.getSalesTierById(tierId).subscribe((response: any) => {
       this.selectedTier = response.data;
       console.log("this.selectedTier: ", this.selectedTier);
@@ -67,7 +71,7 @@ export class SalesTiersComponent implements OnInit {
               const row: any = { ccypairs: currencyPair, pricingItem: group };
               if (group.tenors) {
                 group.tenors.forEach(tr => {
-                  row[`${tr.rangeFrom}-${tr.rangeTo}`] = tr.pricingAmount.tierName;
+                  row[`${tr.rangeFrom}-${tr.rangeTo}`] = tr.pricingAmount== null? "FlatDummy2%" : tr.pricingAmount.tierName;//need to change the terinary operator
                 });
               }
               rows.push(row);
@@ -101,8 +105,8 @@ export class SalesTiersComponent implements OnInit {
       height: '90vh', panelClass: 'custom-dialog-container',
       data: {
         isDefaultSalesTier: false,
-        tierId: '1a2b3c4d-1234-5678-90ab-cdef12345678',
-        tierName: 'Silver'
+        tierId: this.selectedTier.id,
+        tierName: this.selectedTier.name,
       }
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -120,8 +124,8 @@ export class SalesTiersComponent implements OnInit {
     if (item.isDefault) {
       data = {
         isDefaultSalesTier: true,
-        tierId: '1a2b3c4d-1234-5678-90ab-cdef12345678',
-        tierName: 'Silver',
+        tierId: this.selectedTier.id,
+        tierName: this.selectedTier.name,
         pricingItem: item
       }
 
@@ -154,8 +158,10 @@ export class SalesTiersComponent implements OnInit {
     // this.openConfirmationDialog(action, index);
   }
 
-  openCopyConfirmationDialog(index: number) {
-    this.openConfirmationDialog('copy', index);
+  openCopyConfirmationDialog(id: number) {
+    if(this.selectedTier.id === id){
+      this.openConfirmationDialog('copy', this.selectedTier);
+    }
   }
 
   openDeleteConfirmationDialog(index: number, isSubTier: boolean) {
@@ -164,7 +170,7 @@ export class SalesTiersComponent implements OnInit {
     this.openConfirmationDialog('delete', index);
   }
 
-  openConfirmationDialog(action: string, index: number) {
+  openConfirmationDialog(action: string, data: any) {
     const reqdata = [];
     reqdata['action'] = action;
     reqdata['displayName'] = "Sales Tier";
@@ -182,12 +188,21 @@ export class SalesTiersComponent implements OnInit {
 
           console.log("Delete action is called.")
         } else if (result.action === 'copy' && result.formValue) {
-
           console.log('Form Value:', result.formValue);
+          data.name = result.formValue.tierName;
+          data.tierType = 3;
+          this.salesTierService.createSalesTier(data).subscribe((response:any) => {
+            if(response){
+              console.log("Copied SalesTier: ", response);
+              this.toastr.success("Copied Sucessfully");
+              
+            }
+          })
+         
         } else if (result.action === 'enable') {
-          this.rows[index].isEnabled = 1;
+          // this.rows[index].isEnabled = 1;
         } else if (result.action === 'disable') {
-          this.rows[index].isEnabled = 0;
+          // this.rows[index].isEnabled = 0;
         }
         console.log(`Dialog result: ${result}`);
       }
