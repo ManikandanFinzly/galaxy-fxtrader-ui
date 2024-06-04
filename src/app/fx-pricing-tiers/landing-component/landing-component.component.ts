@@ -50,6 +50,9 @@ export class LandingComponentComponent implements OnInit {
         isDefaultTradingTier: true,
       }});
       dialogRef.afterClosed().subscribe(result => {
+        if(result){
+          this.toastr.success("Saved Successfully")
+        }
         console.log(`Dialog result: ${result}`);
       });
     } else if (this.globals.tabName == this.globals.RATE_SOURCE_CONSTANT) {

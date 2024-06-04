@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from 'app/services/api.service';
+import { ToastrService } from 'ngx-toastr';
 import { TradingTiersService } from '../trading-tiers.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
@@ -17,7 +18,7 @@ export class AddEditTradingTiersComponent implements OnInit {
 
   tradingTierForm: FormGroup;
   tradingTierId;
-  fromTime : string[] = ['00:00', '00:15', '00:30', '00:45', '01:00', '01:15', '01:30', '01:45', '02:00', '02:15', '02:30', '02:45',
+  fromtime: string[] = ['00:00', '00:15', '00:30', '00:45', '01:00', '01:15', '01:30', '01:45', '02:00', '02:15', '02:30', '02:45',
     '03:00', '03:15', '03:30', '03:45', '04:00', '04:15', '04:30', '04:45', '05:00', '05:15', '05:30', '05:45',
     '06:00', '06:15', '06:30', '06:45', '07:00', '07:15', '07:30', '07:45', '08:00', '08:15', '08:30', '08:45',
     '09:00', '09:15', '09:30', '09:45', '10:00', '10:15', '10:30', '10:45', '11:00', '11:15', '11:30', '11:45',
@@ -25,7 +26,7 @@ export class AddEditTradingTiersComponent implements OnInit {
     '15:00', '15:15', '15:30', '15:45', '16:00', '16:15', '16:30', '16:45', '17:00', '17:15', '17:30', '17:45',
     '18:00', '18:15', '18:30', '18:45', '19:00', '19:15', '19:30', '19:45', '20:00', '20:15', '20:30', '20:45',
     '21:00', '21:15', '21:30', '21:45', '22:00', '22:15', '22:30', '22:45', '23:00'];
-  toTime : string[] = ['00:00', '00:15', '00:30', '00:45', '01:00', '01:15', '01:30', '01:45', '02:00', '02:15', '02:30', '02:45',
+  totime: string[] = ['00:00', '00:15', '00:30', '00:45', '01:00', '01:15', '01:30', '01:45', '02:00', '02:15', '02:30', '02:45',
     '03:00', '03:15', '03:30', '03:45', '04:00', '04:15', '04:30', '04:45', '05:00', '05:15', '05:30', '05:45',
     '06:00', '06:15', '06:30', '06:45', '07:00', '07:15', '07:30', '07:45', '08:00', '08:15', '08:30', '08:45',
     '09:00', '09:15', '09:30', '09:45', '10:00', '10:15', '10:30', '10:45', '11:00', '11:15', '11:30', '11:45',
@@ -33,24 +34,25 @@ export class AddEditTradingTiersComponent implements OnInit {
     '15:00', '15:15', '15:30', '15:45', '16:00', '16:15', '16:30', '16:45', '17:00', '17:15', '17:30', '17:45',
     '18:00', '18:15', '18:30', '18:45', '19:00', '19:15', '19:30', '19:45', '20:00', '20:15', '20:30', '20:45',
     '21:00', '21:15', '21:30', '21:45', '22:00', '22:15', '22:30', '22:45', '23:00'];
-  defaultPrices = ['Flat 1%', 'Flat 3%'];
-  rateSources: string[] = ['Online', 'Offline'];
+  defaultPrices = ['Pricing Amount 1', 'Pricing Amount 2', 'Pricing Amount 3', 'Pricing Amount 4', 'Pricing Amount 5', 'Pricing Amount 6'];
+  rateSource: string[] = ['Online', 'Offline', 'PCB', 'FCB'];
   ccyGroupId;
-  isDefaultTradingTier = false;
+  isDefaultTradingTier: boolean = false;
   isTierNameReadOnly = true;
   isFirstPage = true;
   tenorsList: any;
-  defaultPricesList = ['Flat 1%', 'Flat 2%', 'Flat 3%'];
+  defaultPricesList = ['Pricing Amount 1', 'Pricing Amount 2', 'Pricing Amount 3', 'Pricing Amount 4', 'Pricing Amount 5', 'Pricing Amount 6'];
   availableCCYPairs: any = [];
   selectedCCYPairs: any = [];
   isToggled: boolean = false;
-  
+  noQuoteMsg: any;
+
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,
     private dialogRef: MatDialogRef<AddEditTradingTiersComponent>,
     private _formBuilder: FormBuilder,
     public apiService: ApiService,
     private tradingTier: TradingTiersService,
-    private globalService: Globals) {
+    private globalService: Globals, private toastr: ToastrService) {
     if (data && data.isDefaultTradingTier) {
       this.isDefaultTradingTier = true;
       if (data.tradingTierId && data.ccyGroupId) {
@@ -116,16 +118,16 @@ export class AddEditTradingTiersComponent implements OnInit {
 
   initializeForm() {
     const formGroupConfig: any = {
-      tierName: ['', Validators.required],
+      name: ['', Validators.required],
       tenorRange: this._formBuilder.array([
         this.initTenorRange()
       ]),
       defaultPrice: ['', Validators.required],
       availableCCYPairsSearch: [''],
       selectedCCYPairsSearch: [''],
-      fromTime: ['', Validators.required],
-      toTime: ['', Validators.required],
-      noQuoteMessage: ['', Validators.required],
+      fromtime: ['', Validators.required],
+      totime: ['', Validators.required],
+      noQuoteMsg: ['', Validators.required],
       rateSource: ['', Validators.required]
     };
 
@@ -136,34 +138,28 @@ export class AddEditTradingTiersComponent implements OnInit {
         (data) => {
           if (data) {
             this.tradingTierForm.patchValue({
-              tierName : data.tierName,
-              isToggled: data.isAllDay,
-              fromTime : data.fromTime,
-              toTime : data.toTime,
-              rateSource : data.rateSource,
-              noQuoteMessage : data.noQuoteMsg
             });
 
             if (this.ccyGroupId) {
-              this.tradingTierForm.get('defaultPrice').setValue(this.tradingTier.getDefaultPriceNameById(data.defaultPrice));
+              // this.tradingTierForm.get('defaultPrice').setValue(this.tradingTier.getDefaultPriceNameById(data.defaultPrice));
 
               const tenorRangeArray = this.getTenorRangeFormArray;
               while (tenorRangeArray.length) {
                 tenorRangeArray.removeAt(0);
               }
 
-              if (data.ccyGroups && data.ccyGroups.length > 0) {
-                let ccyGroup = data.ccyGroups.find(ccyGrp => ccyGrp.id === this.ccyGroupId);
-                ccyGroup.tenors.forEach((tenorRange: any) => {
-                  tenorRangeArray.push(this.initTenorRange(tenorRange));
-                });
+              // if (data.ccyGroups && data.ccyGroups.length > 0) {
+              //   let ccyGroup = data.ccyGroups.find(ccyGrp => ccyGrp.id === this.ccyGroupId);
+              //   ccyGroup.tenors.forEach((tenorRange: any) => {
+              //     tenorRangeArray.push(this.initTenorRange(tenorRange));
+              //   });
 
-                if (ccyGroup.pricingCcySet && ccyGroup.pricingCcySet.length > 0) {
-                  ccyGroup.pricingCcySet.forEach((ccyPair: any) => {
-                    this.selectedCCYPairs.push(ccyPair.ccyPair);
-                  })
-                }
-              }
+              //   if (ccyGroup.pricingCcySet && ccyGroup.pricingCcySet.length > 0) {
+              //     ccyGroup.pricingCcySet.forEach((ccyPair: any) => {
+              //       this.selectedCCYPairs.push(ccyPair.ccyPair);
+              //     })
+              //   }
+              // }
             }
           }
         }
@@ -175,12 +171,16 @@ export class AddEditTradingTiersComponent implements OnInit {
     return this._formBuilder.group({
       from: [tenorRange ? tenorRange.rangeFrom : '', Validators.required],
       to: [tenorRange ? tenorRange.rangeTo : '', Validators.required],
-      price: [(tenorRange && tenorRange.pricingAmount && tenorRange.pricingAmount.tierName) ? tenorRange.pricingAmount.tierName : '']
+      price: [(tenorRange && tenorRange.pricingAmount && tenorRange.pricingAmount.name) ? tenorRange.pricingAmount.name : '']
     });
   }
 
   get getTenorRangeFormArray(): FormArray {
     return this.tradingTierForm.get('tenorRange') as FormArray;
+  }
+
+  get pricingItem(): FormArray {
+    return this.tradingTierForm.get('pricingItem') as FormArray;
   }
 
   addTier() {
@@ -240,7 +240,50 @@ export class AddEditTradingTiersComponent implements OnInit {
       const formValues = this.tradingTierForm.value;
       console.log('Form Values:', formValues);
       console.log(this.selectedCCYPairs);
-      this.closeModal();
+      if (this.isDefaultTradingTier && !this.pricingItem) {
+        let data: any = {
+          name: this.tradingTierForm.get('name').value,
+          tierType: 4,
+          pricingItem: [{
+            isDefault: true,
+            fromtime: this.tradingTierForm.get('fromtime').value,
+            totime: this.tradingTierForm.get('totime').value,
+            rateSource: this.tradingTierForm.get('rateSource').value,
+            noQuoteMsg: this.tradingTierForm.get('noQuoteMsg').value,
+            tenors:
+              this.getTenorRangeFormArray.value.map((tenor) => ({
+                rangeFrom: tenor.from,
+                rangeTo: tenor.to
+              })),
+          }]
+        }
+        console.log("pricingitems", data);
+
+        this.tradingTier.createTradingTier(data).subscribe((result: any) => {
+
+        })
+      }
+
+      else if (!this.isDefaultTradingTier && !this.pricingItem) {
+        let data = {
+          isDefault: false,
+          tenors:
+            this.getTenorRangeFormArray.value.map((tenor) => ({
+              rangeFrom: tenor.from,
+              rangeTo: tenor.to
+            })),
+          pricingCcySet:
+            this.selectedCCYPairs.map((ccyPair) => ({
+              ccyPair: ccyPair
+            }))
+        }
+
+        this.tradingTier.createTradingTierItem(this.tradingTierId, data).subscribe((result: any) => {
+
+        })
+      }
+
+      this.dialogRef.close({ result: true });
     } else {
       this.markFormGroupAsTouched(this.tradingTierForm);
     }
@@ -260,13 +303,13 @@ export class AddEditTradingTiersComponent implements OnInit {
     this.isToggled = !this.isToggled;
     if (this.isToggled) {
 
-      this.tradingTierForm.get('fromTime').disable();
-      this.tradingTierForm.get('toTime').disable();
-      this.tradingTierForm.get('noQuoteMessage').disable();
+      this.tradingTierForm.get('fromtime').disable();
+      this.tradingTierForm.get('totime').disable();
+      this.tradingTierForm.get('noQuoteMsg').disable();
     } else {
-      this.tradingTierForm.get('fromTime').enable();
-      this.tradingTierForm.get('toTime').enable();
-      this.tradingTierForm.get('noQuoteMessage').enable();
+      this.tradingTierForm.get('fromtime').enable();
+      this.tradingTierForm.get('totime').enable();
+      this.tradingTierForm.get('noQuoteMsg').enable();
     }
   }
 

@@ -15,7 +15,7 @@ export class TradingTiersService {
   constructor(private http: HttpClient, private global: Globals) { }
 
   private jsonUrl = 'assets/tradingTier.json';
-
+  
   public getTradingTier(): Observable<any[]> {
     return this.http.get<any[]>(this.jsonUrl);
   }
@@ -46,4 +46,11 @@ export class TradingTiersService {
     return throwError('Something bad happened; please try again later.');
   }
 
+  public createTradingTier(data) {
+    return this.http.post(`/fxtrader/tradingtier`, data);
+  }
+
+  public createTradingTierItem(tierId, data) {
+    return this.http.post(`/fxtrader/tradingtieritem/${tierId}`, data);
+  }
 }

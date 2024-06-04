@@ -39,10 +39,10 @@
             <div class="col-12">
               <mat-form-field appearance="outline" class="w-100" [ngClass]="isTierNameReadOnly?'readonlyCls':''">
                 <mat-label>Tier Name</mat-label>
-                <input formControlName="tierName" matInput placeholder="Tier Name" autocomplete="off"
+                <input formControlName="name" matInput placeholder="Tier Name" autocomplete="off"
                 [readonly]="isTierNameReadOnly">
                 <mat-error
-                  *ngIf="tradingTierForm.get('tierName').invalid && tradingTierForm.get('tierName').touched">Tier Name
+                  *ngIf="tradingTierForm.get('name').invalid && tradingTierForm.get('name').touched">Tier Name
                   is required</mat-error>
               </mat-form-field>
             </div>
@@ -60,24 +60,24 @@
           <div class="col-12 d-md-flex p-0">
             <mat-form-field appearance="outline" class="col-6 p-0">
               <mat-label class="required-fields">From</mat-label>
-              <mat-select formControlName="fromTime">
-                <mat-option *ngFor="let from of fromTime" [value]="from">
+              <mat-select formControlName="fromtime">
+                <mat-option *ngFor="let from of fromtime" [value]="from">
                   {{ from }}
                 </mat-option>
                </mat-select> 
-               <mat-error *ngIf="tradingTierForm.get('fromTime').touched">
+               <mat-error *ngIf="tradingTierForm.get('fromtime').touched">
                 From time is required
               </mat-error>
             </mat-form-field>
             &nbsp;
             <mat-form-field appearance="outline" class="col-6 p-0">
               <mat-label class="required-fields">To</mat-label>
-              <mat-select formControlName="toTime">
-                <mat-option *ngFor="let to of toTime" [value]="to">
+              <mat-select formControlName="totime">
+                <mat-option *ngFor="let to of totime" [value]="to">
                   {{ to }}
                 </mat-option>
               </mat-select>
-              <mat-error *ngIf="tradingTierForm.get('toTime').touched">
+              <mat-error *ngIf="tradingTierForm.get('totime').touched">
                 To time is required
               </mat-error>
             </mat-form-field>
@@ -87,8 +87,8 @@
             <div>
               <mat-form-field appearance="outline" class="w-100">
                 <mat-label class="required-fields">No Quote Message</mat-label>
-                <input matInput formControlName="noQuoteMessage" />
-                <mat-error *ngIf="tradingTierForm.get('noQuoteMessage').touched">
+                <input matInput formControlName="noQuoteMsg" />
+                <mat-error *ngIf="tradingTierForm.get('noQuoteMsg').touched">
                   No Quote Message is required
                 </mat-error>
               </mat-form-field>
@@ -99,7 +99,7 @@
             <mat-form-field appearance="outline" class="col-6 p-0">
               <mat-label class="required-fields">Rate Source</mat-label>
               <mat-select formControlName="rateSource">
-                <mat-option *ngFor="let source of rateSources" [value]="source">
+                <mat-option *ngFor="let source of rateSource" [value]="source">
                   {{ source }}
                 </mat-option>
               </mat-select>
@@ -191,24 +191,30 @@
           </div>
 
           <div class="row text-center">
-            <div class="col-6 w-100 example-container text-center">
-              <input type="text" placeholder="Search" formControlName="availableCCYPairsSearch" class="form-control">
-              <div style="height: 140px; overflow-y: auto; overflow-x: hidden;" cdkDropList
+            <div class="col-6">
+              <div  class="form-group has-search mb-0">
+                <span class="fa fa-search form-control-feedback"></span>
+                <input type="text" placeholder="Search" formControlName="availableCCYPairsSearch" class="form-control pl-6">
+              </div>
+              <div cdkDropList
                 #availableCCYPairsList="cdkDropList" [cdkDropListData]="availableCCYPairs"
-                [cdkDropListConnectedTo]="[selectedCCYPairsList]" class="example-list"
+                [cdkDropListConnectedTo]="[selectedCCYPairsList]" class="ccyPair-list"
                 (cdkDropListDropped)="drop($event, filteredSelectedCCYPairs)">
-                <div class="example-box" *ngFor="let item of filteredAvailableCCYPairs; let e = even; let o = odd"
+                <div class="ccyPair-box" *ngFor="let item of filteredAvailableCCYPairs; let e = even; let o = odd"
                   [ngClass]="e? 'evenRow' : 'oddRow'" cdkDrag>{{item}}</div>
               </div>
             </div>
 
-            <div class="col-6 w-100 example-container text-center">
-              <input type="text" placeholder="Search" formControlName="selectedCCYPairsSearch" class="form-control">
-              <div style="height: 140px; overflow-y: auto; overflow-x: hidden;" cdkDropList
+            <div class="col-6">
+              <div  class="form-group has-search mb-0">
+                <span class="fa fa-search form-control-feedback"></span>
+                <input type="text" placeholder="Search" formControlName="availableCCYPairsSearch" class="form-control pl-6">
+              </div>
+              <div cdkDropList
                 #selectedCCYPairsList="cdkDropList" [cdkDropListData]="selectedCCYPairs"
-                [cdkDropListConnectedTo]="[availableCCYPairsList]" class="example-list"
+                [cdkDropListConnectedTo]="[availableCCYPairsList]" class="ccyPair-list"
                 (cdkDropListDropped)="drop($event, filteredAvailableCCYPairs)">
-                <div class="example-box" *ngFor="let item of filteredSelectedCCYPairs; let e = even; let o = odd"
+                <div class="ccyPair-box" *ngFor="let item of filteredSelectedCCYPairs; let e = even; let o = odd"
                   [ngClass]="e? 'evenRow' : 'oddRow'" cdkDrag>{{item}}</div>
               </div>
             </div>

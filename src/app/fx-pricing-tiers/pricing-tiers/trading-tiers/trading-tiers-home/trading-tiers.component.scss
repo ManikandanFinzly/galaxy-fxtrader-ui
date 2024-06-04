@@ -9,41 +9,28 @@
 //   max-width: 95% !important;
 }
 
-/* Style for mat-card-bottom */
-.mat-card-bottom {
-margin-top: 1rem; /* Adjust margin as needed */
-height: 3rem;
-margin-right: 1.5rem;
-border-radius: 1rem !important;
-
-}
-
-/* Style for centering wrapper */
 .center-wrapper {
 display: flex;
 justify-content: center;
 align-items: center;
-height: 100%; /* Make the wrapper fill the height of the mat-card */
+height: 100%; 
 }
 
-/* Style for plusIcon */
 .plusIcon {
-font-size: 24px; /* Adjust icon size as needed */
+font-size: 24px; 
 }
 
-/* Add curved borders to ngx-datatable */
 /deep/ .ngx-datatable {
-border-radius: 10px; /* Adjust the border radius as needed */
+border-radius: 10px; 
 }
 
-/* Add margin on the right side of the page */
 .container-right-margin {
 border-radius: 1rem;
 max-height: 200px;
 }
 
 .first-ngx-table {
-height: 105px !important; /* Forcefully set the height of the first ngx-datatable */
+height: 105px !important; 
 }
 
 .custom-container {

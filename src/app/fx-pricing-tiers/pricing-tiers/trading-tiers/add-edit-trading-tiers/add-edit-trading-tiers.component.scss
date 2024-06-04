@@ -1,11 +1,13 @@
-.example-list {
+.ccyPair-list {
   border: solid 1px #ccc;
   font-weight: 500;
   scrollbar-width: thin; 
-  crollbar-color: #f1f1f1;
+  height: 140px; 
+  overflow-y: auto; 
+  overflow-x: hidden;
 }
 
-.example-box {
+.ccyPair-box {
   padding: 4px 10px;
   border-bottom: solid 1px #ccc;
   color: rgba(0, 0, 0, 0.87);
@@ -27,6 +29,14 @@
   border-radius: 15px;
   display: flex;
   flex-direction: column;
+}
+
+.evenRow {
+  background-color: white;
+}
+
+.oddRow {
+  background-color: rgb(245, 243, 243);
 }
 
 .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
