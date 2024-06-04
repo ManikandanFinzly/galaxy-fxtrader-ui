@@ -5,7 +5,7 @@ import { AddEditTradingTiersComponent } from '../add-edit-trading-tiers/add-edit
 import { ConfirmationDialogComponent } from 'app/globalModules-components/confirmation-dialog/confirmation-dialog.component';
 import { TradingTiersService } from '../trading-tiers.service';
 import { AuditHistoryComponent } from '@npmswapstech/audit-history';
-
+import { ApiService } from 'app/services/api.service';
 
 @Component({
   selector: 'app-trading-tiers',
@@ -14,15 +14,21 @@ import { AuditHistoryComponent } from '@npmswapstech/audit-history';
   encapsulation: ViewEncapsulation.None
 })
 export class TradingTiersComponent implements OnInit {
-  isEnabled: boolean;
-  isAllday: boolean;
-  isSubTier: boolean;
-  constructor(public dialog: MatDialog, private toastr: ToastrService) {
-    console.log("Trading tier called...");
-  }
+  tradingTier: any[] = [];
+  errorMessage: string = '';
 
-  ngOnInit() {
-    this.onSelectTier(this.tradingTier[0].tierName);
+  isEnabled: boolean;
+  isSubTier: boolean;
+  isSelectedTier: boolean;
+  tradingTierNamesData: any;
+  selectedTier: any = null;
+  tableData: any[] = [];
+  columnData: any;
+
+  rows;
+
+  constructor(public dialog: MatDialog, private toastr: ToastrService, private tradingTierService: TradingTiersService, private apiService: ApiService) {
+    console.log("Trading tier called...");
   }
 
   getRowHeight() {
@@ -30,441 +36,53 @@ export class TradingTiersComponent implements OnInit {
     return height;
   }
 
-  tradingTier = [
-    {
-      tierName: 'Platinum',
-      isEnabled: true,
-      isAllDay: true,
-      fromTime: "00:00",
-      toTime: "00:45",
-      noQuoteMsg: "test",
-      rateSource: "online",
-      defaultPrice: 'Flat 3%',
-      ccyGroup: [
-        {
-          ccypairs: ["default"],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '3M', price: 'Flat 3%' },
-            { from: '5M', to: '1Y', price: 'Flat 3%' }
-          ],
-        },
-        {
-          ccypairs: [
-            "AUDAUD", "AUDMYR", "AUDUSD", "CADCAD", "CHFCHF", "EURCAD", "EUREUR",
-            "EURJPY", "EURUSD", "GBPAUD", "GBPGBP", "GBPUSD", "HKDHKD", "JPYJPY",
-            "MXNMXN", "NZDUSD", "USDAED", "USDAFN", "USDAMD", "USDANG", "USDARS",
-            "USDAWG", "USDAZM", "USDAZN", "USDBAM", "USDBBD", "USDBDT", "USDBGN",
-            "USDBHD", "USDBIF", "USDBMD", "USDBND", "USDBOB", "USDBRL", "USDBSD",
-            "USDBWP", "USDBZD", "USDCAD", "USDCDF", "USDCHF"
-          ],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '2M', price: 'Flat 3%' },
-            { from: '2M', to: '3M', price: 'Flat 3%' },
-            { from: '3M', to: '4M', price: 'Flat 2%' },
-            { from: '4M', to: '5M', price: 'Flat 3%' },
-            { from: '5M', to: '1Y', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        },
-        {
-          ccypairs: ["JPYUSD", "ZARUSD", "QARUSD"],
-          tenorRange: [
-            { from: '1M', to: '2M', price: 'Flat 2%' },
-            { from: '2M', to: '5M', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        },
-        {
-          ccypairs: ["AUDUSD", "EURUSD", "GBPUSD", "JJJUSD", "ZARUSD", "QARUSD"],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '2M', price: 'Flat 3%' },
-            { from: '2M', to: '3M', price: 'Flat 3%' },
-            { from: '3M', to: '4M', price: 'Flat 2%' },
-            { from: '4M', to: '5M', price: 'Flat 3%' },
-            { from: '5M', to: '1Y', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        },
-        {
-          ccypairs: ["JPYUSD", "ZARUSD", "QARUSD"],
-          tenorRange: [
-            { from: '1M', to: '2M', price: 'Flat 2%' },
-            { from: '2M', to: '5M', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        }
-      ],
-    },
-    {
-      tierName: 'Gold',
-      isEnabled: false,
-      ccyGroup: [
-        {
-          ccypairs: ["default"],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '3M', price: 'Flat 3%' },
-            { from: '5M', to: '1Y', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%'
-        },
-        {
-          ccypairs: ["AUDUSD", "EURUSD", "GBPUSD"],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '3M', price: 'Flat 3%' },
-            { from: '5M', to: '7M', price: 'Flat 3%' },
-            { from: '7M', to: '1Y', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        },
-        {
-          ccypairs: ["JJJUSD", "ZARUSD", "QARUSD"],
-          tenorRange: [
-            { from: '1M', to: '2M', price: 'Flat 2%' },
-            { from: '2M', to: '5M', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        }
-      ],
-    },
-    {
-      tierName: 'Silver',
-      isEnabled: false,
-      ccyGroup: [
-        {
-          ccypairs: ["default"],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '3M', price: 'Flat 3%' },
-            { from: '5M', to: '1Y', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%'
-        },
-        {
-          ccypairs: [
-            "AUDAUD", "AUDMYR", "AUDUSD", "CADCAD", "CHFCHF", "EURCAD", "EUREUR",
-            "EURJPY", "EURUSD", "GBPAUD", "GBPGBP", "GBPUSD", "HKDHKD", "JPYJPY",
-            "MXNMXN", "NZDUSD", "USDAED", "USDAFN", "USDAMD", "USDANG", "USDARS",
-            "USDAWG", "USDAZM", "USDAZN", "USDBAM", "USDBBD", "USDBDT", "USDBGN",
-            "USDBHD", "USDBIF", "USDBMD", "USDBND", "USDBOB", "USDBRL", "USDBSD",
-            "USDBWP", "USDBZD", "USDCAD", "USDCDF", "USDCHF"
-          ],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '2M', price: 'Flat 3%' },
-            { from: '2M', to: '3M', price: 'Flat 3%' },
-            { from: '3M', to: '4M', price: 'Flat 2%' },
-            { from: '4M', to: '5M', price: 'Flat 3%' },
-            { from: '5M', to: '1Y', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        },
-        {
-          ccypairs: ["JPYUSD", "ZARUSD", "QARUSD"],
-          tenorRange: [
-            { from: '1M', to: '2M', price: 'Flat 2%' },
-            { from: '2M', to: '5M', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        },
-        {
-          ccypairs: ["AUDUSD", "EURUSD", "GBPUSD", "JJJUSD", "ZARUSD", "QARUSD"],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '2M', price: 'Flat 3%' },
-            { from: '2M', to: '3M', price: 'Flat 3%' },
-            { from: '3M', to: '4M', price: 'Flat 2%' },
-            { from: '4M', to: '5M', price: 'Flat 3%' },
-            { from: '5M', to: '1Y', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        },
-        {
-          ccypairs: ["JPYUSD", "ZARUSD", "QARUSD"],
-          tenorRange: [
-            { from: '1M', to: '2M', price: 'Flat 2%' },
-            { from: '2M', to: '5M', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        }
-      ],
-    },
-    {
-      tierName: 'Bronze',
-      isEnabled: false,
-      ccyGroup: [
-        {
-          ccypairs: ["default"],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '3M', price: 'Flat 3%' },
-            { from: '5M', to: '1Y', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%'
-        },
-        {
-          ccypairs: ["AUDUSD", "EURUSD", "GBPUSD"],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '3M', price: 'Flat 3%' },
-            { from: '5M', to: '7M', price: 'Flat 3%' },
-            { from: '7M', to: '1Y', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        }
-      ],
-    },
-    {
-      tierName: 'Copper',
-      isEnabled: false,
-      ccyGroup: [
-        {
-          ccypairs: ["default"],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '3M', price: 'Flat 3%' },
-            { from: '5M', to: '1Y', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%'
-        },
-        {
-          ccypairs: [
-            "AUDAUD", "AUDMYR", "AUDUSD", "CADCAD", "CHFCHF", "EURCAD", "EUREUR",
-            "EURJPY", "EURUSD", "GBPAUD", "GBPGBP", "GBPUSD", "HKDHKD", "JPYJPY",
-            "MXNMXN", "NZDUSD", "USDAED", "USDAFN", "USDAMD", "USDANG", "USDARS",
-            "USDAWG", "USDAZM", "USDAZN", "USDBAM", "USDBBD", "USDBDT", "USDBGN",
-            "USDBHD", "USDBIF", "USDBMD", "USDBND", "USDBOB", "USDBRL", "USDBSD",
-            "USDBWP", "USDBZD", "USDCAD", "USDCDF", "USDCHF"
-          ],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '2M', price: 'Flat 3%' },
-            { from: '2M', to: '3M', price: 'Flat 3%' },
-            { from: '3M', to: '4M', price: 'Flat 2%' },
-            { from: '4M', to: '5M', price: 'Flat 3%' },
-            { from: '5M', to: '1Y', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        },
-        {
-          ccypairs: ["JPYUSD", "ZARUSD", "QARUSD"],
-          tenorRange: [
-            { from: '1M', to: '2M', price: 'Flat 2%' },
-            { from: '2M', to: '5M', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        },
-        {
-          ccypairs: ["AUDUSD", "EURUSD", "GBPUSD", "JJJUSD", "ZARUSD", "QARUSD"],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '2M', price: 'Flat 3%' },
-            { from: '2M', to: '3M', price: 'Flat 3%' },
-            { from: '3M', to: '4M', price: 'Flat 2%' },
-            { from: '4M', to: '5M', price: 'Flat 3%' },
-            { from: '5M', to: '1Y', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        },
-        {
-          ccypairs: ["JPYUSD", "ZARUSD", "QARUSD"],
-          tenorRange: [
-            { from: '1M', to: '2M', price: 'Flat 2%' },
-            { from: '2M', to: '5M', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        }
-      ],
-    },
-    {
-      tierName: 'Uranium',
-      isEnabled: false,
-      ccyGroup: [
-        {
-          ccypairs: ["default"],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '3M', price: 'Flat 3%' },
-            { from: '5M', to: '1Y', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%'
-        },
-        {
-          ccypairs: ["AUDUSD", "EURUSD", "GBPUSD"],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '3M', price: 'Flat 3%' },
-            { from: '5M', to: '7M', price: 'Flat 3%' },
-            { from: '7M', to: '1Y', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        },
-        {
-          ccypairs: ["JJJUSD", "ZARUSD", "QARUSD"],
-          tenorRange: [
-            { from: '1M', to: '2M', price: 'Flat 2%' },
-            { from: '2M', to: '5M', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        }
-      ],
-    },
-    {
-      tierName: 'Radium',
-      isEnabled: false,
-      ccyGroup: [
-        {
-          ccypairs: ["default"],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '3M', price: 'Flat 3%' },
-            { from: '5M', to: '1Y', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%'
-        },
-        {
-          ccypairs: [
-            "AUDAUD", "AUDMYR", "AUDUSD", "CADCAD", "CHFCHF", "EURCAD", "EUREUR",
-            "EURJPY", "EURUSD", "GBPAUD", "GBPGBP", "GBPUSD", "HKDHKD", "JPYJPY",
-            "MXNMXN", "NZDUSD", "USDAED", "USDAFN", "USDAMD", "USDANG", "USDARS",
-            "USDAWG", "USDAZM", "USDAZN", "USDBAM", "USDBBD", "USDBDT", "USDBGN",
-            "USDBHD", "USDBIF", "USDBMD", "USDBND", "USDBOB", "USDBRL", "USDBSD",
-            "USDBWP", "USDBZD", "USDCAD", "USDCDF", "USDCHF"
-          ],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '2M', price: 'Flat 3%' },
-            { from: '2M', to: '3M', price: 'Flat 3%' },
-            { from: '3M', to: '4M', price: 'Flat 2%' },
-            { from: '4M', to: '5M', price: 'Flat 3%' },
-            { from: '5M', to: '1Y', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        },
-        {
-          ccypairs: ["JPYUSD", "ZARUSD", "QARUSD"],
-          tenorRange: [
-            { from: '1M', to: '2M', price: 'Flat 2%' },
-            { from: '2M', to: '5M', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        },
-        {
-          ccypairs: ["AUDUSD", "EURUSD", "GBPUSD", "JJJUSD", "ZARUSD", "QARUSD"],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '2M', price: 'Flat 3%' },
-            { from: '2M', to: '3M', price: 'Flat 3%' },
-            { from: '3M', to: '4M', price: 'Flat 2%' },
-            { from: '4M', to: '5M', price: 'Flat 3%' },
-            { from: '5M', to: '1Y', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        },
-        {
-          ccypairs: ["JPYUSD", "ZARUSD", "QARUSD"],
-          tenorRange: [
-            { from: '1M', to: '2M', price: 'Flat 2%' },
-            { from: '2M', to: '5M', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        }
-      ],
-    },
-    {
-      tierName: 'Plutonium',
-      isEnabled: false,
-      ccyGroup: [
-        {
-          ccypairs: ["default"],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '3M', price: 'Flat 3%' },
-            { from: '5M', to: '1Y', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%'
-        },
-        {
-          ccypairs: ["AUDUSD", "EURUSD", "GBPUSD"],
-          tenorRange: [
-            { from: 'ON', to: 'TN', price: 'Flat 2%' },
-            { from: '1M', to: '3M', price: 'Flat 3%' },
-            { from: '5M', to: '7M', price: 'Flat 3%' },
-            { from: '7M', to: '1Y', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        },
-        {
-          ccypairs: ["JJJUSD", "ZARUSD", "QARUSD"],
-          tenorRange: [
-            { from: '1M', to: '2M', price: 'Flat 2%' },
-            { from: '2M', to: '5M', price: 'Flat 3%' }
-          ],
-          defaultPrice: 'Flat 1%',
-          applicableChannel: ['Online', 'Channel1']
-        }
-      ],
-    }
-  ];
+  ngOnInit(): void {
+    this.getAllTradingTier();
+  }
 
-  selectedTier: any = null;
-  tableData: any[] = [];
+  getAllTradingTier() {
+    this.tradingTierService.getAllTradingTier(true).subscribe((response: any) => {
+      console.log("DATA ::: ", response);
+      if (response.data.length > 0) {
+        this.tradingTierNamesData = response.data;
+        this.onSelectTier(response.data[0].id);
+      }
+    });
+  }
 
-  columnData: any;
-
-  onSelectTier(tierName: string) {
-    this.selectedTier = this.tradingTier.find(tier => tier.tierName === tierName);
-    this.isEnabled = this.selectedTier.isEnabled;
-    if (!this.selectedTier.isEnabled) {
-      this.toastr.error(tierName + " is disabled");
-    }
-    if (this.selectedTier) {
-      this.tableData = this.selectedTier.ccyGroup.map(group => {
-        const columns = Array.from(new Set(group.tenorRange.map(tr => `${tr.from}-${tr.to}`)));
-        const rows = [];
-        if (group.ccypairs) {
-          group.ccypairs.forEach(currencyPair => {
-            const row: any = { ccypairs: currencyPair };
-            if (group.tenorRange) {
-              group.tenorRange.forEach(tr => {
-                row[`${tr.from}-${tr.to}`] = tr.price;
-              });
-            }
-            rows.push(row);
-          });
-          console.log("Columns, rows: ", columns, rows);
-          return { columns, rows };
-        }
-      }, console.log(this.tableData));
-    } else {
-      this.tableData = [];
-    }
+  onSelectTier(tierId: string) {
+    this.tradingTierService.getTradingTierById(tierId).subscribe((response: any) => {
+      this.isSelectedTier = true;
+      this.selectedTier = response.data;
+      console.log("this.selectedTier: ", this.selectedTier);
+      this.isEnabled = this.selectedTier.isEnabled;
+      if (!this.isEnabled) {
+        this.toastr.error(this.selectedTier.name + " is disabled");
+      }
+      if (this.selectedTier && this.selectedTier.pricingItem) {
+        this.tableData = this.selectedTier.pricingItem.map(group => {
+          const columns = group.tenors ?
+            Array.from(new Set(group.tenors.map(tr => `${tr.rangeFrom}-${tr.rangeTo}`))) : [];
+          const rows = [];
+          if (group.pricingCcySet) {
+            group.pricingCcySet.forEach(currencyPair => {
+              const row: any = { ccypairs: currencyPair.ccyPair };
+              if (group.tenors) {
+                group.tenors.forEach(tr => {
+                  row[`${tr.rangeFrom}-${tr.rangeTo}`] = tr.pricingAmount.tierName;
+                });
+              }
+              rows.push(row);
+            });
+            console.log("Columns, rows: ", columns, rows);
+            return { columns, rows, groupId: group.id }; 
+          }
+        });
+        console.log(this.tableData);
+      } else {
+        this.tableData = [];
+      }
+    });
   }
 
   addCCYGroup() {
@@ -478,67 +96,36 @@ export class TradingTiersComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.toastr.success("Saved Successfully")
+        this.toastr.success("Saved Successfully");
       }
       console.log(`Dialog result: ${result}`);
     });
   }
 
-  editTier(ccyGroupName) {
-    let data: any;
-    if (ccyGroupName == 'default') {
-      data = {
-        isDefaultTradingTier: true,
-        tradingTierId: '1a2b3c4d-1234-5678-90ab-cdef12345678',
-        ccyGroupId: 'abcd1234-5678-90ab-cdef-9876543210ac'
-      }
-
-    }
-    else {
-      data = {
-        isDefaultTradingTier: false,
-        tradingTierId: '1a2b3c4d-1234-5678-90ab-cdef12345678',
-        ccyGroupId: 'abcd1234-5678-90ab-cdef-9876543210ab'
-      }
-    }
-    const dialogRef = this.dialog.open(AddEditTradingTiersComponent, {
-      width: '500px',
-      height: '90vh', panelClass: 'custom-dialog-container',
-      data: data
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.toastr.success("Saved Successfully")
-      }
-      console.log(`Dialog result: ${result}`);
-    });
-  }
-  rows;
-
-  openEnableDisableAmountTier(index: number) {
-    console.log("Index: ", index);
-    const particularRecord = this.tradingTier[index];
-    const action = particularRecord.isEnabled ? 'disable' : 'enable';
-    this.openConfirmationDialog(action, index);
+  openEnableDisableAmountTier(id: string, index: number) {
+    this.tradingTierService.getTradingTierById(id).subscribe(
+      (response: any) => {
+        console.log("Index: ", index);
+        const action = response.data.isEnabled ? 'disable' : 'enable';
+        this.openConfirmationDialog(response.data.tierType, response.data.id, action, index);
+      });
   }
 
-  openCopyConfirmationDialog(index: number) {
-    this.openConfirmationDialog('copy', index);
-  }
+  // openCopyConfirmationDialog(index: number) {
+  //   this.openConfirmationDialog('copy', index);
+  // }
 
-  openDeleteConfirmationDialog(index: number, isSubTier: boolean) {
-    this.isSubTier = isSubTier;
-    console.log("isSubTier: ", isSubTier);
-    this.openConfirmationDialog('delete', index);
-  }
-
-  openConfirmationDialog(action: string, index: number) {
-    const reqdata = [];
-    reqdata['action'] = action;
-    reqdata['displayName'] = "Trading Tier";
-    if (this.isSubTier) {
-      reqdata['displayName'] = "Trading Sub Tier";
-    }
+  // openDeleteConfirmationDialog(index: number, isSubTier: boolean) {
+  //   this.isSubTier = isSubTier;
+  //   console.log("isSubTier: ", isSubTier, "Index: ", index);
+  //   this.openConfirmationDialog('delete', index);
+  // }
+  
+  openConfirmationDialog(tierType:string, tierId:string, action: string, index: number) {
+    const reqdata = {
+      action: action,
+      displayName: this.isSubTier ? "Trading Sub Tier" : "Trading Tier"
+    };
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '300px',
       height: '350px',
@@ -547,26 +134,62 @@ export class TradingTiersComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         if (result.action === 'delete') {
-
-          console.log("Delete action is called.")
+          console.log("Delete action is called.");
+          if (this.isSubTier) {
+            const subTierId = this.tableData[index] ? this.tableData[index].groupId : null; 
+            if (subTierId) {
+              this.deleteSubTier(this.selectedTier.id, subTierId);
+            } else {
+              console.error("Sub-tier ID not found");
+            }
+          } else {
+            this.deleteTradingTier(this.selectedTier.id);
+          }
         } else if (result.action === 'copy' && result.formValue) {
-
           console.log('Form Value:', result.formValue);
         } else if (result.action === 'enable') {
-          this.rows[index].isEnabled = 1;
+          // this.tradingTierService.enableTradingTier(tierType,tierId);
+          this.toastr.success('Trading Tier Enabled Successfully');
         } else if (result.action === 'disable') {
-          this.rows[index].isEnabled = 0;
+          // this.tradingTierService.disableTradingTier(tierType,tierId);
+          this.toastr.success('Trading Tier disabled Successfully');
         }
         console.log(`Dialog result: ${result}`);
       }
     });
   }
 
-  onAudit(id){
+  deleteTradingTier(tierId: string) {
+    this.tradingTierService.deleteTradingTier(tierId, '').subscribe(
+      (response: any) => {
+        this.toastr.success('Deleted Successfully');
+        this.getAllTradingTier();
+      },
+      (error: any) => {
+        this.toastr.error('Error deleting tier');
+        console.error('Error deleting tier:', error);
+      }
+    );
+  }
+
+  deleteSubTier(tierId: string, subTierId: string) {
+    this.tradingTierService.deleteTradingTier(tierId, subTierId).subscribe(
+      (response: any) => {
+        this.toastr.success('Sub-tier Deleted Successfully');
+        this.onSelectTier(tierId); // Refresh the selected tier to update the UI
+      },
+      (error: any) => {
+        this.toastr.error('Error deleting sub-tier');
+        console.error('Error deleting sub-tier:', error);
+      }
+    );
+  }
+
+  onAudit(id: string) {
     this.dialog.open(AuditHistoryComponent, {
-    width: '900px',
-    height:'500px',
-    data: {"url": "/fxtrader/service/audit/PricingTier/"+id}
-  });
+      width: '900px',
+      height: '500px',
+      data: { "url": "/fxtrader/service/audit/PricingTier/" + id }
+    });
   }
 }
